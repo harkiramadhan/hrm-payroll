@@ -7,7 +7,7 @@
                     <h5 class="mb-0"><strong>Cutoff</strong></h5>
                 </div>
                 <div class="col-lg-4 text-end">
-                    <button class="btn btn-sm btn-round bg-gradient-dark mb-0"><i class="fas fa-plus me-2"></i> Cutoff</button>
+                    <button type="button" class="btn btn-sm btn-round bg-gradient-dark mb-0" data-bs-toggle="modal" data-bs-target="#modalAdd"><i class="fas fa-plus me-2"></i> Cutoff</button>
                 </div>
             </div>
             <!-- <p class="text-sm mb-0">
@@ -19,8 +19,10 @@
                 <thead>
                     <tr>
                         <th class="text-center w-5px">No</th>
+                        <th class="text-center">Periode</th>
                         <th class="text-center">Start Date</th>
                         <th class="text-center">End Date</th>
+                        <th class="text-center">Status</th>
                         <th class="text-center w-5px">Action</th>
                     </tr>
                 </thead>
@@ -31,3 +33,70 @@
     </div>
 </div>
 
+<!-- Modals -->
+<div class="modal fade" id="modalAdd" tabindex="-1" role="dialog" aria-labelledby="modal-form" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-body p-0">
+                <div class="card card-plain">
+                    <div class="card-header pb-0 text-left">
+                        <h5 class="font-weight-bolder">Tambah Cutoff</h5>
+                    </div>
+                    <div class="card-body pb-0">
+                        <form action="<?= site_url('cutoff/create') ?>" role="form text-left" method="post">
+                            <div class="row">
+                                <div class="col-lg-12">
+                                    <label>Periode <small class="text-danger">*</small></label>
+                                    <div class="input-group mb-3">
+                                        <input type="text" class="form-control" placeholder="Periode" aria-label="Periode" name="periode" required>
+                                    </div>
+                                </div>
+                                <div class="col-lg-4">
+                                    <label>Tanggal Mulai<small class="text-danger">*</small></label>
+                                    <div class="input-group mb-3">
+                                        <input type="date" class="form-control" placeholder="Tanggal Mulai" aria-label="Tanggal Mulai" name="start_date" required>
+                                    </div>
+                                </div>
+                                <div class="col-lg-4">
+                                    <label>Tanggal Selesai<small class="text-danger">*</small></label>
+                                    <div class="input-group mb-3">
+                                        <input type="date" class="form-control" placeholder="Tanggal Selesai" aria-label="Tanggal Selesai" name="end_date" required>
+                                    </div>
+                                </div>
+                                <div class="col-lg-4">
+                                    <label>Status<small class="text-danger">*</small></label>
+                                    <div class="input-group mb-3">
+                                        <div class="form-check form-check-inline">
+                                            <input class="form-check-input" type="radio" name="is_active" id="inlineRadio1" value="1" required="">
+                                            <label class="form-check-label" for="inlineRadio1">Active</label>
+                                        </div>
+                                        <div class="form-check form-check-inline">
+                                            <input class="form-check-input" type="radio" name="is_active" id="inlineRadio2" value="2" required="">
+                                            <label class="form-check-label" for="inlineRadio2">Non Active</label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="text-center">
+                                <button type="submit" class="btn btn-sm btn-round bg-success btn-lg w-100 mt-4 mb-0 text-white">Tambahkan</button>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="card-footer text-center pt-0 px-lg-2 px-1">
+                        <button type="button" class="btn btn-sm btn-link btn-block  ml-auto" data-bs-dismiss="modal">Batal</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="modalEdit" tabindex="-1" role="dialog" aria-labelledby="modal-form" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-body p-0 data-edit">
+              
+            </div>
+        </div>
+    </div>
+</div>
