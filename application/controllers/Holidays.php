@@ -1,5 +1,5 @@
 <?php
-class Cutoff extends CI_Controller{
+class Holidays extends CI_Controller{
     function __construct(){
         parent::__construct();
         $this->load->model([
@@ -11,11 +11,35 @@ class Cutoff extends CI_Controller{
 
     function index(){
         $var = [
-            'title' => 'Cutoff',
+            'title' => 'Hari Libur',
             'company' => $this->M_Company->getDefault(),
-            'page' => 'cutoff'
+            'page' => 'holidays'
         ];
         $this->load->view('templates', $var);
+    }
+
+    function create(){
+        $dataInsert = [
+            'tanggal' => $this->input->post('tanggal', TRUE),
+            'keterangan' => $this->input->post('keterangan', TRUE)
+        ];
+        $this->db->insert('holidays', $dataInsert);
+        if($this->db->affected_rows() > 0){
+            $this->session->set_flashdata('success', "Data Berhasil Di Tambahkan");
+        }else{
+            $this->session->set_flashdata('error', "Data Gagal Di Tambahkan");
+        }
+        redirect($_SERVER['HTTP_REFERER']);
+    }
+
+    function delete($id){
+        $this->db->where('id', $id)->delete('holidays');
+        if($this->db->affected_rows() > 0){
+            $this->session->set_flashdata('success', "Data Berhasil Di Hapus");
+        }else{
+            $this->session->set_flashdata('error', "Data Gagal Di Hapus");
+        }
+        redirect($_SERVER['HTTP_REFERER']);
     }
 
     function table(){
@@ -23,18 +47,18 @@ class Cutoff extends CI_Controller{
         $start = intval($this->input->get("start"));
         $length = intval($this->input->get("length"));
 
-        $get = $this->db->get('cutoff');
+        $get = $this->db->get('holidays');
 
         $data = array();
         $no = 1;
         foreach($get->result() as $row){
             $data[] = [
                 $no++,
-                '<strong>'.$row->start_date.'</strong>',
-                '<strong>'.$row->end_date.'</strong>',
+                '<strong>'.$row->tanggal.'</strong>',
+                '<strong>'.$row->keterangan.'</strong>',
                 '<div class="btn-group" role="group" aria-label="Basic example">
                     <button type="button" class="btn btn-sm btn-round btn-info text-white px-3 mb-0 btn-edit" data-id="3"><i class="fas fa-pencil-alt me-2" aria-hidden="true"></i>Edit</button>
-                    <a class="btn btn-sm btn-round btn-link text-danger px-3 mb-0" href="http://localhost/monitoring-ltq/kelas/delete/3"><i class="far fa-trash-alt" aria-hidden="true"></i></a>
+                    <a class="btn btn-sm btn-round btn-link text-danger px-3 mb-0" href="'.site_url('holidays/delete/' . $row->id).'"><i class="far fa-trash-alt" aria-hidden="true"></i></a>
                 </div>'
             ];
         }

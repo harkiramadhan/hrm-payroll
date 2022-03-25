@@ -18,10 +18,10 @@
             <table id="example" class="table table-striped" style="width:100%">
                 <thead>
                     <tr>
-                        <th witdh="5px" class="text-center">No</th>
+                        <th class="text-center w-5px">No</th>
                         <th class="text-center">Start Date</th>
                         <th class="text-center">End Date</th>
-                        <th class="text-center">Action</th>
+                        <th class="text-center w-5px">Action</th>
                     </tr>
                 </thead>
                 <tbody>
