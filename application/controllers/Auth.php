@@ -27,7 +27,6 @@ class Auth extends CI_Controller{
                     $this->session->set_flashdata('error', "User Not Active");
                     redirect($_SERVER['HTTP_REFERER']);
                 }
-
             }else{
                 $this->session->set_flashdata('error', "Password Not Match");
                 redirect($_SERVER['HTTP_REFERER']);
