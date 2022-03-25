@@ -1,5 +1,5 @@
 <?php
-class Dashboard extends CI_Controller{
+class Cutoff extends CI_Controller{
     function __construct(){
         parent::__construct();
         $this->load->model([
@@ -11,9 +11,9 @@ class Dashboard extends CI_Controller{
 
     function index(){
         $var = [
-            'title' => 'Dashboard',
+            'title' => 'Cutoff',
             'company' => $this->M_Company->getDefault(),
-            'page' => 'dashboard'
+            'page' => 'cutoff'
         ];
         $this->load->view('templates', $var);
     }
