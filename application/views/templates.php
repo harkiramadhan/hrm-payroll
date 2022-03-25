@@ -27,21 +27,25 @@
 <html lang="en">
 
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-  <link rel="apple-touch-icon" sizes="76x76" href="./assets/img/apple-icon.png">
-  <link rel="icon" type="image/png" href="./assets/img/favicon.png">
-  <title>Argon Dashboard 2 by Creative Tim</title>
-  <!--     Fonts and icons     -->
-  <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700" rel="stylesheet" />
-  <!-- Nucleo Icons -->
-  <link href="<?= base_url('/assets/css/nucleo-icons.css') ?>" rel="stylesheet" />
-  <link href="<?= base_url('/assets/css/nucleo-svg.css') ?>" rel="stylesheet" />
-  <!-- Font Awesome Icons -->
-  <script src="https://kit.fontawesome.com/42d5adcbca.js" crossorigin="anonymous"></script>
-  <link href="<?= base_url('/assets/css/nucleo-svg.css') ?>" rel="stylesheet" />
-  <!-- CSS Files -->
-  <link id="pagestyle" href="./assets/css/argon-dashboard.css?v=2.0.1" rel="stylesheet" />
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="apple-touch-icon" sizes="76x76" href="./assets/img/apple-icon.png">
+    <link rel="icon" type="image/png" href="./assets/img/favicon.png">
+    <title><?= $title." - ".$company->company ?></title>
+    <!--     Fonts and icons     -->
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700" rel="stylesheet" />
+    <!-- Nucleo Icons -->
+    <link href="<?= base_url('/assets/css/nucleo-icons.css') ?>" rel="stylesheet" />
+    <link href="<?= base_url('/assets/css/nucleo-svg.css') ?>" rel="stylesheet" />
+    <!-- Font Awesome Icons -->
+    <script src="https://kit.fontawesome.com/42d5adcbca.js" crossorigin="anonymous"></script>
+    <link href="<?= base_url('/assets/css/nucleo-svg.css') ?>" rel="stylesheet" />
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.0.1/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.11.5/css/dataTables.bootstrap5.min.css">
+    <link rel="stylesheet" href="https://cdn.datatables.net/buttons/2.2.2/css/buttons.bootstrap5.min.css">
+    <!-- CSS Files -->
+    <link id="pagestyle" href="<?= base_url('/assets/css/argon-dashboard.css?v=2.0.1') ?>" rel="stylesheet" />
 </head>
 
 <body class="g-sidenav-show   bg-gray-100">
@@ -80,7 +84,7 @@
                 }
             ?>
                 <li class="nav-item">
-                    <a data-bs-toggle="collapse" href="#applicationsExamples<?= $row->id ?>" class="nav-link " aria-controls="applicationsExamples" role="button" aria-expanded="false">
+                    <a data-bs-toggle="collapse" href="#applicationsExamples<?= $row->id ?>" class="nav-link <?= (in_array($this->uri->segment(1), $menusDropdown)) ? 'active' : '' ?>" aria-controls="applicationsExamples" role="button" aria-expanded="false">
                         <div class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
                             <i class="<?= $row->icon ?> text-primary text-sm opacity-10"></i>
                         </div>
@@ -94,7 +98,7 @@
                                         <div class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
                                             <i class="<?= $rowD->icon ?> text-dark text-sm opacity-10"></i>
                                         </div>
-                                        <span class="sidenav-normal"><strong><?= $rowD->menu ?></strong></span>
+                                        <span class="sidenav-normal"><?= $rowD->menu ?></span>
                                     </a>
                                 </li>
                             <?php } ?>
@@ -337,6 +341,69 @@
   <script async defer src="https://buttons.github.io/buttons.js"></script>
   <!-- Control Center for Soft Dashboard: parallax effects, scripts for the example pages etc -->
   <script src="<?= base_url('/assets/js/argon-dashboard.min.js?v=2.0.1') ?>"></script>
+  <script src="https://code.jquery.com/jquery-3.5.1.js"></script>
+
+  <!-- Datatables -->
+    <script src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/1.11.5/js/dataTables.bootstrap5.min.js"></script>
+    <script src="https://cdn.datatables.net/buttons/2.2.2/js/dataTables.buttons.min.js"></script>
+    <script src="https://cdn.datatables.net/buttons/2.2.2/js/buttons.bootstrap5.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.1.3/jszip.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/pdfmake.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/vfs_fonts.js"></script>
+    <script src="https://cdn.datatables.net/buttons/2.2.2/js/buttons.html5.min.js"></script>
+    <script src="https://cdn.datatables.net/buttons/2.2.2/js/buttons.print.min.js"></script>
+    <script src="https://cdn.datatables.net/buttons/2.2.2/js/buttons.colVis.min.js"></script>
+
+    <script>
+        $(document).ready(function() {
+            var table = $('#example').DataTable( {
+                ajax: '<?= site_url($this->uri->segment(1) . '/table') ?>',
+                lengthChange: false,
+                buttons: [
+                    {
+                        extend: 'copy',
+                        text: '<i class="fas fa-copy me-2"></i> Copy',
+                        className: 'btn btn-sm btn-primary me-1',
+                        init: function(api, node, config) {
+                            $(node).removeClass('btn-secondary')
+                        }
+                    },
+                    {
+                        extend: 'excel',
+                        text: '<i class="fas fa-file-excel me-2"></i> Excel',
+                        className: 'btn btn-sm btn-primary me-1',
+                        init: function(api, node, config) {
+                            $(node).removeClass('btn-secondary')
+                        }
+                    },
+                    {
+                        extend: 'pdf',
+                        text: '<i class="fas fa-file-pdf me-2"></i> PDF',
+                        className: 'btn btn-sm btn-primary me-1',
+                        init: function(api, node, config) {
+                            $(node).removeClass('btn-secondary')
+                        }
+                    },
+                    {
+                        extend: 'colvis',
+                        text: '<i class="fas fa-eye me-2"></i> Column Visibility &nbsp;&nbsp;&nbsp;',
+                        className: 'btn btn-sm btn-primary me-1',
+                        init: function(api, node, config) {
+                            $(node).removeClass('btn-secondary')
+                        }
+                    },
+                ],
+                columnDefs: [
+                    {"className": "dt-center", "targets": "_all"}
+                ],
+                initComplete: function () {
+                    table.buttons().container()
+                        .appendTo( $('.col-md-6:eq(0)', table.table().container() ) );
+                }
+            });
+        });
+    </script>
 </body>
 
 </html>
