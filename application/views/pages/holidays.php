@@ -7,7 +7,7 @@
                     <h5 class="mb-0"><strong>Hari Libur</strong></h5>
                 </div>
                 <div class="col-lg-4 text-end">
-                    <button type="button" class="btn btn-sm btn-round bg-gradient-dark mb-0" data-bs-toggle="modal" data-bs-target="#addKelas"><i class="fas fa-plus me-2"></i> Hari Libur</button>
+                    <button type="button" class="btn btn-sm btn-round bg-gradient-dark mb-0" data-bs-toggle="modal" data-bs-target="#modalAdd"><i class="fas fa-plus me-2"></i> Hari Libur</button>
                 </div>
             </div>
             <!-- <p class="text-sm mb-0">
@@ -32,7 +32,7 @@
 </div>
 
 <!-- Modals -->
-<div class="modal fade" id="addKelas" tabindex="-1" role="dialog" aria-labelledby="modal-form" aria-hidden="true">
+<div class="modal fade" id="modalAdd" tabindex="-1" role="dialog" aria-labelledby="modal-form" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered modal-md" role="document">
         <div class="modal-content">
             <div class="modal-body p-0">
@@ -65,6 +65,16 @@
                         <button type="button" class="btn btn-sm btn-link btn-block  ml-auto" data-bs-dismiss="modal">Batal</button>
                     </div>
                 </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="modalEdit" tabindex="-1" role="dialog" aria-labelledby="modal-form" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-md" role="document">
+        <div class="modal-content">
+            <div class="modal-body p-0 data-edit">
+              
             </div>
         </div>
     </div>
