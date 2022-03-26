@@ -138,7 +138,8 @@ class Working extends CI_Controller{
         foreach($get->result() as $row){
             $data[] = [
                 $no++,
-                '<p class="text-center mb-0"><strong>'.$row->kode." - ".$row->keterangan.'</strong></p>',
+                '<p class="text-center mb-0"><strong>'.$row->kode.'</strong></p>',
+                '<p class="text-center mb-0"><strong>'.$row->keterangan.'</strong></p>',
                 '<strong>'.$row->hari_kerja.'</strong>',
                 '<p class="text-center mb-0"><strong>'.$row->jam_in.'</strong></p>',
                 '<p class="text-center mb-0"><strong>'.$row->jam_out.'</strong></p>',
