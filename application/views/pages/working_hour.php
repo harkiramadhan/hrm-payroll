@@ -46,9 +46,14 @@
                         <form action="<?= site_url('working/create') ?>" role="form text-left" method="post">
                             <div class="row">
                                 <div class="col-lg-12">
-                                    <label>kode <small class="text-danger">*</small></label>
-                                    <div class="input-group mb-3">
-                                        <input type="text" class="form-control" placeholder="Kode" aria-label="Kode" name="kode" required>
+                                    <div class="form-group">
+                                        <label for="exampleFormControlSelect1">Kode / Shift <small class="text-danger">*</small></label>
+                                        <select name="shift_id" class="form-control" id="exampleFormControlSelect1" required="">
+                                            <option value="" selected="" disabled="">- Pilih Kode / Shift</option>
+                                            <?php foreach($shift->result() as $sr){ ?>
+                                                <option value="<?= $sr->id ?>"><?= $sr->kode." - ".$sr->keterangan ?></option>
+                                            <?php } ?>
+                                        </select>
                                     </div>
                                 </div>
                                 <div class="col-lg-12">

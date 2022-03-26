@@ -13,6 +13,7 @@ class Working extends CI_Controller{
         $var = [
             'title' => 'Jam Kerja',
             'company' => $this->M_Company->getDefault(),
+            'shift' => $this->db->order_by('id', "ASC")->get('shift'),
             'page' => 'working_hour'
         ];
         $this->load->view('templates', $var);
@@ -20,7 +21,7 @@ class Working extends CI_Controller{
 
     function create(){
         $dataInsert = [
-            'kode' => $this->input->post('kode', TRUE),
+            'shift_id' => $this->input->post('shift_id', TRUE),
             'hari_kerja' => $this->input->post('hari_kerja', TRUE),
             'jam_in' => $this->input->post('jam_in', TRUE),
             'jam_out' => $this->input->post('jam_out', TRUE),
@@ -36,7 +37,7 @@ class Working extends CI_Controller{
 
     function update($id){
         $dataUpdate = [
-            'kode' => $this->input->post('kode', TRUE),
+            'shift_id' => $this->input->post('shift_id', TRUE),
             'hari_kerja' => $this->input->post('hari_kerja', TRUE),
             'jam_in' => $this->input->post('jam_in', TRUE),
             'jam_out' => $this->input->post('jam_out', TRUE),
@@ -62,6 +63,7 @@ class Working extends CI_Controller{
 
     function edit($id){
         $working = $this->db->get_where('jam_kerja', ['id' => $id])->row();
+        $shift =  $this->db->order_by('id', "ASC")->get('shift');
         ?>
             <div class="card card-plain">
                 <div class="card-header pb-0 text-left">
@@ -71,9 +73,14 @@ class Working extends CI_Controller{
                     <form action="<?= site_url('working/update/' . $id) ?>" role="form text-left" method="post">
                         <div class="row">
                             <div class="col-lg-12">
-                                <label>kode <small class="text-danger">*</small></label>
-                                <div class="input-group mb-3">
-                                    <input type="text" class="form-control" placeholder="Kode" aria-label="Kode" name="kode" value="<?= $working->kode ?>" required>
+                                <div class="form-group">
+                                    <label for="exampleFormControlSelect1">Kode / Shift <small class="text-danger">*</small></label>
+                                    <select name="shift_id" class="form-control" id="exampleFormControlSelect1" required="">
+                                        <option value="" selected="" disabled="">- Pilih Kode / Shift</option>
+                                        <?php foreach($shift->result() as $sr){ ?>
+                                            <option value="<?= $sr->id ?>" <?= ($working->shift_id == $sr->id) ? 'selected' : '' ?>><?= $sr->kode." - ".$sr->keterangan ?></option>
+                                        <?php } ?>
+                                    </select>
                                 </div>
                             </div>
                             <div class="col-lg-12">
@@ -121,14 +128,17 @@ class Working extends CI_Controller{
         $start = intval($this->input->get("start"));
         $length = intval($this->input->get("length"));
 
-        $get = $this->db->get('jam_kerja');
+        $get = $this->db->select('s.kode, s.keterangan, j.*')
+                        ->from('jam_kerja j')
+                        ->join('shift s', 'j.shift_id = s.id')
+                        ->get();
 
         $data = array();
         $no = 1;
         foreach($get->result() as $row){
             $data[] = [
                 $no++,
-                '<p class="text-center mb-0"><strong>'.$row->kode.'</strong></p>',
+                '<p class="text-center mb-0"><strong>'.$row->kode." - ".$row->keterangan.'</strong></p>',
                 '<strong>'.$row->hari_kerja.'</strong>',
                 '<p class="text-center mb-0"><strong>'.$row->jam_in.'</strong></p>',
                 '<p class="text-center mb-0"><strong>'.$row->jam_out.'</strong></p>',

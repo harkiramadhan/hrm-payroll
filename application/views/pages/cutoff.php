@@ -20,9 +20,9 @@
                     <tr>
                         <th class="text-center w-5px">No</th>
                         <th class="">Periode</th>
-                        <th class="text-center">Start Date</th>
-                        <th class="text-center">End Date</th>
-                        <th class="text-center">Status</th>
+                        <th class="text-center w-5px">Start Date</th>
+                        <th class="text-center w-5px">End Date</th>
+                        <th class="text-center w-5px">Status</th>
                         <th class="text-center w-5px">Action</th>
                     </tr>
                 </thead>
