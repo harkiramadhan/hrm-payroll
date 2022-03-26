@@ -332,7 +332,7 @@
                 columnDefs: [
                     {
                         "className": "dt-center", 
-                        "targets": "_all"
+                        "targets": 0
                     }
                 ],
                 pagingType: 'full_numbers',

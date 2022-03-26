@@ -142,8 +142,8 @@ class Cutoff extends CI_Controller{
             $data[] = [
                 $no++,
                 '<strong>'.$row->periode.'</strong>',
-                '<strong>'.$row->start_date.'</strong>',
-                '<strong>'.$row->end_date.'</strong>',
+                '<p class="text-center mb-0"><strong>'.$row->start_date.'</strong></p>',
+                '<p class="text-center mb-0"><strong>'.$row->end_date.'</strong></p>',
                 $badge,
                 '<div class="btn-group" role="group" aria-label="Basic example">
                     <button type="button" class="btn btn-sm btn-round btn-info text-white px-3 mb-0" onclick="edit('.$row->id.')"><i class="fas fa-pencil-alt me-2" aria-hidden="true"></i>Edit</button>

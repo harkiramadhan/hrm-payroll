@@ -19,10 +19,10 @@
                 <thead>
                     <tr>
                         <th class="text-center w-5px">No</th>
-                        <th class="text-center w-5px">Kode</th>
+                        <th class="text-left w-5px">Kode</th>
                         <th>Hari Kerja</th>
-                        <th class="text-center w-5px">Jam (In)</th>
-                        <th class="text-center w-5px">Jam (Out)</th>
+                        <th class="text-left w-5px">Jam (In)</th>
+                        <th class="text-left w-5px">Jam (Out)</th>
                         <th class="text-center w-5px">Action</th>
                     </tr>
                 </thead>

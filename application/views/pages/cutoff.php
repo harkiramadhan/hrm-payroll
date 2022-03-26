@@ -19,7 +19,7 @@
                 <thead>
                     <tr>
                         <th class="text-center w-5px">No</th>
-                        <th class="text-center">Periode</th>
+                        <th class="">Periode</th>
                         <th class="text-center">Start Date</th>
                         <th class="text-center">End Date</th>
                         <th class="text-center">Status</th>

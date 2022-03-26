@@ -128,10 +128,10 @@ class Working extends CI_Controller{
         foreach($get->result() as $row){
             $data[] = [
                 $no++,
-                '<strong>'.$row->kode.'</strong>',
+                '<p class="text-center mb-0"><strong>'.$row->kode.'</strong></p>',
                 '<strong>'.$row->hari_kerja.'</strong>',
-                '<strong>'.$row->jam_in.'</strong>',
-                '<strong>'.$row->jam_out.'</strong>',
+                '<p class="text-center mb-0"><strong>'.$row->jam_in.'</strong></p>',
+                '<p class="text-center mb-0"><strong>'.$row->jam_out.'</strong></p>',
                 '<div class="btn-group" role="group" aria-label="Basic example">
                     <button type="button" class="btn btn-sm btn-round btn-info text-white px-3 mb-0" onclick="edit('.$row->id.')"><i class="fas fa-pencil-alt me-2" aria-hidden="true"></i>Edit</button>
                     <a class="btn btn-sm btn-round btn-link text-danger px-3 mb-0" href="'.site_url('working/delete/' . $row->id).'"><i class="far fa-trash-alt" aria-hidden="true"></i></a>

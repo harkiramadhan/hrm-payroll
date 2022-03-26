@@ -19,7 +19,7 @@
                 <thead>
                     <tr>
                         <th class="text-center w-5px">No</th>
-                        <th class="text-center">Agama</th>
+                        <th class="text-left">Agama</th>
                         <th class="text-center w-5px">Action</th>
                     </tr>
                 </thead>
