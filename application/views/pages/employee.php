@@ -19,10 +19,10 @@
                 <thead>
                     <tr>
                         <th class="text-center w-5px">No</th>
-                        <th class="text-center">Periode</th>
-                        <th class="text-center">Start Date</th>
-                        <th class="text-center">End Date</th>
-                        <th class="text-center">Status</th>
+                        <th class="text-center">NIK</th>
+                        <th class="text-center">Nama</th>
+                        <th class="text-center">E-Ktp</th>
+                        <th class="text-center">Tanggal Lahir</th>
                         <th class="text-center w-5px">Action</th>
                     </tr>
                 </thead>
