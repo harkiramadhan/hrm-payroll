@@ -55,7 +55,7 @@
                                         <input type="password" class="form-control" placeholder="Password" aria-label="Password" name="password" required>
                                     </div>
                                 </div>
-                                <div class="col-lg-4">
+                                <div class="col-lg-12">
                                     <label>Status<small class="text-danger">*</small></label>
                                     <div class="input-group mb-3">
                                         <div class="form-check form-check-inline">
