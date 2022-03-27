@@ -19,7 +19,7 @@
                 <thead>
                     <tr>
                         <th class="text-center w-5px">No</th>
-                        <th class="text-center w-5px">Tanggal</th>
+                        <th class="w-5px">Tanggal</th>
                         <th class="text-left">Keterangan</th>
                         <th class="text-center w-5px">Action</th>
                     </tr>

@@ -103,7 +103,7 @@ class Holidays extends CI_Controller{
         foreach($get->result() as $row){
             $data[] = [
                 $no++,
-                '<strong>'.$row->tanggal.'</strong>',
+                '<strong>'.longdate_indo($row->tanggal).'</strong>',
                 '<strong>'.$row->keterangan.'</strong>',
                 '<div class="btn-group" role="group" aria-label="Basic example">
                     <button type="button" class="btn btn-sm btn-round btn-info text-white px-3 mb-0" onclick="edit('.$row->id.')"><i class="fas fa-pencil-alt me-2" aria-hidden="true"></i>Edit</button>
