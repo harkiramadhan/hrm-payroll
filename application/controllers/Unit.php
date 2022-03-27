@@ -160,8 +160,8 @@ class Unit extends CI_Controller{
         foreach($get->result() as $row){
             $data[] = [
                 $no++,
-                '<p class="text-center mb-0"><strong>'.$row->divisi.'</strong></p>',
-                '<p class="text-center mb-0"><strong>'.$row->departement.'</strong></p>',
+                '<strong>'.$row->divisi.'</strong>',
+                '<strong>'.$row->departement.'</strong>',
                 '<strong>'.$row->unit.'</strong>',
                 '<div class="btn-group" role="group" aria-label="Basic example">
                     <button type="button" class="btn btn-sm btn-round btn-info text-white px-3 mb-0" onclick="edit('.$row->id.')"><i class="fas fa-pencil-alt me-2" aria-hidden="true"></i>Edit</button>

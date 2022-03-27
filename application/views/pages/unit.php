@@ -19,8 +19,8 @@
                 <thead>
                     <tr>
                         <th class="text-center w-5px">No</th>
-                        <th class="text-center w-5px">Divisi</th>
-                        <th class="text-center w-5px">Departement</th>
+                        <th class="w-5px">Divisi</th>
+                        <th class="w-5px">Departement</th>
                         <th>Unit</th>
                         <th class="text-center w-5px">Action</th>
                     </tr>
