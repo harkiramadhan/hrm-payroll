@@ -35,7 +35,7 @@ class Employee extends CI_Controller{
         $start = intval($this->input->get("start"));
         $length = intval($this->input->get("length"));
 
-        $get = $this->db->get('employee');
+        $get = $this->db->get('pegawai');
 
         $data = array();
         $no = 1;

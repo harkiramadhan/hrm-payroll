@@ -352,6 +352,19 @@
             })
         })
     </script>
+
+    <script>
+        var baseUrl = '<?= base_url('') ?>'
+        var siteUrl = '<?= site_url('') ?>'
+    </script>
+    <?php 
+        if(@$ajax) {
+            foreach(@$ajax as $a){
+                echo "<script src='".base_url('assets/js/custom/' . $a).".js'></script>";
+            }
+        }
+            
+    ?>
 </body>
 
 </html>
