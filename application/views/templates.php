@@ -295,6 +295,7 @@
                 ajax: '<?= site_url($this->uri->segment(1) . '/table') ?>',
                 autoWidth: false,
                 lengthChange: false,
+                scrollX: true,
                 buttons: [
                     {
                         extend: 'copy',
