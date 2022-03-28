@@ -339,3 +339,15 @@
 
         return $result; 
     } 
+
+    function jenisTunjangan($tunjangan_type){
+        if($tunjangan_type == 1){
+            $badge = '<span class="badge bg-info">Konsumtif</span>';
+        }elseif($tunjangan_type == 2){
+            $badge = '<span class="badge bg-primary">Non - Konsumtif</span>';
+        }else{
+            $badge = '<span class="badge bg-warning">Pengurangan</span>';
+        }
+
+        return $badge;
+    }
