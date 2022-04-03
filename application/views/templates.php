@@ -74,6 +74,7 @@
                     </li>
                 <?php elseif($row->dropdown == 't' && $row->root == 't'): 
                     $dropdownData = $this->db->order_by('urut', "ASC")->get_where('menu1', [
+                        'status' => 't',
                         'dropdown' => 't',
                         'root' => 'f',
                         'root_id' => $row->id
