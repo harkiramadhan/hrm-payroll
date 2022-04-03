@@ -1,5 +1,5 @@
 <?php
-class Religion extends CI_Controller{
+class Shift extends CI_Controller{
     function __construct(){
         parent::__construct();
         $this->load->model([
@@ -11,18 +11,19 @@ class Religion extends CI_Controller{
 
     function index(){
         $var = [
-            'title' => 'Agama',
+            'title' => 'Shift',
             'company' => $this->M_Company->getDefault(),
-            'page' => 'religion'
+            'page' => 'master/shift'
         ];
         $this->load->view('templates', $var);
     }
 
     function create(){
         $dataInsert = [
-            'agama' => $this->input->post('agama', TRUE)
+            'kode' => $this->input->post('kode', TRUE),
+            'keterangan' => $this->input->post('keterangan', TRUE)
         ];
-        $this->db->insert('agama', $dataInsert);
+        $this->db->insert('shift', $dataInsert);
         if($this->db->affected_rows() > 0){
             $this->session->set_flashdata('success', "Data Berhasil Di Tambahkan");
         }else{
@@ -33,9 +34,10 @@ class Religion extends CI_Controller{
 
     function update($id){
         $dataUpdate = [
-            'agama' => $this->input->post('agama', TRUE)
+            'kode' => $this->input->post('kode', TRUE),
+            'keterangan' => $this->input->post('keterangan', TRUE)
         ];
-        $this->db->where('id', $id)->update('agama', $dataUpdate);
+        $this->db->where('id', $id)->update('shift', $dataUpdate);
         if($this->db->affected_rows() > 0){
             $this->session->set_flashdata('success', "Data Berhasil Di Simpan");
         }else{
@@ -45,7 +47,7 @@ class Religion extends CI_Controller{
     }
 
     function delete($id){
-        $this->db->where('id', $id)->delete('agama');
+        $this->db->where('id', $id)->delete('shift');
         if($this->db->affected_rows() > 0){
             $this->session->set_flashdata('success', "Data Berhasil Di Hapus");
         }else{
@@ -55,19 +57,25 @@ class Religion extends CI_Controller{
     }
 
     function edit($id){
-        $agama = $this->db->get_where('agama', ['id' => $id])->row();
+        $shift = $this->db->get_where('shift', ['id' => $id])->row();
         ?>
             <div class="card card-plain">
                 <div class="card-header pb-0 text-left">
-                    <h5 class="font-weight-bolder">Edit Agama</h5>
+                    <h5 class="font-weight-bolder">Edit Shift</h5>
                 </div>
                 <div class="card-body pb-0">
-                    <form action="<?= site_url('religion/update/' . $id) ?>" role="form text-left" method="post">
+                    <form action="<?= site_url('master/shift/update/' . $id) ?>" role="form text-left" method="post">
                         <div class="row">
                             <div class="col-lg-12">
-                                <label>Agama <small class="text-danger">*</small></label>
+                                <label>Kode <small class="text-danger">*</small></label>
                                 <div class="input-group mb-3">
-                                    <input type="text" class="form-control" placeholder="Agama" aria-label="Agama" name="agama" value="<?= $agama->agama ?>" required>
+                                    <input type="text" class="form-control" placeholder="Kode" aria-label="Kode" name="kode" value="<?= $shift->kode ?>" required>
+                                </div>
+                            </div>
+                            <div class="col-lg-12">
+                                <label>Keterangan <small class="text-danger">*</small></label>
+                                <div class="input-group mb-3">
+                                    <input type="text" class="form-control" placeholder="Keterangan" aria-label="Keterangan" name="keterangan" value="<?= $shift->keterangan ?>" required>
                                 </div>
                             </div>
                         </div>
@@ -88,22 +96,23 @@ class Religion extends CI_Controller{
         $start = intval($this->input->get("start"));
         $length = intval($this->input->get("length"));
 
-        $get = $this->db->get('agama');
+        $get = $this->db->order_by('id', "ASC")->get('shift');
 
         $data = array();
         $no = 1;
         foreach($get->result() as $row){
             $data[] = [
                 $no++,
-                '<strong>'.$row->agama.'</strong>',
+                '<p class="text-center mb-0"><strong>'.$row->kode.'</strong></p>',
+                '<strong>'.$row->keterangan.'</strong>',
                 '<div class="btn-group" role="group" aria-label="Basic example">
                     <button type="button" class="btn btn-sm btn-round btn-info text-white px-3 mb-0" onclick="edit('.$row->id.')"><i class="fas fa-pencil-alt me-2" aria-hidden="true"></i>Edit</button>
-                    <a class="btn btn-sm btn-round btn-link text-danger px-3 mb-0" href="'.site_url('religion/delete/' . $row->id).'"><i class="far fa-trash-alt" aria-hidden="true"></i></a>
+                    <a class="btn btn-sm btn-round btn-link text-danger px-3 mb-0" href="'.site_url('master/shift/delete/' . $row->id).'"><i class="far fa-trash-alt" aria-hidden="true"></i></a>
                 </div>
                 <script>
                     function edit(id){
                         $.ajax({
-                            url : "'.site_url('religion/edit/').'" + id,
+                            url : "'.site_url('master/shift/edit/').'" + id,
                             type : "post",
                             data : {id : id},
                             success: function(res){
@@ -122,6 +131,7 @@ class Religion extends CI_Controller{
             "recordsFiltered"   => $get->num_rows(),
             "data"              => $data
         ];
+        
         $this->output->set_content_type('application/json')->set_output(json_encode($output));
     }
 }

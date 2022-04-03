@@ -14,7 +14,7 @@ class Employee extends CI_Controller{
         $var = [
             'title' => 'Pegawai',
             'company' => $this->M_Company->getDefault(),
-            'page' => 'employee'
+            'page' => 'master/employee'
         ];
         $this->load->view('templates', $var);
     }
@@ -28,7 +28,7 @@ class Employee extends CI_Controller{
             'jabatan' => $this->db->get('jabatan'),
             'companys' => $this->db->get('company'),
             'divisi' => $this->db->get('divisi'),
-            'page' => 'add_employee',
+            'page' => 'master/add_employee',
             'ajax' => [
                 'employee'
             ]
@@ -60,7 +60,7 @@ class Employee extends CI_Controller{
             'divisi' => $this->db->get('divisi'),
             'departement' => $this->db->get_where('departement', ['divisi_id' => $pegawai->divisi_id]),
             'unit' => $this->db->get_where('unit', ['dept_id' => $pegawai->dept_id]),
-            'page' => 'edit_employee',
+            'page' => 'master/edit_employee',
             'ajax' => [
                 'employee'
             ]
@@ -163,8 +163,8 @@ class Employee extends CI_Controller{
                 '<p class="text-center"><strong>'.$row->unit.'</strong></p>',
                 '<p class="text-center"><strong>'.date('Y-m-d H:i:s', strtotime($row->updated_at)).'</strong></p>',
                 '<div class="btn-group" role="group" aria-label="Basic example">
-                    <a class="btn btn-sm btn-round btn-info text-white px-3 mb-0" href="'.site_url('employee/' . $row->id).'"><i class="fas fa-pencil-alt me-2" aria-hidden="true"></i>Edit</a>
-                    <a class="btn btn-sm btn-round btn-link text-danger px-3 mb-0" href="'.site_url('employee/delete/' . $row->id).'"><i class="far fa-trash-alt" aria-hidden="true"></i></a>
+                    <a class="btn btn-sm btn-round btn-info text-white px-3 mb-0" href="'.site_url('master/employee/' . $row->id).'"><i class="fas fa-pencil-alt me-2" aria-hidden="true"></i>Edit</a>
+                    <a class="btn btn-sm btn-round btn-link text-danger px-3 mb-0" href="'.site_url('master/employee/delete/' . $row->id).'"><i class="far fa-trash-alt" aria-hidden="true"></i></a>
                 </div>'
             ];
         }

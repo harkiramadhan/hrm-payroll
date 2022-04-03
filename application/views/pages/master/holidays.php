@@ -4,10 +4,10 @@
         <div class="card-header">
             <div class="row">
                 <div class="col-lg-8">
-                    <h5 class="mb-0"><strong>Tunjangan</strong></h5>
+                    <h5 class="mb-0"><strong>Hari Libur</strong></h5>
                 </div>
                 <div class="col-lg-4 text-end">
-                    <button type="button" class="btn btn-sm btn-round bg-gradient-dark mb-0" data-bs-toggle="modal" data-bs-target="#modalAdd"><i class="fas fa-plus me-2"></i> Tunjangan</button>
+                    <button type="button" class="btn btn-sm btn-round bg-gradient-dark mb-0" data-bs-toggle="modal" data-bs-target="#modalAdd"><i class="fas fa-plus me-2"></i> Hari Libur</button>
                 </div>
             </div>
             <!-- <p class="text-sm mb-0">
@@ -19,8 +19,8 @@
                 <thead>
                     <tr>
                         <th class="text-center w-5px">No</th>
-                        <th class="text-center w-5px">Jenis</th>
-                        <th class="">Tunjangan</th>
+                        <th class="w-5px">Tanggal</th>
+                        <th class="text-left">Keterangan</th>
                         <th class="text-center w-5px">Action</th>
                     </tr>
                 </thead>
@@ -38,26 +38,21 @@
             <div class="modal-body p-0">
                 <div class="card card-plain">
                     <div class="card-header pb-0 text-left">
-                        <h5 class="font-weight-bolder">Tambah Tunjangan</h5>
+                        <h5 class="font-weight-bolder">Tambah Hari Libur</h5>
                     </div>
                     <div class="card-body pb-0">
-                        <form action="<?= site_url('tunjangan/create') ?>" role="form text-left" method="post">
+                        <form action="<?= site_url('master/holidays/create') ?>" role="form text-left" method="post">
                             <div class="row">
                                 <div class="col-lg-12">
-                                    <div class="form-group">
-                                        <label for="exampleFormControlSelect1">Jenis Tunjangan <small class="text-danger">*</small></label>
-                                        <select name="type" class="form-control" id="exampleFormControlSelect1" required>
-                                            <option value="" selected="" disabled="">- Pilih Jenis Tunjangan</option>
-                                            <option value="1" >Konsumtif</option>
-                                            <option value="2" >Non - Konsumtif</option>
-                                            <option value="3" >Pengurangan</option>
-                                        </select>
+                                    <label>Tanggal <small class="text-danger">*</small></label>
+                                    <div class="input-group mb-3">
+                                        <input type="date" class="form-control" placeholder="Tanggal" aria-label="Tanggal" name="tanggal" required>
                                     </div>
                                 </div>
                                 <div class="col-lg-12">
-                                    <label>Tunjangan <small class="text-danger">*</small></label>
+                                    <label>Keterangan <small class="text-danger">*</small></label>
                                     <div class="input-group mb-3">
-                                        <input type="text" class="form-control" placeholder="Tunjangan" aria-label="Tunjangan" name="tunjangan" required>
+                                        <input type="text" class="form-control" placeholder="Keterangan" aria-label="Keterangan" name="keterangan" required>
                                     </div>
                                 </div>
                             </div>

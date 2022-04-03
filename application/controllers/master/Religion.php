@@ -1,5 +1,5 @@
 <?php
-class Holidays extends CI_Controller{
+class Religion extends CI_Controller{
     function __construct(){
         parent::__construct();
         $this->load->model([
@@ -11,19 +11,18 @@ class Holidays extends CI_Controller{
 
     function index(){
         $var = [
-            'title' => 'Hari Libur',
+            'title' => 'Agama',
             'company' => $this->M_Company->getDefault(),
-            'page' => 'holidays'
+            'page' => 'master/religion'
         ];
         $this->load->view('templates', $var);
     }
 
     function create(){
         $dataInsert = [
-            'tanggal' => $this->input->post('tanggal', TRUE),
-            'keterangan' => $this->input->post('keterangan', TRUE)
+            'agama' => $this->input->post('agama', TRUE)
         ];
-        $this->db->insert('holidays', $dataInsert);
+        $this->db->insert('agama', $dataInsert);
         if($this->db->affected_rows() > 0){
             $this->session->set_flashdata('success', "Data Berhasil Di Tambahkan");
         }else{
@@ -34,10 +33,9 @@ class Holidays extends CI_Controller{
 
     function update($id){
         $dataUpdate = [
-            'tanggal' => $this->input->post('tanggal', TRUE),
-            'keterangan' => $this->input->post('keterangan', TRUE)
+            'agama' => $this->input->post('agama', TRUE)
         ];
-        $this->db->where('id', $id)->update('holidays', $dataUpdate);
+        $this->db->where('id', $id)->update('agama', $dataUpdate);
         if($this->db->affected_rows() > 0){
             $this->session->set_flashdata('success', "Data Berhasil Di Simpan");
         }else{
@@ -47,7 +45,7 @@ class Holidays extends CI_Controller{
     }
 
     function delete($id){
-        $this->db->where('id', $id)->delete('holidays');
+        $this->db->where('id', $id)->delete('agama');
         if($this->db->affected_rows() > 0){
             $this->session->set_flashdata('success', "Data Berhasil Di Hapus");
         }else{
@@ -57,25 +55,19 @@ class Holidays extends CI_Controller{
     }
 
     function edit($id){
-        $holiday = $this->db->get_where('holidays', ['id' => $id])->row();
+        $agama = $this->db->get_where('agama', ['id' => $id])->row();
         ?>
             <div class="card card-plain">
                 <div class="card-header pb-0 text-left">
-                    <h5 class="font-weight-bolder">Edit Hari Libur</h5>
+                    <h5 class="font-weight-bolder">Edit Agama</h5>
                 </div>
                 <div class="card-body pb-0">
-                    <form action="<?= site_url('holidays/update/' . $id) ?>" role="form text-left" method="post">
+                    <form action="<?= site_url('master/religion/update/' . $id) ?>" role="form text-left" method="post">
                         <div class="row">
                             <div class="col-lg-12">
-                                <label>Tanggal <small class="text-danger">*</small></label>
+                                <label>Agama <small class="text-danger">*</small></label>
                                 <div class="input-group mb-3">
-                                    <input type="date" class="form-control" placeholder="Tanggal" aria-label="Tanggal" name="tanggal" value="<?= $holiday->tanggal ?>" required>
-                                </div>
-                            </div>
-                            <div class="col-lg-12">
-                                <label>Keterangan <small class="text-danger">*</small></label>
-                                <div class="input-group mb-3">
-                                    <input type="text" class="form-control" placeholder="Keterangan" aria-label="Keterangan" name="keterangan" value="<?= $holiday->keterangan ?>" required>
+                                    <input type="text" class="form-control" placeholder="Agama" aria-label="Agama" name="agama" value="<?= $agama->agama ?>" required>
                                 </div>
                             </div>
                         </div>
@@ -96,23 +88,22 @@ class Holidays extends CI_Controller{
         $start = intval($this->input->get("start"));
         $length = intval($this->input->get("length"));
 
-        $get = $this->db->get('holidays');
+        $get = $this->db->get('agama');
 
         $data = array();
         $no = 1;
         foreach($get->result() as $row){
             $data[] = [
                 $no++,
-                '<strong>'.longdate_indo($row->tanggal).'</strong>',
-                '<strong>'.$row->keterangan.'</strong>',
+                '<strong>'.$row->agama.'</strong>',
                 '<div class="btn-group" role="group" aria-label="Basic example">
                     <button type="button" class="btn btn-sm btn-round btn-info text-white px-3 mb-0" onclick="edit('.$row->id.')"><i class="fas fa-pencil-alt me-2" aria-hidden="true"></i>Edit</button>
-                    <a class="btn btn-sm btn-round btn-link text-danger px-3 mb-0" href="'.site_url('holidays/delete/' . $row->id).'"><i class="far fa-trash-alt" aria-hidden="true"></i></a>
+                    <a class="btn btn-sm btn-round btn-link text-danger px-3 mb-0" href="'.site_url('master/religion/delete/' . $row->id).'"><i class="far fa-trash-alt" aria-hidden="true"></i></a>
                 </div>
                 <script>
                     function edit(id){
                         $.ajax({
-                            url : "'.site_url('holidays/edit/').'" + id,
+                            url : "'.site_url('master/religion/edit/').'" + id,
                             type : "post",
                             data : {id : id},
                             success: function(res){

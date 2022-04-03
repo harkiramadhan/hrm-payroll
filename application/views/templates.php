@@ -78,24 +78,19 @@
                         'root' => 'f',
                         'root_id' => $row->id
                     ])->result(); 
-                    
-                    $menusDropdown = [];
-                    foreach($dropdownData as $dd){
-                        array_push($menusDropdown, $dd->url);
-                    }
                 ?>
                     <li class="nav-item">
-                        <a data-bs-toggle="collapse" href="#menus<?= $row->id ?>" class="nav-link <?= (in_array($this->uri->segment(1), $menusDropdown)) ? 'active' : '' ?>" aria-controls="applicationsExamples" role="button" aria-expanded="false">
+                        <a data-bs-toggle="collapse" href="#menus<?= $row->id ?>" class="nav-link <?= ($this->uri->segment(1) == $row->url) ? 'active' : '' ?>" aria-controls="applicationsExamples" role="button" aria-expanded="false">
                             <div class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
                                 <i class="<?= $row->icon ?> text-primary text-sm opacity-10"></i>
                             </div>
                             <span class="nav-link-text ms-1"><strong><?= $row->menu ?></strong></span>
                         </a>
-                        <div class="collapse <?= (in_array($this->uri->segment(1), $menusDropdown)) ? 'show' : '' ?>" id="menus<?= $row->id ?>">
+                        <div class="collapse <?= ($this->uri->segment(1) == $row->url) ? 'show' : '' ?>" id="menus<?= $row->id ?>">
                             <ul class="nav ms-2">
                                 <?php foreach($dropdownData as $rowD){ ?>
                                     <li class="nav-item ">
-                                        <a class="nav-link <?= ($this->uri->segment(1) == $rowD->url) ? 'active' : '' ?>" href="<?= site_url($rowD->url) ?>">
+                                        <a class="nav-link <?= ($this->uri->segment(1) == $row->url && $this->uri->segment(2) == $rowD->url) ? 'active' : '' ?>" href="<?= site_url($row->url."/".$rowD->url) ?>">
                                             <div class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
                                                 <i class="<?= $rowD->icon ?> text-dark text-sm opacity-10"></i>
                                             </div>
@@ -286,13 +281,19 @@
     <script src="https://cdn.datatables.net/buttons/2.2.2/js/buttons.colVis.min.js"></script>
 
     <script>
+        var baseUrl = '<?= base_url('') ?>'
+        var siteUrl = '<?= site_url('') ?>'
+        var nowUrl  = siteUrl + $(location).attr('href').split("/").splice(4, 10).join("/")
+    </script>
+
+    <script>
         $(document).ready(function() {
             setTimeout(function() {
                 $('.alert-session').fadeOut('fast')
             }, 2000)
 
             var table = $('#example').DataTable( {
-                ajax: '<?= site_url($this->uri->segment(1) . '/table') ?>',
+                ajax: nowUrl + '/table',
                 autoWidth: false,
                 lengthChange: false,
                 scrollX: true,
@@ -354,10 +355,6 @@
         })
     </script>
 
-    <script>
-        var baseUrl = '<?= base_url('') ?>'
-        var siteUrl = '<?= site_url('') ?>'
-    </script>
     <?php 
         if(@$ajax) {
             foreach(@$ajax as $a){

@@ -1,7 +1,7 @@
 $('#select-div').change(function(){
     var id = $(this).val()
     $.ajax({
-        url: siteUrl + 'unit/get_dept',
+        url: nowUrl + '/get_dept',
         type: 'get',
         data: {id : id},
         success: function(res){

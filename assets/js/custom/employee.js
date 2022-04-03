@@ -1,7 +1,7 @@
 $('#select-div').change(function(){
     var id = $(this).val()
     $.ajax({
-        url: siteUrl + 'employee/get_dept',
+        url: siteUrl + 'master/employee/get_dept',
         type: 'get',
         data: {id : id},
         success: function(res){
@@ -24,7 +24,7 @@ $('#select-div').change(function(){
 $('#select-dept').change(function(){
     var id = $(this).val()
     $.ajax({
-        url: siteUrl + 'employee/get_unit',
+        url: siteUrl + 'master/employee/get_unit',
         type: 'get',
         data: {id : id},
         success: function(res){

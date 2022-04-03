@@ -1,5 +1,5 @@
 <?php
-class Menus extends CI_Controller{
+class Working extends CI_Controller{
     function __construct(){
         parent::__construct();
         $this->load->model([
@@ -11,10 +11,10 @@ class Menus extends CI_Controller{
 
     function index(){
         $var = [
-            'title' => 'Menu',
+            'title' => 'Jam Kerja',
             'company' => $this->M_Company->getDefault(),
             'shift' => $this->db->order_by('id', "ASC")->get('shift'),
-            'page' => 'menu'
+            'page' => 'master/working_hour'
         ];
         $this->load->view('templates', $var);
     }
@@ -70,7 +70,7 @@ class Menus extends CI_Controller{
                     <h5 class="font-weight-bolder">Edit Jam Kerja</h5>
                 </div>
                 <div class="card-body pb-0">
-                    <form action="<?= site_url('working/update/' . $id) ?>" role="form text-left" method="post">
+                    <form action="<?= site_url('master/working/update/' . $id) ?>" role="form text-left" method="post">
                         <div class="row">
                             <div class="col-lg-12">
                                 <div class="form-group">
@@ -128,29 +128,29 @@ class Menus extends CI_Controller{
         $start = intval($this->input->get("start"));
         $length = intval($this->input->get("length"));
 
-        $get = $this->db->get('menu1');
+        $get = $this->db->select('s.kode, s.keterangan, j.*')
+                        ->from('jam_kerja j')
+                        ->join('shift s', 'j.shift_id = s.id')
+                        ->get();
 
         $data = array();
         $no = 1;
         foreach($get->result() as $row){
             $data[] = [
-                '<strong>'.$row->id.'</strong>',
-                '<strong>'.$row->menu.'</strong>',
-                '<p class="text-center mb-0"><strong>'.$row->urut.'</strong></p>',
-                '<p class="text-center mb-0"><strong><i class="text-primary '.$row->icon.'"></i></strong></p>',
-                '<p class="text-center mb-0"><strong>'.$row->status.'</strong></p>',
-                '<strong>'.$row->url.'</strong>',
-                '<p class="text-center mb-0"><strong>'.$row->dropdown.'</strong></p>',
-                '<p class="text-center mb-0"><strong>'.$row->root.'</strong></p>',
-                '<p class="text-center mb-0"><strong>'.$row->root_id.'</strong></p>',
+                $no++,
+                '<p class="text-center mb-0"><strong>'.$row->kode.'</strong></p>',
+                '<p class="text-center mb-0"><strong>'.$row->keterangan.'</strong></p>',
+                '<strong>'.$row->hari_kerja.'</strong>',
+                '<p class="text-center mb-0"><strong>'.$row->jam_in.'</strong></p>',
+                '<p class="text-center mb-0"><strong>'.$row->jam_out.'</strong></p>',
                 '<div class="btn-group" role="group" aria-label="Basic example">
                     <button type="button" class="btn btn-sm btn-round btn-info text-white px-3 mb-0" onclick="edit('.$row->id.')"><i class="fas fa-pencil-alt me-2" aria-hidden="true"></i>Edit</button>
-                    <a class="btn btn-sm btn-round btn-link text-danger px-3 mb-0" href="'.site_url('menus/delete/' . $row->id).'"><i class="far fa-trash-alt" aria-hidden="true"></i></a>
+                    <a class="btn btn-sm btn-round btn-link text-danger px-3 mb-0" href="'.site_url('master/working/delete/' . $row->id).'"><i class="far fa-trash-alt" aria-hidden="true"></i></a>
                 </div>
                 <script>
                     function edit(id){
                         $.ajax({
-                            url : "'.site_url('menus/edit/').'" + id,
+                            url : "'.site_url('master/working/edit/').'" + id,
                             type : "post",
                             data : {id : id},
                             success: function(res){

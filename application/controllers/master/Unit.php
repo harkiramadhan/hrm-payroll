@@ -14,7 +14,7 @@ class Unit extends CI_Controller{
             'title' => 'Unit',
             'company' => $this->M_Company->getDefault(),
             'divisi' => $this->db->order_by('divisi', "ASC")->get('divisi'),
-            'page' => 'unit',
+            'page' => 'master/unit',
             'ajax' => [
                 'unit'
             ]
@@ -78,7 +78,7 @@ class Unit extends CI_Controller{
                     <h5 class="font-weight-bolder">Edit Unit</h5>
                 </div>
                 <div class="card-body pb-0">
-                    <form action="<?= site_url('unit/update/' . $id) ?>" role="form text-left" method="post">
+                    <form action="<?= site_url('master/unit/update/' . $id) ?>" role="form text-left" method="post">
                         <div class="row">
                             <div class="col-lg-12">
                                 <div class="form-group">
@@ -122,7 +122,7 @@ class Unit extends CI_Controller{
                 $('#select-div2').change(function(){
                     var id = $(this).val()
                     $.ajax({
-                        url: siteUrl + 'unit/get_dept',
+                        url: siteUrl + 'master/unit/get_dept',
                         type: 'get',
                         data: {id : id},
                         success: function(res){
@@ -165,12 +165,12 @@ class Unit extends CI_Controller{
                 '<strong>'.$row->unit.'</strong>',
                 '<div class="btn-group" role="group" aria-label="Basic example">
                     <button type="button" class="btn btn-sm btn-round btn-info text-white px-3 mb-0" onclick="edit('.$row->id.')"><i class="fas fa-pencil-alt me-2" aria-hidden="true"></i>Edit</button>
-                    <a class="btn btn-sm btn-round btn-link text-danger px-3 mb-0" href="'.site_url('unit/delete/' . $row->id).'"><i class="far fa-trash-alt" aria-hidden="true"></i></a>
+                    <a class="btn btn-sm btn-round btn-link text-danger px-3 mb-0" href="'.site_url('master/unit/delete/' . $row->id).'"><i class="far fa-trash-alt" aria-hidden="true"></i></a>
                 </div>
                 <script>
                     function edit(id){
                         $.ajax({
-                            url : "'.site_url('unit/edit/').'" + id,
+                            url : "'.site_url('master/unit/edit/').'" + id,
                             type : "post",
                             data : {id : id},
                             success: function(res){
