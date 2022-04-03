@@ -11,7 +11,7 @@ class Jabatan extends CI_Controller{
 
     function index(){
         $var = [
-            'title' => 'Jabatan',
+            'title' => 'Master Jabatan',
             'company' => $this->M_Company->getDefault(),
             'page' => 'master/jabatan'
         ];

@@ -11,7 +11,7 @@ class Shift extends CI_Controller{
 
     function index(){
         $var = [
-            'title' => 'Shift',
+            'title' => 'Master Shift',
             'company' => $this->M_Company->getDefault(),
             'page' => 'master/shift'
         ];

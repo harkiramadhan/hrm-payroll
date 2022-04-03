@@ -11,7 +11,7 @@ class Divisi extends CI_Controller{
 
     function index(){
         $var = [
-            'title' => 'Divisi',
+            'title' => 'Master Divisi',
             'company' => $this->M_Company->getDefault(),
             'page' => 'master/divisi'
         ];

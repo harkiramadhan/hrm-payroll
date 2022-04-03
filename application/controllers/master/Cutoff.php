@@ -11,7 +11,7 @@ class Cutoff extends CI_Controller{
 
     function index(){
         $var = [
-            'title' => 'Cutoff',
+            'title' => 'Master Cutoff',
             'company' => $this->M_Company->getDefault(),
             'page' => 'master/cutoff'
         ];

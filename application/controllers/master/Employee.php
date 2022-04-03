@@ -12,7 +12,7 @@ class Employee extends CI_Controller{
 
     function index(){
         $var = [
-            'title' => 'Pegawai',
+            'title' => 'Master Pegawai',
             'company' => $this->M_Company->getDefault(),
             'page' => 'master/employee'
         ];
@@ -21,7 +21,7 @@ class Employee extends CI_Controller{
 
     function add(){
         $var = [
-            'title' => 'Tambah Pegawai',
+            'title' => 'Tambah Data Pegawai',
             'company' => $this->M_Company->getDefault(),
             'agama' => $this->db->get('agama'),
             'pendidikan' => $this->db->get('jenjang_pendidikan'),

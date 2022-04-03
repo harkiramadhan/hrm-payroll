@@ -11,7 +11,7 @@ class Working extends CI_Controller{
 
     function index(){
         $var = [
-            'title' => 'Jam Kerja',
+            'title' => 'Master Jam Kerja',
             'company' => $this->M_Company->getDefault(),
             'shift' => $this->db->order_by('id', "ASC")->get('shift'),
             'page' => 'master/working_hour'

@@ -11,7 +11,7 @@ class Religion extends CI_Controller{
 
     function index(){
         $var = [
-            'title' => 'Agama',
+            'title' => 'Master Agama',
             'company' => $this->M_Company->getDefault(),
             'page' => 'master/religion'
         ];

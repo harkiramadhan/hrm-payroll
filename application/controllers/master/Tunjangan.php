@@ -11,7 +11,7 @@ class Tunjangan extends CI_Controller{
 
     function index(){
         $var = [
-            'title' => 'Tunjangan',
+            'title' => 'Master Tunjangan',
             'company' => $this->M_Company->getDefault(),
             'page' => 'master/tunjangan'
         ];

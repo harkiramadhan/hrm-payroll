@@ -11,7 +11,7 @@ class Departement extends CI_Controller{
 
     function index(){
         $var = [
-            'title' => 'Departement',
+            'title' => 'Master Departement',
             'company' => $this->M_Company->getDefault(),
             'divisi' => $this->db->order_by('divisi', "ASC")->get('divisi'),
             'page' => 'master/departement'

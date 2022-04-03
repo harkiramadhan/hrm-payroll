@@ -11,7 +11,7 @@ class Unit extends CI_Controller{
 
     function index(){
         $var = [
-            'title' => 'Unit',
+            'title' => 'Master Unit',
             'company' => $this->M_Company->getDefault(),
             'divisi' => $this->db->order_by('divisi', "ASC")->get('divisi'),
             'page' => 'master/unit',

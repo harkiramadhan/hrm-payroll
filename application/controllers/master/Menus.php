@@ -11,7 +11,7 @@ class Menus extends CI_Controller{
 
     function index(){
         $var = [
-            'title' => 'Menu',
+            'title' => 'Master Menu',
             'company' => $this->M_Company->getDefault(),
             'shift' => $this->db->order_by('id', "ASC")->get('shift'),
             'page' => 'master/menu'
