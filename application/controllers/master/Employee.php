@@ -28,6 +28,7 @@ class Employee extends CI_Controller{
             'jabatan' => $this->db->get('jabatan'),
             'companys' => $this->db->get('company'),
             'divisi' => $this->db->get('divisi'),
+            'status_kepegawaian' => $this->db->get('status_kepegawaian'),
             'page' => 'master/add_employee',
             'ajax' => [
                 'employee'
@@ -70,6 +71,11 @@ class Employee extends CI_Controller{
     }
 
     function create(){
+        $deptArr = explode('_', $this->input->post('dept_id', TRUE));
+        $unitArr = explode('_', $this->input->post('unit_id', TRUE));
+        $dept_id = $deptArr[0];
+        $unit_id = $unitArr[0];
+        
         $this->form_validation->set_rules('nik', 'NIK', 'is_unique[pegawai.nik]', [
             'is_unique' => '<strong>NIK Sudah Tersedia</strong>'
         ]);
@@ -91,8 +97,16 @@ class Employee extends CI_Controller{
                 'company_id' => $this->input->post('company_id', TRUE),
                 'jabatan_id' => $this->input->post('jabatan_id', TRUE),
                 'divisi_id' => $this->input->post('divisi_id', TRUE),
-                'dept_id' => $this->input->post('dept_id', TRUE),
-                'unit_id' => $this->input->post('unit_id', TRUE),
+                'dept_id' => $dept_id,
+                'unit_id' => $unit_id,
+                'status_id' => $this->input->post('status_id', TRUE),
+                'tgl_join_c1' => $this->input->post('tgl_join_c1', TRUE),
+                'tgl_out_c1' => $this->input->post('tgl_out_c1', TRUE),
+                'tgl_join_c2' => $this->input->post('tgl_join_c2', TRUE),
+                'tgl_out_c2' => $this->input->post('tgl_out_c2', TRUE),
+                'tgl_join_p' => $this->input->post('tgl_join_p', TRUE),
+                'tgl_p' => $this->input->post('tgl_p', TRUE),
+                'company_id' => $this->input->post('company_id', TRUE),
                 'created_at' => date('Y-m-d H:i:s')
             ];
             $this->db->insert('pegawai', $dataInsert);
@@ -104,8 +118,8 @@ class Employee extends CI_Controller{
                     'company_id' => $this->input->post('company_id', TRUE),
                     'jabatan_id' => $this->input->post('jabatan_id', TRUE),
                     'divisi_id' => $this->input->post('divisi_id', TRUE),
-                    'dept_id' => $this->input->post('dept_id', TRUE),
-                    'unit_id' => $this->input->post('unit_id', TRUE)
+                    'dept_id' => $dept_id,
+                    'unit_id' => $unit_id
                 ];
                 $this->db->insert('mutasi_pegawai', $dataInsertMutasi);
                 if($this->db->affected_rows() > 0){

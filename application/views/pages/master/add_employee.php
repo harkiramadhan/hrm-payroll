@@ -1,7 +1,7 @@
 <div class="container-fluid py-4">
     <div class="row">
         <div class="col-12 col-lg-8 m-auto">
-            <form action="<?= site_url('employee/create') ?>" method="POST">
+            <form action="<?= site_url('master/employee/create') ?>" method="POST">
                 <div class="card p-3 border-radius-xl bg-white js-active" data-animation="FadeIn">
                     <h6><strong>Tambah Pegawai</strong></h6>
                     <div class="row mt-3">
@@ -61,6 +61,68 @@
                 
                 <div class="card p-3 border-radius-xl bg-white js-active mt-4" data-animation="FadeIn">
                     <h6><strong>Detail Kepegawaian</strong></h6>
+                    <div class="row mt-2">
+                        <div class="col-lg-6">
+                            <div class="form-group">
+                                <label>Status Kepegawaian <small class="text-danger">*</small></label>
+                                <select name="status_id" class="form-control <?= (@form_error('status_id')) ? 'is-invalid' : ((@set_value('status_id')) ? 'is-valid' : '') ?>" required="">
+                                    <option value="" selected="" disabled="">- Pilih Status Kepegawaian</option>
+                                    <?php foreach($status_kepegawaian->result() as $sk){ ?>
+                                        <option value="<?= $sk->id ?>" <?= (@set_value('status_id') == $sk->id) ? 'selected' : '' ?>><?= $sk->status ?></option>
+                                    <?php } ?>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-lg-6">
+                            <div class="row">
+                                <div class="col-lg-6">
+                                    <div class="form-group">
+                                        <label>Tanggal Join Kontrak 1<small class="text-danger">*</small></label>
+                                        <input class="form-control <?= (@form_error('tgl_join_c1')) ? 'is-invalid' : ((@set_value('tgl_join_c1')) ? 'is-valid' : '') ?>" type="date" placeholder="Tanggal Lahir" name="tgl_join_c1" value="<?= (@set_value('tgl_join_c1')) ?>">
+                                    </div>
+                                </div>
+                                <div class="col-lg-6">
+                                    <div class="form-group">
+                                        <label>Tanggal Finish Kontrak 1<small class="text-danger">*</small></label>
+                                        <input class="form-control <?= (@form_error('tgl_out_c1')) ? 'is-invalid' : ((@set_value('tgl_out_c1')) ? 'is-valid' : '') ?>" type="date" placeholder="Tanggal Lahir" name="tgl_out_c1" value="<?= (@set_value('tgl_out_c1')) ?>">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-6">
+                            <div class="row">
+                                <div class="col-lg-6">
+                                    <div class="form-group">
+                                        <label>Tanggal Join Kontrak 2<small class="text-danger">*</small></label>
+                                        <input class="form-control <?= (@form_error('tgl_join_c2')) ? 'is-invalid' : ((@set_value('tgl_join_c2')) ? 'is-valid' : '') ?>" type="date" placeholder="Tanggal Lahir" name="tgl_join_c2" value="<?= (@set_value('tgl_join_c2')) ?>">
+                                    </div>
+                                </div>
+                                <div class="col-lg-6">
+                                    <div class="form-group">
+                                        <label>Tanggal Finish Kontrak 2<small class="text-danger">*</small></label>
+                                        <input class="form-control <?= (@form_error('tgl_out_c2')) ? 'is-invalid' : ((@set_value('tgl_out_c2')) ? 'is-valid' : '') ?>" type="date" placeholder="Tanggal Lahir" name="tgl_out_c2" value="<?= (@set_value('tgl_out_c2')) ?>">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-6">
+                            <div class="row">
+                                <div class="col-lg-6">
+                                    <div class="form-group">
+                                        <label>Tanggal Join Permanent<small class="text-danger">*</small></label>
+                                        <input class="form-control <?= (@form_error('tgl_join_p')) ? 'is-invalid' : ((@set_value('tgl_join_p')) ? 'is-valid' : '') ?>" type="date" placeholder="Tanggal Lahir" name="tgl_join_p" value="<?= (@set_value('tgl_join_p')) ?>">
+                                    </div>
+                                </div>
+                                <div class="col-lg-6">
+                                    <div class="form-group">
+                                        <label>Tanggal Permanent<small class="text-danger">*</small></label>
+                                        <input class="form-control <?= (@form_error('tgl_p')) ? 'is-invalid' : ((@set_value('tgl_p')) ? 'is-valid' : '') ?>" type="date" placeholder="Tanggal Lahir" name="tgl_p" value="<?= (@set_value('tgl_p')) ?>">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <hr class="my-2">
                     <div class="row mt-3">
                         <div class="col-lg-6">
                             <div class="form-group">
