@@ -135,6 +135,11 @@ class Employee extends CI_Controller{
     }
 
     function update($id){
+        $deptArr = explode('_', $this->input->post('dept_id', TRUE));
+        $unitArr = explode('_', $this->input->post('unit_id', TRUE));
+        $dept_id = $deptArr[0];
+        $unit_id = $unitArr[0];
+        
         $this->form_validation->set_rules('nik', 'NIK', 'callback_edit_unique[pegawai.nik.'.$id.']', [
             'callback_edit_unique[pegawai.nik.'.$id.']' => '<strong>NIK Sudah Tersedia</strong>'
         ]);
@@ -156,8 +161,8 @@ class Employee extends CI_Controller{
                 'company_id' => $this->input->post('company_id', TRUE),
                 'jabatan_id' => $this->input->post('jabatan_id', TRUE),
                 'divisi_id' => $this->input->post('divisi_id', TRUE),
-                'dept_id' => $this->input->post('dept_id', TRUE),
-                'unit_id' => $this->input->post('unit_id', TRUE),
+                'dept_id' => $dept_id,
+                'unit_id' => $unit_id,
                 'status_id' => $this->input->post('status_id', TRUE),
                 'tgl_join_c1' => ($this->input->post('tgl_join_c1', TRUE) != "") ? $this->input->post('tgl_join_c1', TRUE) : NULL,
                 'tgl_out_c1' => ($this->input->post('tgl_out_c1', TRUE) != "") ? $this->input->post('tgl_out_c1', TRUE) : NULL,
@@ -175,8 +180,8 @@ class Employee extends CI_Controller{
                     'company_id' => $this->input->post('company_id', TRUE),
                     'jabatan_id' => $this->input->post('jabatan_id', TRUE),
                     'divisi_id' => $this->input->post('divisi_id', TRUE),
-                    'dept_id' => $this->input->post('dept_id', TRUE),
-                    'unit_id' => $this->input->post('unit_id', TRUE)
+                    'dept_id' => $dept_id,
+                    'unit_id' => $unit_id
                 ];
                 $getWhere = $this->db->get_where('mutasi_pegawai', $dataInsertMutasi);
                 if($getWhere->num_rows() > 0){}else{
