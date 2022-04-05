@@ -53,4 +53,4 @@ $route['default_controller'] = 'auth';
 $route['404_override'] = '';
 $route['translate_uri_dashes'] = FALSE;
 
-$route['employee/(:num)'] = 'employee/edit/$1';
+$route['master/employee/(:num)'] = 'master/employee/edit/$1';

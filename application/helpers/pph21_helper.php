@@ -80,7 +80,13 @@
         return $pajak;
     }
 
-    function pph21_bulanan(){
+    function pphBulan(){
+        $pajak = pph21();
+        $total = str_pad(number_format($pajak), 20, " ", STR_PAD_LEFT);
+        return $total;
+    }
+
+    function pphTahun(){
         $pajak = pph21();
         $total = str_pad(number_format($pajak/12), 20, " ", STR_PAD_LEFT);
         return $total;

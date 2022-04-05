@@ -60,6 +60,7 @@ class Employee extends CI_Controller{
             'divisi' => $this->db->get('divisi'),
             'departement' => $this->db->get_where('departement', ['divisi_id' => $pegawai->divisi_id]),
             'unit' => $this->db->get_where('unit', ['dept_id' => $pegawai->dept_id]),
+            'status_kepegawaian' => $this->db->get('status_kepegawaian'),
             'page' => 'master/edit_employee',
             'ajax' => [
                 'employee'
@@ -151,11 +152,11 @@ class Employee extends CI_Controller{
                 $no++,
                 '<p class="text-center"><strong>'.$row->nik.'</strong></p>',
                 '<strong>'.$row->nama.'</strong>',
-                '<p class="text-center"><strong>'.$row->ektp.'</strong></p>',
-                '<p class="text-center"><strong>'.$row->tgl_lahir.'</strong></p>',
+                // '<p class="text-center"><strong>'.$row->ektp.'</strong></p>',
+                // '<p class="text-center"><strong>'.$row->tgl_lahir.'</strong></p>',
                 $nikah,
-                '<p class="text-center"><strong>'.$row->agama.'</strong></p>',
-                '<p class="text-center"><strong>'.$row->jenjang.'</strong></p>',
+                // '<p class="text-center"><strong>'.$row->agama.'</strong></p>',
+                // '<p class="text-center"><strong>'.$row->jenjang.'</strong></p>',
                 '<p class="text-center"><strong>'.$row->company.'</strong></p>',
                 '<p class="text-center"><strong>'.$row->jabatan.'</strong></p>',
                 '<p class="text-center"><strong>'.$row->divisi.'</strong></p>',
