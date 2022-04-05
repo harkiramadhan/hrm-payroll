@@ -100,12 +100,12 @@ class Employee extends CI_Controller{
                 'dept_id' => $dept_id,
                 'unit_id' => $unit_id,
                 'status_id' => $this->input->post('status_id', TRUE),
-                'tgl_join_c1' => $this->input->post('tgl_join_c1', TRUE),
-                'tgl_out_c1' => $this->input->post('tgl_out_c1', TRUE),
-                'tgl_join_c2' => $this->input->post('tgl_join_c2', TRUE),
-                'tgl_out_c2' => $this->input->post('tgl_out_c2', TRUE),
-                'tgl_join_p' => $this->input->post('tgl_join_p', TRUE),
-                'tgl_p' => $this->input->post('tgl_p', TRUE),
+                'tgl_join_c1' => ($this->input->post('tgl_join_c1', TRUE) != "") ? $this->input->post('tgl_join_c1', TRUE) : NULL,
+                'tgl_out_c1' => ($this->input->post('tgl_out_c1', TRUE) != "") ? $this->input->post('tgl_out_c1', TRUE) : NULL,
+                'tgl_join_c2' => ($this->input->post('tgl_join_c2', TRUE) != "") ? $this->input->post('tgl_join_c2', TRUE) : NULL,
+                'tgl_out_c2' => ($this->input->post('tgl_out_c2', TRUE) != "") ? $this->input->post('tgl_out_c2', TRUE) : NULL,
+                'tgl_join_p' => ($this->input->post('tgl_join_p', TRUE) != "") ? $this->input->post('tgl_join_p', TRUE) : NULL,
+                'tgl_p' => ($this->input->post('tgl_p', TRUE) != "") ? $this->input->post('tgl_p', TRUE) : NULL,
                 'company_id' => $this->input->post('company_id', TRUE),
                 'created_at' => date('Y-m-d H:i:s')
             ];
@@ -129,13 +129,63 @@ class Employee extends CI_Controller{
                     $this->session->set_flashdata('error', "Data Gagal Di Tambahkan");
                 }
 
-                redirect('employee', 'refresh');
+                redirect('master/employee', 'refresh');
             }
         }
     }
 
     function update($id){
-
+        $this->form_validation->set_rules('nik', 'NIK', 'callback_edit_unique[pegawai.nik.'.$id.']', [
+            'callback_edit_unique[pegawai.nik.'.$id.']' => '<strong>NIK Sudah Tersedia</strong>'
+        ]);
+        $this->form_validation->set_rules('ektp', 'EKTP', 'callback_edit_unique[pegawai.ektp.'.$id.']', [
+            'callback_edit_unique[pegawai.ektp.'.$id.']' => '<strong>E-Ktp Sudah Tersedia</strong>'
+        ]);
+        if ($this->form_validation->run() == FALSE){
+            $this->session->set_flashdata('error', strip_tags(validation_errors()));
+            $this->edit($id);
+        }else{
+            $dataUpdate = [
+                'nik' => $this->input->post('nik', TRUE),
+                'nama' => $this->input->post('nama', TRUE),
+                'ektp' => $this->input->post('ektp', TRUE),
+                'tgl_lahir' => $this->input->post('tgl_lahir', TRUE),
+                'nikah' => $this->input->post('nikah', TRUE),
+                'agama_id' => $this->input->post('agama_id', TRUE),
+                'pendidikan_id' => $this->input->post('pendidikan_id', TRUE),
+                'company_id' => $this->input->post('company_id', TRUE),
+                'jabatan_id' => $this->input->post('jabatan_id', TRUE),
+                'divisi_id' => $this->input->post('divisi_id', TRUE),
+                'dept_id' => $this->input->post('dept_id', TRUE),
+                'unit_id' => $this->input->post('unit_id', TRUE),
+                'status_id' => $this->input->post('status_id', TRUE),
+                'tgl_join_c1' => ($this->input->post('tgl_join_c1', TRUE) != "") ? $this->input->post('tgl_join_c1', TRUE) : NULL,
+                'tgl_out_c1' => ($this->input->post('tgl_out_c1', TRUE) != "") ? $this->input->post('tgl_out_c1', TRUE) : NULL,
+                'tgl_join_c2' => ($this->input->post('tgl_join_c2', TRUE) != "") ? $this->input->post('tgl_join_c2', TRUE) : NULL,
+                'tgl_out_c2' => ($this->input->post('tgl_out_c2', TRUE) != "") ? $this->input->post('tgl_out_c2', TRUE) : NULL,
+                'tgl_join_p' => ($this->input->post('tgl_join_p', TRUE) != "") ? $this->input->post('tgl_join_p', TRUE) : NULL,
+                'tgl_p' => ($this->input->post('tgl_p', TRUE) != "") ? $this->input->post('tgl_p', TRUE) : NULL,
+                'company_id' => $this->input->post('company_id', TRUE)
+            ];
+            $this->db->where('id', $id)->update('pegawai', $dataUpdate);
+            if($this->db->affected_rows() > 0){
+                $dataInsertMutasi = [
+                    'pegawai_id' => $id,
+                    'pendidikan_id' => $this->input->post('pendidikan_id', TRUE),
+                    'company_id' => $this->input->post('company_id', TRUE),
+                    'jabatan_id' => $this->input->post('jabatan_id', TRUE),
+                    'divisi_id' => $this->input->post('divisi_id', TRUE),
+                    'dept_id' => $this->input->post('dept_id', TRUE),
+                    'unit_id' => $this->input->post('unit_id', TRUE)
+                ];
+                $getWhere = $this->db->get_where('mutasi_pegawai', $dataInsertMutasi);
+                if($getWhere->num_rows() > 0){}else{
+                    $this->db->insert('mutasi_pegawai', $dataInsertMutasi);
+                }
+                $this->session->set_flashdata('success', "Data Berhasil Di Simpan");
+                redirect('master/employee', 'refresh');
+            }
+        }
     }
 
     function delete($id){
@@ -204,5 +254,11 @@ class Employee extends CI_Controller{
         $explode = explode('_', $dept_id);
         $getUnit = $this->db->get_where('unit', ['dept_id' => $explode[0]])->result();
         $this->output->set_content_type('application/json')->set_output(json_encode($getUnit));
+    }
+
+    function edit_unique($str, $field){
+        sscanf($field, '%[^.].%[^.].%[^.]', $table, $field, $id);
+        return isset($this->db)
+            ? ($this->db->limit(1)->get_where($table, array($field => $str, 'id !=' => $id))->num_rows() === 0) : FALSE;
     }
 }
