@@ -37,13 +37,25 @@ class Tunjangan extends CI_Controller{
                 '<p class="mb-0";><strong>'.$row['jabatan'].'</strong></p>',
                 '<p class="text-center mb-0";><strong>00</strong></p>',
                 '<div class="btn-group" role="group" aria-label="Basic example">
-                    <button type="button" class="btn btn-sm btn-round btn-success text-white px-3 mb-0 mx-1" onclick="detail('.$row['id'].')"><i class="fas fa-plus me-2" aria-hidden="true"></i>Tambah</button>
+                    <button type="button" class="btn btn-sm btn-round btn-success text-white px-3 mb-0 mx-1" onclick="add('.$row['id'].')"><i class="fas fa-plus me-2" aria-hidden="true"></i>Tambah</button>
                     <button type="button" class="btn btn-sm btn-round btn-primary text-white px-3 mb-0" onclick="detail('.$row['id'].')"><i class="fas fa-eye me-2" aria-hidden="true"></i>Detail</button>
                 </div>
                 <script>
                     function detail(id){
                         $.ajax({
-                            url : "'.site_url('trx/tunjangan/detai;/').'" + id,
+                            url : "'.site_url('trx/tunjangan/modalDetail/').'" + id,
+                            type : "post",
+                            data : {id : id},
+                            success: function(res){
+                                $(".data-edit").html(res)
+                                $("#modalEdit").modal("show")
+                            }
+                        })
+                    }
+
+                    function add(id){
+                        $.ajax({
+                            url : "'.site_url('trx/tunjangan/modalAdd/').'" + id,
                             type : "post",
                             data : {id : id},
                             success: function(res){

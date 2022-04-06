@@ -18,13 +18,23 @@
                         <th class="text-center w-5px">No</th>
                         <th>Nama</th>
                         <th>Jabatan</th>
-                        <th class="text-center">Total</th>
+                        <th class="text-center w-10p">Total</th>
                         <th class="text-center w-10p">Action</th>
                     </tr>
                 </thead>
                 <tbody>
                 </tbody>
             </table>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="modalEdit" tabindex="-1" role="dialog" aria-labelledby="modal-form" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-body p-0 data-edit">
+              
+            </div>
         </div>
     </div>
 </div>
