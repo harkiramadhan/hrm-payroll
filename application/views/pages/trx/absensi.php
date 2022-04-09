@@ -6,6 +6,9 @@
                 <div class="col-lg-8">
                     <h5 class="mb-0"><strong>Transaksi Absensi</strong></h5>
                 </div>
+                <div class="col-lg-4 text-end">
+                    <button type="button" class="btn btn-sm btn-round bg-gradient-dark mb-0" data-bs-toggle="modal" data-bs-target="#modalAdd"><i class="fas fa-upload me-2"></i> Absensi</button>
+                </div>
             </div>
             <!-- <p class="text-sm mb-0">
             A lightweight, extendable, dependency-free javascript HTML table plugin.
@@ -17,9 +20,9 @@
                     <tr>
                         <th class="text-center w-5px">No</th>
                         <th>Nama</th>
-                        <th>Jabatan</th>
-                        <th class="text-center w-10p">Total</th>
-                        <th class="text-center w-10p">Action</th>
+                        <th class="text-center w-5px">Total Row</th>
+                        <th>Timestamp</th>
+                        <th class="text-center w-15p">Action</th>
                     </tr>
                 </thead>
                 <tbody>

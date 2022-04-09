@@ -58,6 +58,14 @@
         .w-10p{
             width: 10%!important;
         }
+
+        .w-15p{
+            width: 15%!important;
+        }
+
+        .w-20p{
+            width: 20%!important;
+        }
     </style>
     <div class="min-height-300 bg-primary position-absolute w-100"></div>
     <aside class="sidenav bg-white navbar navbar-vertical navbar-expand-xs border-0 border-radius-xl my-3 fixed-start ms-4 " id="sidenav-main">
@@ -111,7 +119,7 @@
             <li class="nav-item">
             <a class="nav-link " href="<?= site_url('auth/logout') ?>">
                 <div class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
-                <i class="ni ni-collection text-danger text-sm opacity-10"></i>
+                <i class="fas fa-sign-out-alt text-danger text-sm opacity-10"></i>
                 </div>
                 <span class="nav-link-text ms-1"><strong>Logout</strong></span>
             </a>
@@ -288,7 +296,7 @@
     <script>
         var baseUrl = '<?= base_url('') ?>'
         var siteUrl = '<?= site_url('') ?>'
-        var nowUrl  = siteUrl + $(location).attr('href').split("/").splice(4, 10).join("/")
+        var nowUrl  = $(location).attr('href')
     </script>
 
     <script>
