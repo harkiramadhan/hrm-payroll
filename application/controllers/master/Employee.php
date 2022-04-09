@@ -216,22 +216,22 @@ class Employee extends CI_Controller{
         $data = array();
         $no = 1;
         foreach($get->result() as $row){
-            $nikah = ($row->nikah == 't') ? '<p class="text-center"><span class="badge bg-primary">Menikah</span></p>' : '<p class="text-center"><span class="badge bg-default">Belum Menikah</span></p>';
+            $nikah = ($row->nikah == 't') ? '<p class="mb-0 text-center"><span class="badge bg-primary">Menikah</span></p>' : '<p class="mb-0 text-center"><span class="badge bg-default">Belum Menikah</span></p>';
             $data[] = [
                 $no++,
-                '<p class="text-center"><strong>'.$row->nik.'</strong></p>',
+                '<p class="mb-0 text-center"><strong>'.$row->nik.'</strong></p>',
                 '<strong>'.$row->nama.'</strong>',
                 // '<p class="text-center"><strong>'.$row->ektp.'</strong></p>',
                 // '<p class="text-center"><strong>'.$row->tgl_lahir.'</strong></p>',
                 $nikah,
                 // '<p class="text-center"><strong>'.$row->agama.'</strong></p>',
                 // '<p class="text-center"><strong>'.$row->jenjang.'</strong></p>',
-                '<p class="text-center"><strong>'.$row->company.'</strong></p>',
-                '<p class="text-center"><strong>'.$row->jabatan.'</strong></p>',
-                '<p class="text-center"><strong>'.$row->divisi.'</strong></p>',
-                '<p class="text-center"><strong>'.$row->departement.'</strong></p>',
-                '<p class="text-center"><strong>'.$row->unit.'</strong></p>',
-                '<p class="text-center"><strong>'.date('Y-m-d H:i:s', strtotime($row->updated_at)).'</strong></p>',
+                '<p class="mb-0 text-center"><strong>'.$row->company.'</strong></p>',
+                '<strong>'.$row->jabatan.'</strong>',
+                '<p class="mb-0 text-center"><strong>'.$row->divisi.'</strong></p>',
+                '<strong>'.$row->departement.'</strong>',
+                '<strong>'.$row->unit.'</strong>',
+                '<strong>'.longdate_indo(date('Y-m-d', strtotime($row->updated_at))).' - '.date('H:i:s', strtotime($row->updated_at)).'</strong>',
                 '<div class="btn-group" role="group" aria-label="Basic example">
                     <a class="btn btn-sm btn-round btn-info text-white px-3 mb-0" href="'.site_url('master/employee/' . $row->id).'"><i class="fas fa-pencil-alt me-2" aria-hidden="true"></i>Edit</a>
                     <a class="btn btn-sm btn-round btn-link text-danger px-3 mb-0" href="'.site_url('master/employee/delete/' . $row->id).'"><i class="far fa-trash-alt" aria-hidden="true"></i></a>
