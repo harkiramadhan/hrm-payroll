@@ -25,8 +25,8 @@ class Users extends CI_Controller{
         }else{
             $dataInsert = [
                 'username' => $this->input->post('username', TRUE),
-                'password' => md5($this->input->post('password', TRUE)),
-                'status' => ($this->input->post('status', TRUE) == 1) ? 't' : 'f'
+                'status' => ($this->input->post('status', TRUE) == 1) ? 't' : 'f',
+                'password' => md5($this->input->post('password', TRUE))
             ];
             $this->db->insert('user', $dataInsert);
             if($this->db->affected_rows() > 0){
@@ -43,8 +43,8 @@ class Users extends CI_Controller{
         $cekUser = $this->db->get_where('user', ['id' => $id])->row();
         $dataUpdate = [
             'username' => $this->input->post('username', TRUE),
-            'password' => ($this->input->post('password', TRUE) == TRUE) ? $this->input->post('password', TRUE) : $cekUser->password,
-            'status' => ($this->input->post('status', TRUE) == 1) ? 't' : 'f'
+            'status' => ($this->input->post('status', TRUE) == 1) ? 't' : 'f',
+            'password' => ($this->input->post('password', TRUE) == TRUE) ? md5($this->input->post('password', TRUE)) : $cekUser->password
         ];
         $this->db->where('id', $id)->update('user', $dataUpdate);
         if($this->db->affected_rows() > 0){
@@ -102,7 +102,7 @@ class Users extends CI_Controller{
                             </div>
                         </div>
                         <div class="text-center">
-                            <button type="submit" class="btn btn-sm btn-round bg-success btn-lg w-100 mt-4 mb-0 text-white">Tambahkan</button>
+                            <button type="submit" class="btn btn-sm btn-round bg-success btn-lg w-100 mt-4 mb-0 text-white">Simpan</button>
                         </div>
                     </form>
                 </div>

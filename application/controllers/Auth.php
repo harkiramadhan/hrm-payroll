@@ -3,10 +3,16 @@ class Auth extends CI_Controller{
     function __construct(){
         parent::__construct();
         
-        $this->load->model('M_User');
+        $this->load->model([
+            'M_User',
+            'M_Company'
+        ]);
     }
     function index(){
-        $this->load->view('login');
+        $vars = [
+            'company' => $this->M_Company->getDefault()
+        ];
+        $this->load->view('login', $vars);
     }
 
     function login(){
@@ -25,15 +31,28 @@ class Auth extends CI_Controller{
                     redirect('dashboard', "refresh");
                 }else{
                     $this->session->set_flashdata('error', "User Not Active");
+                    $this->session->set_flashdata('user', $username);
+                    $this->session->set_flashdata('error_user', FALSE);
                     redirect($_SERVER['HTTP_REFERER']);
                 }
             }else{
+                $this->session->set_flashdata('user', $username);
+                $this->session->set_flashdata('error_user', FALSE);
+                $this->session->set_flashdata('error_pwd', TRUE);
                 $this->session->set_flashdata('error', "Password Not Match");
                 redirect($_SERVER['HTTP_REFERER']);
             }
         }else{
+            $this->session->set_flashdata('user', $username);
+            $this->session->set_flashdata('error_user', TRUE);
+            $this->session->set_flashdata('error_pwd', TRUE);
             $this->session->set_flashdata('error', "User Not Found");
             redirect($_SERVER['HTTP_REFERER']);
         }
+    }
+
+    function logout(){
+        $this->session->sess_destroy();
+        redirect('', 'refresh');
     }
 }
