@@ -14,8 +14,8 @@
                     <tr>
                         <th class="text-center w-5px">No</th>
                         <th>Nama</th>
-                        <th class="text-center w-20p">Tanggal In</th>
-                        <th class="text-center w-20p">Tanggal Out</th>
+                        <th class="w-20p">Tanggal In</th>
+                        <th class="w-20p">Tanggal Out</th>
                     </tr>
                 </thead>
                 <tbody>

@@ -62,7 +62,7 @@ class Absensi extends CI_Controller{
                 '<strong>'.longdate_indo(date('Y-m-d', strtotime($row['timestamp']))).' - '.date('H:i:s', strtotime($row['timestamp'])).'</strong>',
                 '<div class="btn-group" role="group" aria-label="Basic example">
                     <a href="'.site_url('trx/absensi/' . $row['id']).'" class="btn btn-sm btn-round btn-primary text-white px-3 mb-0"><i class="fas fa-eye me-2" aria-hidden="true"></i>Detail</a>
-                    <a class="btn btn-sm btn-round btn-secondary text-white px-3 mb-0 mx-1" href="'.base_url('uploads/absensi/' . $row['filename']).'" download><i class="fas fa-download me-2" aria-hidden="true"></i>Download</a>
+                    <a class="btn btn-sm btn-round btn-secondary text-white px-3 mb-0 mx-1" href="'.base_url('uploads/absensi/' . $row['filename']).'" download><i class="fas fa-download" aria-hidden="true"></i></a>
                     <a class="btn btn-sm btn-round btn-link text-danger px-3 mb-0" href="'.site_url('trx/absensi/delete/' . $row['id']).'"><i class="far fa-trash-alt" aria-hidden="true"></i></a>
                 </div>'
             ];
@@ -162,9 +162,11 @@ class Absensi extends CI_Controller{
                     $spreadsheet = $reader->load($inputFileName);
                     $sheetData = $spreadsheet->getActiveSheet()->toArray(null,true,true,true);
 
-                    if($sheetData[1]['A'] == 'NIK' && $sheetData[1]['B'] == 'tgl_masuk' && $sheetData[1]['C'] == 'tgl_keluar'){
+                    echo $sheetData[2]['C'];
+                    // die();
+
+                    if($sheetData[1]['A'] == 'Format Import Absensi' && $sheetData[2]['B'] == 'Tanggal Masuk (DD-MM-YY H:I)  31-01-2022 08:59' && $sheetData[2]['C'] == 'Tanggal Keluar (DD-MM-YY H:I)  31-01-2022 18:59'){
                         $count = 0;
-                        
                         $dataLog = [
                             'pegawai_id' => $this->session->userdata('userid'),
                             'cutoff_id' => $cutoffid,
@@ -172,16 +174,19 @@ class Absensi extends CI_Controller{
                         ];
                         $this->db->insert('log_upload_absensi', $dataLog);
                         $logid = $this->db->insert_id();
-                        for($row = 2; $row <= count($sheetData); $row++){
-                            $datas = [
-                                'log_id' => $logid,
-                                'nik' => $sheetData[$row]['A'],
-                                'jam_in' => date('Y-m-d H:i:s', strtotime($sheetData[$row]['B'].":00")),
-                                'jam_out' => date('Y-m-d H:i:s', strtotime($sheetData[$row]['C'].":00"))
-                            ];
-                            $this->db->insert('absensi', $datas);
-                            if($this->db->affected_rows() > 0){
-                                $count++;
+                        for($row = 3; $row <= count($sheetData); $row++){
+                            $cek = $this->db->get_where('pegawai', ['nik' => $sheetData[$row]['A']]);
+                            if($cek->num_rows() > 0){
+                                $datas = [
+                                    'log_id' => $logid,
+                                    'nik' => $sheetData[$row]['A'],
+                                    'jam_in' => date('Y-m-d H:i:s', strtotime($sheetData[$row]['B'].":00")),
+                                    'jam_out' => date('Y-m-d H:i:s', strtotime($sheetData[$row]['C'].":00"))
+                                ];
+                                $this->db->insert('absensi', $datas);
+                                if($this->db->affected_rows() > 0){
+                                    $count++;
+                                }
                             }
                         }
 
@@ -194,6 +199,7 @@ class Absensi extends CI_Controller{
                             redirect($_SERVER['HTTP_REFERER']);
                         }else{
                             unlink($inputFileName);
+                            $this->db->where('id', $logid)->delete('log_upload_absensi');
                             $this->session->set_flashdata('error', "File Gagal Di Upload");
                             redirect($_SERVER['HTTP_REFERER']);
                         }

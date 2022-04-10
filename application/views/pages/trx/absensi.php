@@ -11,8 +11,8 @@
                     <div class="col-lg-4 text-end">
                         <div class="btn-group" role="group" aria-label="Basic example">
                             <button type="button" class="btn btn-sm btn-round bg-gradient-dark mb-0" data-bs-toggle="modal" data-bs-target="#modalAdd"><i class="fas fa-upload me-2"></i> Absensi</button>
-                            <a href="" class="btn btn-sm btn-round text-white bg-secondary mb-0 mx-1"><i class="fas fa-download me-1"></i><i class="fas fa-file-excel me-2"></i> Format Xlsx</a>
-                            <a href="" class="btn btn-sm btn-round text-white bg-secondary mb-0"><i class="fas fa-download me-1"></i><i class="fas fa-file-csv me-2"></i> Format CSV</a>
+                            <a href="<?= base_url('assets/Format_Import_Absensi.xlsx') ?>" class="btn btn-sm btn-round text-white bg-secondary mb-0 mx-1" download><i class="fas fa-download me-1"></i><i class="fas fa-file-excel me-2"></i> Format .Xlsx</a>
+                            <a href="<?= base_url('assets/Format_Import_Absensi.csv') ?>" class="btn btn-sm btn-round text-white bg-secondary mb-0" download><i class="fas fa-download me-1"></i><i class="fas fa-file-csv me-2"></i> Format .CSV</a>
                         </div>
                     </div>
                 </div>
@@ -56,14 +56,19 @@
                     </div>
                     <div class="card-body pb-0">
                         <div class="row">
-                            <div class="col-lg-6">
-                                <div class="d-grid">
-                                    <button class="btn btn-sm btn-secondary btn-block"><i class="fas fa-download me-1"></i><i class="fas fa-file-excel me-2"></i> <strong>Download Format .Xlsx</strong></button>
+                            <div class="col-lg-12">
+                                <div class="alert bg-danger text-white text-center p-2" role="alert">
+                                    <strong>Pastikan Anda Meng - Import File Sesuai Dengan Format Yang Sudah Di Sediakan!</strong>
                                 </div>
                             </div>
                             <div class="col-lg-6">
                                 <div class="d-grid">
-                                    <button class="btn btn-sm btn-secondary btn-block"><i class="fas fa-download me-1"></i><i class="fas fa-file-csv me-2"></i> <strong>Download Format .Csv</strong></button>
+                                    <a href="<?= base_url('assets/Format_Import_Absensi.xlsx') ?>" class="btn btn-sm btn-round text-white bg-secondary mb-0 mx-1" download><i class="fas fa-download me-1"></i><i class="fas fa-file-excel me-2"></i> Download Format .Xlsx</a>
+                                </div>
+                            </div>
+                            <div class="col-lg-6">
+                                <div class="d-grid">
+                                    <a href="<?= base_url('assets/Format_Import_Absensi.csv') ?>" class="btn btn-sm btn-round text-white bg-secondary mb-0" download><i class="fas fa-download me-1"></i><i class="fas fa-file-csv me-2"></i> Download Format .CSV</a>
                                 </div>
                             </div>
                         </div>
