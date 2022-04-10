@@ -56,11 +56,15 @@ class Users extends CI_Controller{
     }
 
     function delete($id){
-        $this->db->where('id', $id)->delete('user');
-        if($this->db->affected_rows() > 0){
-            $this->session->set_flashdata('success', "Data Berhasil Di Hapus");
+        if($this->session->userdata('userid') == $id){
+            $this->session->set_flashdata('error', "Data Tidak Dapat Di Hapus");
         }else{
-            $this->session->set_flashdata('error', "Data Gagal Di Hapus");
+            $this->db->where('id', $id)->delete('user');
+            if($this->db->affected_rows() > 0){
+                $this->session->set_flashdata('success', "Data Berhasil Di Hapus");
+            }else{
+                $this->session->set_flashdata('error', "Data Gagal Di Hapus");
+            }
         }
         redirect($_SERVER['HTTP_REFERER']);
     }

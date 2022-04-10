@@ -1,47 +1,28 @@
 <div class="container-fluid py-4">
     <div class="card">
-        <?php if(@$cutoff->start_date == TRUE): ?>
-            <!-- Card header -->
-            <div class="card-header">
-                <div class="row">
-                    <div class="col-lg-8">
-                        <h5 class="mb-0"><strong>Transaksi Absensi</strong></h5>
-                        <h5 class="mb-0"><strong><?= @$cutoff->periode." : ".date_indo(date('Y-m-d', strtotime(@$cutoff->start_date)))." - ".date_indo(date('Y-m-d', strtotime(@$cutoff->end_date))) ?></strong></h5>
-                    </div>
-                    <div class="col-lg-4 text-end">
-                        <div class="btn-group" role="group" aria-label="Basic example">
-                            <button type="button" class="btn btn-sm btn-round bg-gradient-dark mb-0" data-bs-toggle="modal" data-bs-target="#modalAdd"><i class="fas fa-upload me-2"></i> Absensi</button>
-                            <a href="" class="btn btn-sm btn-round text-white bg-secondary mb-0 mx-1"><i class="fas fa-download me-1"></i><i class="fas fa-file-excel me-2"></i> Format Xlsx</a>
-                            <a href="" class="btn btn-sm btn-round text-white bg-secondary mb-0"><i class="fas fa-download me-1"></i><i class="fas fa-file-csv me-2"></i> Format CSV</a>
-                        </div>
-                    </div>
+        <div class="card-header">
+            <div class="row">
+                <div class="col-lg-8">
+                    <h5 class="mb-0"><strong>Detail Transaksi Absensi</strong></h5>
+                    <h5 class="mb-0"><strong><?= @$cutoff->periode." : ".date_indo(date('Y-m-d', strtotime(@$cutoff->start_date)))." - ".date_indo(date('Y-m-d', strtotime(@$cutoff->end_date))) ?></strong></h5>
                 </div>
-                <!-- <p class="text-sm mb-0">
-                A lightweight, extendable, dependency-free javascript HTML table plugin.
-                </p> -->
             </div>
-            <div class="table-responsive p-4">
-                <table id="example" class="table table-striped" style="width:100%">
-                    <thead>
-                        <tr>
-                            <th class="text-center w-5px">No</th>
-                            <th>Nama</th>
-                            <th class="text-center w-5px">Total Row</th>
-                            <th>Timestamp</th>
-                            <th class="text-center w-15p">Action</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                    </tbody>
-                </table>
-            </div>
-        <?php else: ?>
-            <div class="card-body bg-warning rounded text-center">
-                <h5 class="mb-0 text-white"><strong>Cutoff Belum Aktif, Silahkan Menuju Ke Menu Master/Cutoff Untuk Menambahkan/Mengaktifkan Cutoff Yang Digunakan</strong></h5>
-                <h5 class="text-white"><strong>Klik Tombol Di Bawah Untuk Menuju Menu Cutoff</strong></h5>
-                <a href="<?= site_url('master/cutoff') ?>" class="btn btn-sm btn-secondary"><i class="fas fa-link me-2"></i> Cutoff</a>
-            </div>
-        <?php endif; ?>
+        </div>
+        <div class="table-responsive p-4">
+            <table id="example" class="table table-striped" style="width:100%">
+                <thead>
+                    <tr>
+                        <th class="text-center w-5px">No</th>
+                        <th>Nama</th>
+                        <th class="text-center w-20p">Tanggal In</th>
+                        <th class="text-center w-20p">Tanggal Out</th>
+                    </tr>
+                </thead>
+                <tbody>
+
+                </tbody>
+            </table>
+        </div>
     </div>
 </div>
 
