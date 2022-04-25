@@ -73,64 +73,73 @@
             <i class="fas fa-times p-3 cursor-pointer text-secondary opacity-5 position-absolute end-0 top-0 d-none d-xl-none" aria-hidden="true" id="iconSidenav"></i>
         </div>
         <div class="collapse navbar-collapse w-100 h-auto mt-n6" id="sidenav-collapse-main">
-        <ul class="navbar-nav">
-            <?php foreach($menu->result() as $row){ ?>
-                <?php if($row->dropdown == 'f'): ?>
-                    <li class="nav-item">
-                        <a class="nav-link <?= ($this->uri->segment(1) == $row->url) ? 'active' : '' ?>" href="<?= site_url($row->url) ?>">
-                            <div class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
-                                <i class="<?= $row->icon ?> text-primary text-sm opacity-10"></i>
+            <ul class="navbar-nav">
+                <?php foreach($menu->result() as $row){ ?>
+                    <?php if($row->dropdown == 'f'): ?>
+                        <li class="nav-item">
+                            <a class="nav-link <?= ($this->uri->segment(1) == $row->url) ? 'active' : '' ?>" href="<?= site_url($row->url) ?>">
+                                <div class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
+                                    <i class="<?= $row->icon ?> text-primary text-sm opacity-10"></i>
+                                </div>
+                                <span class="nav-link-text ms-1"><strong><?= $row->menu ?></strong></span>
+                            </a>
+                        </li>
+                    <?php elseif($row->dropdown == 't' && $row->root == 't'): 
+                        $dropdownData = $this->db->order_by('urut', "ASC")->get_where('menu1', [
+                            'status' => 't',
+                            'dropdown' => 't',
+                            'root' => 'f',
+                            'root_id' => $row->id
+                        ])->result(); 
+                    ?>
+                        <li class="nav-item">
+                            <a data-bs-toggle="collapse" href="#menus<?= $row->id ?>" class="nav-link <?= ($this->uri->segment(1) == $row->url) ? 'active' : '' ?>" aria-controls="applicationsExamples" role="button" aria-expanded="false">
+                                <div class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
+                                    <i class="<?= $row->icon ?> text-primary text-sm opacity-10"></i>
+                                </div>
+                                <span class="nav-link-text ms-1"><strong><?= $row->menu ?></strong></span>
+                            </a>
+                            <div class="collapse <?= ($this->uri->segment(1) == $row->url) ? 'show' : '' ?>" id="menus<?= $row->id ?>">
+                                <ul class="nav ms-2">
+                                    <?php foreach($dropdownData as $rowD){ ?>
+                                        <li class="nav-item ">
+                                            <a class="nav-link <?= ($this->uri->segment(1) == $row->url && $this->uri->segment(2) == $rowD->url) ? 'active' : '' ?>" href="<?= site_url($row->url."/".$rowD->url) ?>">
+                                                <div class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
+                                                    <i class="<?= $rowD->icon ?> text-dark text-sm opacity-10"></i>
+                                                </div>
+                                                <span class="sidenav-normal"><?= $rowD->menu ?></span>
+                                            </a>
+                                        </li>
+                                    <?php } ?>
+                                </ul>
                             </div>
-                            <span class="nav-link-text ms-1"><strong><?= $row->menu ?></strong></span>
-                        </a>
-                    </li>
-                <?php elseif($row->dropdown == 't' && $row->root == 't'): 
-                    $dropdownData = $this->db->order_by('urut', "ASC")->get_where('menu1', [
-                        'status' => 't',
-                        'dropdown' => 't',
-                        'root' => 'f',
-                        'root_id' => $row->id
-                    ])->result(); 
-                ?>
-                    <li class="nav-item">
-                        <a data-bs-toggle="collapse" href="#menus<?= $row->id ?>" class="nav-link <?= ($this->uri->segment(1) == $row->url) ? 'active' : '' ?>" aria-controls="applicationsExamples" role="button" aria-expanded="false">
-                            <div class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
-                                <i class="<?= $row->icon ?> text-primary text-sm opacity-10"></i>
-                            </div>
-                            <span class="nav-link-text ms-1"><strong><?= $row->menu ?></strong></span>
-                        </a>
-                        <div class="collapse <?= ($this->uri->segment(1) == $row->url) ? 'show' : '' ?>" id="menus<?= $row->id ?>">
-                            <ul class="nav ms-2">
-                                <?php foreach($dropdownData as $rowD){ ?>
-                                    <li class="nav-item ">
-                                        <a class="nav-link <?= ($this->uri->segment(1) == $row->url && $this->uri->segment(2) == $rowD->url) ? 'active' : '' ?>" href="<?= site_url($row->url."/".$rowD->url) ?>">
-                                            <div class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
-                                                <i class="<?= $rowD->icon ?> text-dark text-sm opacity-10"></i>
-                                            </div>
-                                            <span class="sidenav-normal"><?= $rowD->menu ?></span>
-                                        </a>
-                                    </li>
-                                <?php } ?>
-                            </ul>
-                        </div>
-                    </li>
-                <?php endif; ?>
-            <?php } ?>
-            <li class="nav-item">
-            <a class="nav-link " href="<?= site_url('auth/logout') ?>">
-                <div class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
-                <i class="fas fa-sign-out-alt text-danger text-sm opacity-10"></i>
-                </div>
-                <span class="nav-link-text ms-1"><strong>Logout</strong></span>
-            </a>
-            </li>
-        </ul>
+                        </li>
+                    <?php endif; ?>
+                <?php } ?>
+                <li class="nav-item">
+                <a class="nav-link " href="<?= site_url('auth/logout') ?>">
+                    <div class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
+                    <i class="fas fa-sign-out-alt text-danger text-sm opacity-10"></i>
+                    </div>
+                    <span class="nav-link-text ms-1"><strong>Logout</strong></span>
+                </a>
+                </li>
+            </ul>
         </div>
     </aside>
     <main class="main-content position-relative border-radius-lg ">
         <!-- Navbar -->
         <nav class="navbar navbar-main navbar-expand-lg px-0 mx-4 shadow-none border-radius-xl " id="navbarBlur" data-scroll="false">
             <div class="container-fluid py-1 px-3">
+                <div class="nav-item d-lg-block d-none ps-3 d-flex align-items-center">
+                    <a href="javascript:;" class="nav-link text-white p-0 me-3" id="iconNavbarSidenav2">
+                        <div class="sidenav-toggler-inner">
+                            <i class="sidenav-toggler-line bg-white"></i>
+                            <i class="sidenav-toggler-line bg-white"></i>
+                            <i class="sidenav-toggler-line bg-white"></i>
+                        </div>
+                    </a>
+                </div>
                 <nav aria-label="breadcrumb">
                 <ol class="breadcrumb bg-transparent mb-0 pb-0 pt-1 px-0 me-sm-6 me-5">
                     <li class="breadcrumb-item text-sm text-white">Pages</li>
@@ -150,13 +159,13 @@
                         </a>
                     </li>
                     <li class="nav-item d-xl-none ps-3 d-flex align-items-center">
-                    <a href="javascript:;" class="nav-link text-white p-0" id="iconNavbarSidenav">
-                        <div class="sidenav-toggler-inner">
-                            <i class="sidenav-toggler-line bg-white"></i>
-                            <i class="sidenav-toggler-line bg-white"></i>
-                            <i class="sidenav-toggler-line bg-white"></i>
-                        </div>
-                    </a>
+                        <a href="javascript:;" class="nav-link text-white p-0" id="iconNavbarSidenav">
+                            <div class="sidenav-toggler-inner">
+                                <i class="sidenav-toggler-line bg-white"></i>
+                                <i class="sidenav-toggler-line bg-white"></i>
+                                <i class="sidenav-toggler-line bg-white"></i>
+                            </div>
+                        </a>
                     </li>
                 </ul>
                 </div>
@@ -376,6 +385,7 @@
         }
             
     ?>
+    <script src="<?= base_url('assets/js/custom/custom.js') ?>"></script>
 </body>
 
 </html>
