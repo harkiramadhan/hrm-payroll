@@ -1,6 +1,5 @@
-
 $('#iconNavbarSidenav2').click(function(){
-    if($('body').hasClass('g-sidenav-pinned')){
+    if($('#sidenav-main').hasClass('d-none')){
         $('#sidenav-main').addClass('fixed-start').removeClass('d-none')
         $('body').removeClass('g-sidenav-pinned')
     }else{
