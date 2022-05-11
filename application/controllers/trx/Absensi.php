@@ -175,7 +175,7 @@ class Absensi extends CI_Controller{
         $sheetStyle->setCellValue('D3','31-01-2022 18:59');
         $sheetStyle->setCellValue('E2','Kode Shift');
         $sheetStyle->setCellValue('F2','Keterangan');
-        $sheetStyle->setCellValue('F3','S= Sakit, I= Izin, A= Alpa');
+        $sheetStyle->setCellValue('F3','S= Sakit, C= Cuti, I= Izin, A= Alpa');
         $sheetStyle->setCellValue('H2','Kode Shift Tersedia');
 
         $excel_row = 4;
@@ -256,7 +256,7 @@ class Absensi extends CI_Controller{
                                         'jam_in' => date('Y-m-d H:i:s', strtotime($sheetData[$row]['C'].":00")),
                                         'jam_out' => date('Y-m-d H:i:s', strtotime($sheetData[$row]['D'].":00")),
                                         'shift_id' => $shift->row()->id,
-                                        'keterangan' => $sheetData[$row]['F']
+                                        'keterangan' => ucfirst($sheetData[$row]['F'])
                                     ];
                                     $this->db->insert('absensi', $datas);
                                     if($this->db->affected_rows() > 0){
