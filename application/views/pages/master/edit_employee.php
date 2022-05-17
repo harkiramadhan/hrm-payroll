@@ -1,40 +1,61 @@
 <div class="container-fluid py-4">
     <div class="row">
-        <div class="col-12 col-lg-8 m-auto">
+        <div class="col-12 col-lg-10 m-auto">
             <form action="<?= site_url('master/employee/update/' . $pegawai->id) ?>" method="POST">
                 <div class="card p-3 border-radius-xl bg-white js-active" data-animation="FadeIn">
                     <h6><strong>Edit Pegawai - <?= $pegawai->nama ?></strong></h6>
                     <div class="row mt-3">
-                        <div class="col-lg-4">
+                        <div class="col-lg-3 mb-3">
                             <label>NIK <small class="text-danger">* <?= strip_tags(@form_error('nik')) ?></small></label>
-                            <input class="form-control <?= (@form_error('nik')) ? 'is-invalid' : ((@set_value('nik')) ? 'is-valid' : '') ?>" type="text" placeholder="NIK" name="nik" value="<?= (@set_value('nik')) ? @set_value('nik') : $pegawai->nik ?>">
+                            <input class="form-control <?= (@form_error('nik')) ? 'is-invalid' : ((@set_value('nik')) ? 'is-valid' : '') ?>" type="number" placeholder="NIK" name="nik" value="<?= (@set_value('nik')) ? @set_value('nik') : $pegawai->nik ?>">
                         </div>
-                        <div class="col-lg-8">
-                            <label>Nama Lengkap</label>
-                            <input class="form-control <?= (@form_error('nama')) ? 'is-invalid' : ((@set_value('nik')) ? 'is-valid' : '') ?>" type="text" placeholder="Nama Lengkap" name="nama" value="<?= (@set_value('nama')) ? @set_value('nama') : $pegawai->nama ?>">
+
+                        <div class="col-lg-3 mb-3">
+                            <label>No Kartu Keluarga <small class="text-danger">* <?= strip_tags(@form_error('no_kk')) ?></small></label>
+                            <input class="form-control <?= (@form_error('no_kk')) ? 'is-invalid' : ((@set_value('no_kk')) ? 'is-valid' : '') ?>" type="number" placeholder="No Kartu Keluarga" name="no_kk" value="<?= (@set_value('no_kk')) ? @set_value('no_kk') : $pegawai->no_kk ?>">
                         </div>
-                        <div class="col-lg-4">
+
+                        <div class="col-lg-3 mb-3">
                             <label>E-Ktp <small class="text-danger">* <?= strip_tags(@form_error('ektp')) ?></small></label>
-                            <input class="form-control <?= (@form_error('ektp')) ? 'is-invalid' : ((@set_value('ektp')) ? 'is-valid' : '') ?>" type="text" placeholder="E-KTP" name="ektp" value="<?= (@set_value('ektp')) ? @set_value('ektp') : $pegawai->ektp ?>">
+                            <input class="form-control <?= (@form_error('ektp')) ? 'is-invalid' : ((@set_value('ektp')) ? 'is-valid' : '') ?>" type="number" placeholder="E-KTP" name="ektp" value="<?= (@set_value('ektp')) ? @set_value('ektp') : $pegawai->ektp ?>">
                         </div>
-                        <div class="col-lg-4">
+
+                        <div class="col-lg-3 mb-3">
+                            <label>NPWP <small class="text-danger">* <?= strip_tags(@form_error('no_npwp')) ?></small></label>
+                            <input class="form-control <?= (@form_error('no_npwp')) ? 'is-invalid' : ((@set_value('no_npwp')) ? 'is-valid' : '') ?>" type="number" placeholder="No NPWP" name="no_npwp" value="<?= (@set_value('no_npwp')) ? @set_value('no_npwp') : $pegawai->no_npwp ?>">
+                        </div>
+                        
+                        <div class="col-lg-6 mb-3">
+                            <label>Nama Lengkap</label>
+                            <input class="form-control <?= (@form_error('nama')) ? 'is-invalid' : ((@set_value('nama')) ? 'is-valid' : '') ?>" type="text" placeholder="Nama Lengkap" name="nama" value="<?= (@set_value('nama')) ? @set_value('nama') : $pegawai->nama ?>">
+                        </div>
+
+                        <div class="col-lg-3 mb-3">
+                            <label>Alamat Email</label>
+                            <input class="form-control <?= (@form_error('email')) ? 'is-invalid' : ((@set_value('email')) ? 'is-valid' : '') ?>" type="email" placeholder="Alamat Email" name="email" value="<?= (@set_value('email')) ? @set_value('email') : $pegawai->email ?>">
+                        </div>
+
+                        <div class="col-lg-3 mb-3">
+                            <label>Nama Ibu Kandung</label>
+                            <input class="form-control <?= (@form_error('nama_ibu')) ? 'is-invalid' : ((@set_value('nama_ibu')) ? 'is-valid' : '') ?>" type="text" placeholder="Nama Ibu Kandung" name="nama_ibu" value="<?= (@set_value('nama_ibu')) ? @set_value('nama_ibu') : $pegawai->nama_ibu ?>">
+                        </div>
+
+                        <div class="col-lg-6 mb-3">
+                            <label>Alamat Sesuai Domisili</label>
+                            <input class="form-control <?= (@form_error('alamat_domisili')) ? 'is-invalid' : ((@set_value('alamat_domisili')) ? 'is-valid' : '') ?>" type="text" placeholder="Alamat Sesuai Domisili" name="alamat_domisili" value="<?= (@set_value('alamat_domisili')) ? @set_value('alamat_domisili') : $pegawai->alamat_domisili ?>">
+                        </div>
+
+                        <div class="col-lg-6 mb-3">
+                            <label>Alamat Sesuai KTP</label>
+                            <input class="form-control <?= (@form_error('alamat_ktp')) ? 'is-invalid' : ((@set_value('alamat_ktp')) ? 'is-valid' : '') ?>" type="text" placeholder="Alamat Sesuai KTP" name="alamat_ktp" value="<?= (@set_value('alamat_ktp')) ? @set_value('alamat_ktp') : $pegawai->alamat_ktp ?>">
+                        </div>
+                        
+                        <div class="col-lg-3 mb-3">
                             <label>Tanggal Lahir</label>
                             <input class="form-control <?= (@form_error('tgl_lahir')) ? 'is-invalid' : ((@set_value('tgl_lahir')) ? 'is-valid' : '') ?>" type="date" placeholder="Tanggal Lahir" name="tgl_lahir" value="<?= (@set_value('tgl_lahir')) ? @set_value('tgl_lahir') : $pegawai->tgl_lahir ?>">
                         </div>
-                        <div class="col-lg-4">
-                            <label>Status Pernikahan<small class="text-danger">*</small></label>
-                            <div class="input-group mb-3">
-                                <div class="form-check form-check-inline">
-                                    <input class="form-check-input" type="radio" name="nikah" id="inlineRadio1" value="t" required="" <?= (@set_value('nikah') == 't' || $pegawai->nikah == 't') ? 'checked' : '' ?>>
-                                    <label class="form-check-label" for="inlineRadio1">Sudah Menikah</label>
-                                </div>
-                                <div class="form-check form-check-inline">
-                                    <input class="form-check-input" type="radio" name="nikah" id="inlineRadio2" value="f" required="" <?= (@set_value('nikah') == 'f' || $pegawai->nikah == 'f') ? 'checked' : '' ?>>
-                                    <label class="form-check-label" for="inlineRadio2">Belum Menikah</label>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-lg-4">
+
+                        <div class="col-lg-3 mb-3">
                             <div class="form-group">
                                 <label>Agama <small class="text-danger">*</small></label>
                                 <select name="agama_id" class="form-control <?= (@form_error('agama_id')) ? 'is-invalid' : ((@set_value('agama_id')) ? 'is-valid' : '') ?>" required="">
@@ -45,7 +66,22 @@
                                 </select>
                             </div>
                         </div>
-                        <div class="col-lg-4">
+                        
+                        <div class="col-lg-3 mb-3">
+                            <label>Status Pernikahan<small class="text-danger">*</small></label>
+                            <div class="input-group input-group-sm mb-3">
+                                <div class="form-check form-check-inline">
+                                    <input class="form-check-input" type="radio" name="nikah" id="inlineRadio1" value="t" required="" <?= (@set_value('nikah') == 't' || $pegawai->nikah == 't') ? 'checked' : '' ?>>
+                                    <label class="form-check-label" for="inlineRadio1">Menikah</label>
+                                </div>
+                                <div class="form-check form-check-inline">
+                                    <input class="form-check-input" type="radio" name="nikah" id="inlineRadio2" value="f" required="" <?= (@set_value('nikah') == 'f' || $pegawai->nikah == 'f') ? 'checked' : '' ?>>
+                                    <label class="form-check-label" for="inlineRadio2">Belum Menikah</label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-lg-3 mb-3">
                             <div class="form-group">
                                 <label>Jenjang Pendidikan <small class="text-danger">*</small></label>
                                 <select name="pendidikan_id" class="form-control <?= (@form_error('pendidikan_id')) ? 'is-invalid' : ((@set_value('pendidikan_id')) ? 'is-valid' : '') ?>" required="">
@@ -55,6 +91,34 @@
                                     <?php } ?>
                                 </select>
                             </div>
+                        </div>
+
+                        <div class="col-lg-3 mb-3">
+                            <label>BPJS Kesehatan <small class="text-danger">* <?= strip_tags(@form_error('no_bpjs_kesehatan')) ?></small></label>
+                            <input class="form-control <?= (@form_error('no_bpjs_kesehatan')) ? 'is-invalid' : ((@set_value('no_bpjs_kesehatan')) ? 'is-valid' : '') ?>" type="number" placeholder="No BPJS Kesehatan" name="no_bpjs_kesehatan" value="<?= (@set_value('no_bpjs_kesehatan')) ? @set_value('no_bpjs_kesehatan') : $pegawai->no_bpjs_kesehatan ?>">
+                        </div>
+
+                        <div class="col-lg-3 mb-3">
+                            <label>BPJS Ketenagakerjaan <small class="text-danger">* <?= strip_tags(@form_error('no_bpjs_ketenagakerjaan')) ?></small></label>
+                            <input class="form-control <?= (@form_error('no_bpjs_ketenagakerjaan')) ? 'is-invalid' : ((@set_value('no_bpjs_ketenagakerjaan')) ? 'is-valid' : '') ?>" type="number" placeholder="No BPJS Ketenagakerjaan" name="no_bpjs_ketenagakerjaan" value="<?= (@set_value('no_bpjs_ketenagakerjaan')) ? @set_value('no_bpjs_ketenagakerjaan') : $pegawai->no_bpjs_ketenagakerjaan ?>">
+                        </div>
+
+                    </div>
+                    <hr>
+                    <div class="row">
+                        <div class="col-lg-4 mb-3">
+                            <label>Nama Bank</label>
+                            <input class="form-control <?= (@form_error('nama_bank')) ? 'is-invalid' : ((@set_value('nama_bank')) ? 'is-valid' : '') ?>" type="text" placeholder="Nama Bank" name="nama_bank" value="<?= (@set_value('nama_bank')) ? @set_value('nama_bank') : $pegawai->nama_bank ?>">
+                        </div>
+
+                        <div class="col-lg-4 mb-3">
+                            <label>No Rekening</label>
+                            <input class="form-control <?= (@form_error('no_rekening')) ? 'is-invalid' : ((@set_value('no_rekening')) ? 'is-valid' : '') ?>" type="number" placeholder="No Rekening" name="no_rekening" value="<?= (@set_value('no_rekening')) ? @set_value('no_rekening') : $pegawai->no_rekening ?>">
+                        </div>
+
+                        <div class="col-lg-4 mb-3">
+                            <label>Nama Di Rekening</label>
+                            <input class="form-control <?= (@form_error('nama_rekening')) ? 'is-invalid' : ((@set_value('nama_rekening')) ? 'is-valid' : '') ?>" type="text" placeholder="Nama Di Rekening" name="nama_rekening" value="<?= (@set_value('nama_rekening')) ? @set_value('nama_rekening') : $pegawai->nama_rekening ?>">
                         </div>
                     </div>
                 </div>
