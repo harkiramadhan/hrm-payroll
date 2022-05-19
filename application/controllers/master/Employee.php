@@ -50,6 +50,13 @@ class Employee extends CI_Controller{
                         ->where([
                             'p.id' => $id
                         ])->get()->row();
+
+        $kepegawaian = $this->db->select('m.*, sk.status')
+                                ->from('mutasi m')
+                                ->join('status_kepegawaian sk', 'm.status_id = sk.id', 'LEFT')
+                                ->where([
+                                    'm.pegawai_id' => $id
+                                ])->order_by('tgl_join', "ASC")->get();
         $var = [
             'title' => 'Edit Pegawai ' . $pegawai->nama,
             'pegawai' => $pegawai,
@@ -62,6 +69,7 @@ class Employee extends CI_Controller{
             'departement' => $this->db->get_where('departement', ['divisi_id' => $pegawai->divisi_id]),
             'unit' => $this->db->get_where('unit', ['dept_id' => $pegawai->dept_id]),
             'status_kepegawaian' => $this->db->get('status_kepegawaian'),
+            'kepegawaian' => $kepegawaian,
             'page' => 'master/edit_employee',
             'ajax' => [
                 'employee'
@@ -215,6 +223,49 @@ class Employee extends CI_Controller{
                 redirect('master/employee', 'refresh');
             }
         }
+    }
+
+    function addStatusKepegawaian(){
+        $datas = [
+            'pegawai_id' => $this->input->post('pegawai_id', TRUE),
+            'status_id' => $this->input->post('status_id', TRUE),
+            'tgl_join' => $this->input->post('tgl_join', TRUE),
+            'tgl_finish' => $this->input->post('tgl_finish', TRUE)
+        ];
+
+        $cek = $this->db->get_where('mutasi', [
+            'pegawai_id' => $this->input->post('pegawai_id', TRUE),
+            'status_id' => $this->input->post('status_id', TRUE)
+        ]);
+
+        if($cek->num_rows() > 0){
+            $this->db->where('id', $cek->row()->id)->update('mutasi', [
+                'tgl_join' => $this->input->post('tgl_join', TRUE),
+                'tgl_finish' => $this->input->post('tgl_finish', TRUE)
+            ]);
+        }else{
+            $this->db->insert('mutasi', $datas);
+        }
+
+        if($this->db->affected_rows() > 0){
+            $this->session->set_flashdata('success', "Data Berhasil Di Simpan");
+        }else{
+            $this->session->set_flashdata('error', "Data Gagal Di Simpan");
+        }
+
+        redirect($_SERVER['HTTP_REFERER']);
+        
+    }
+
+    function deleteSK($id){
+        $this->db->where('id', $id)->delete('mutasi');
+        if($this->db->affected_rows() > 0){
+            $this->session->set_flashdata('success', "Data Berhasil Di Hapus");
+        }else{
+            $this->session->set_flashdata('error', "Data Gagal Di Hapus");
+        }
+
+        redirect($_SERVER['HTTP_REFERER']);
     }
 
     function delete($id){

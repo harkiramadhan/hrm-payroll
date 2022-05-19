@@ -121,72 +121,67 @@
                             <input class="form-control <?= (@form_error('nama_rekening')) ? 'is-invalid' : ((@set_value('nama_rekening')) ? 'is-valid' : '') ?>" type="text" placeholder="Nama Di Rekening" name="nama_rekening" value="<?= (@set_value('nama_rekening')) ? @set_value('nama_rekening') : $pegawai->nama_rekening ?>">
                         </div>
                     </div>
+                    <hr>
+                    <div class="row mb-3">
+                        <div class="col-lg-4">
+                            <label>Foto Pegawai</label>
+                            <img src="<?= base_url('') ?>/assets/img/bg-profile.jpg" alt="Image placeholder" class="card-img-top">
+                            <input type="file" class="form-control mt-2" placeholder="" >
+                        </div>
+                        <div class="col-lg-4">
+                            <label>Foto KTP</label>
+                            <img src="<?= base_url('') ?>/assets/img/bg-profile.jpg" alt="Image placeholder" class="card-img-top">
+                            <input type="file" class="form-control mt-2" placeholder="" >
+                        </div>
+                        <div class="col-lg-4">
+                            <label>Foto Kartu Keluarga</label>
+                            <img src="<?= base_url('') ?>/assets/img/bg-profile.jpg" alt="Image placeholder" class="card-img-top">
+                            <input type="file" class="form-control mt-2" placeholder="" >
+                        </div>
+                    </div>
                 </div>
                 
                 <div class="card p-3 border-radius-xl bg-white js-active mt-4" data-animation="FadeIn">
-                    <h6><strong>Detail Kepegawaian</strong></h6>
-                    <div class="row mt-2">
+                    <div class="row">
                         <div class="col-lg-6">
-                            <div class="form-group">
-                                <label>Status Kepegawaian <small class="text-danger">*</small></label>
-                                <select name="status_id" class="form-control <?= (@form_error('status_id')) ? 'is-invalid' : ((@set_value('status_id')) ? 'is-valid' : '') ?>" required="">
-                                    <option value="" selected="" disabled="">- Pilih Status Kepegawaian</option>
-                                    <?php foreach($status_kepegawaian->result() as $sk){ ?>
-                                        <option value="<?= $sk->id ?>" <?= (@set_value('status_id') == $sk->id || $pegawai->status_id == $sk->id) ? 'selected' : '' ?> ><?= $sk->status ?></option>
-                                    <?php } ?>
-                                </select>
-                            </div>
+                            <h6><strong>Detail Kepegawaian</strong></h6>
                         </div>
-                        <div class="col-lg-6">
-                            <div class="row">
-                                <div class="col-lg-6">
-                                    <div class="form-group">
-                                        <label>Tanggal Join Kontrak 1<small class="text-danger">*</small></label>
-                                        <input class="form-control <?= (@form_error('tgl_join_c1')) ? 'is-invalid' : ((@set_value('tgl_join_c1')) ? 'is-valid' : '') ?>" type="date" placeholder="Tanggal Lahir" name="tgl_join_c1" value="<?= (@set_value('tgl_join_c1')) ? @set_value('tgl_join_c1') : $pegawai->tgl_join_c1 ?>">
-                                    </div>
-                                </div>
-                                <div class="col-lg-6">
-                                    <div class="form-group">
-                                        <label>Tanggal Finish Kontrak 1<small class="text-danger">*</small></label>
-                                        <input class="form-control <?= (@form_error('tgl_out_c1')) ? 'is-invalid' : ((@set_value('tgl_out_c1')) ? 'is-valid' : '') ?>" type="date" placeholder="Tanggal Lahir" name="tgl_out_c1" value="<?= (@set_value('tgl_out_c1')) ? @set_value('tgl_out_c1') : $pegawai->tgl_out_c1 ?>">
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-lg-6">
-                            <div class="row">
-                                <div class="col-lg-6">
-                                    <div class="form-group">
-                                        <label>Tanggal Join Kontrak 2<small class="text-danger">*</small></label>
-                                        <input class="form-control <?= (@form_error('tgl_join_c2')) ? 'is-invalid' : ((@set_value('tgl_join_c2')) ? 'is-valid' : '') ?>" type="date" placeholder="Tanggal Lahir" name="tgl_join_c2" value="<?= (@set_value('tgl_join_c2')) ? @set_value('tgl_join_c2') : $pegawai->tgl_join_c2 ?>">
-                                    </div>
-                                </div>
-                                <div class="col-lg-6">
-                                    <div class="form-group">
-                                        <label>Tanggal Finish Kontrak 2<small class="text-danger">*</small></label>
-                                        <input class="form-control <?= (@form_error('tgl_out_c2')) ? 'is-invalid' : ((@set_value('tgl_out_c2')) ? 'is-valid' : '') ?>" type="date" placeholder="Tanggal Lahir" name="tgl_out_c2" value="<?= (@set_value('tgl_out_c2')) ? @set_value('tgl_out_c2') : $pegawai->tgl_out_c2 ?>">
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-lg-6">
-                            <div class="row">
-                                <div class="col-lg-6">
-                                    <div class="form-group">
-                                        <label>Tanggal Join Permanent<small class="text-danger">*</small></label>
-                                        <input class="form-control <?= (@form_error('tgl_join_p')) ? 'is-invalid' : ((@set_value('tgl_join_p')) ? 'is-valid' : '') ?>" type="date" placeholder="Tanggal Lahir" name="tgl_join_p" value="<?= (@set_value('tgl_join_p')) ? @set_value('tgl_join_p') : $pegawai->tgl_join_p ?>">
-                                    </div>
-                                </div>
-                                <div class="col-lg-6">
-                                    <div class="form-group">
-                                        <label>Tanggal Permanent<small class="text-danger">*</small></label>
-                                        <input class="form-control <?= (@form_error('tgl_p')) ? 'is-invalid' : ((@set_value('tgl_p')) ? 'is-valid' : '') ?>" type="date" placeholder="Tanggal Lahir" name="tgl_p" value="<?= (@set_value('tgl_p')) ? @set_value('tgl_p') : $pegawai->tgl_p ?>">
-                                    </div>
-                                </div>
-                            </div>
+                        <div class="col-lg-6 text-end">
+                            <button type="button" class="btn btn-sm btn-round bg-gradient-dark mb-0" data-bs-toggle="modal" data-bs-target="#modalAdd"><i class="fas fa-plus me-2"></i> Status Kepegawaian</button>
                         </div>
                     </div>
+                    
+                    <div class="table-responsive p-0 mt-4">
+                        <table class="table table-striped" style="width:100%">
+                            <thead>
+                                <tr>
+                                    <th class="text-center w-5px">No</th>
+                                    <th class="">Status Kepegawaian</th>
+                                    <th class="w-5px">Tgl Join</th>
+                                    <th class="w-5px">Tgl Finish</th>
+                                    <th class="text-center w-5px"></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <?php 
+                                    $nos = 1;
+                                    foreach($kepegawaian->result() as $rows){ ?>
+                                <tr>
+                                    <td class="text-center"><?= $nos++ ?></td>
+                                    <td><?= $rows->status ?></td>
+                                    <td><?= longdate_indo($rows->tgl_join) ?></td>
+                                    <td><?= longdate_indo($rows->tgl_finish) ?></td>
+                                    <td class="text-center">
+                                        <a class="btn btn-sm btn-round btn-link text-danger px-3 mb-0" href="<?= site_url('master/employee/deleteSK/' . $rows->id) ?>"><i class="far fa-trash-alt" aria-hidden="true"></i></a>
+                                    </td>
+                                </tr>
+                                <?php } ?>
+                            </tbody>
+                        </table>
+                    </div>
+                    
                     <hr class="my-2">
+
                     <div class="row mt-2">
                         <div class="col-lg-6">
                             <div class="form-group">
@@ -267,6 +262,61 @@
                     </div>
                 </div>
             </form>
+        </div>
+    </div>
+</div>
+
+<!-- Modals -->
+<div class="modal fade" id="modalAdd" tabindex="-1" role="dialog" aria-labelledby="modal-form" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-body p-0">
+                <div class="card card-plain">
+                    <div class="card-header pb-0 text-left">
+                        <h5 class="font-weight-bolder">Tambah Status Kepegawaian <br> <?= @$pegawai->nama ?></h5>
+                    </div>
+                    <div class="card-body pb-0">
+                        <form action="<?= site_url('master/employee/addStatusKepegawaian') ?>" role="form text-left" method="post">
+                            <input type="hidden" name="pegawai_id" value="<?= $pegawai->id ?>">
+                            <div class="row">
+                                <div class="col-lg-6">
+                                    <div class="form-group">
+                                        <label>Status Kepegawaian <small class="text-danger">*</small></label>
+                                        <select name="status_id" class="form-control <?= (@form_error('status_id')) ? 'is-invalid' : ((@set_value('status_id')) ? 'is-valid' : '') ?>" required="">
+                                            <option value="" selected="" disabled="">- Pilih Status Kepegawaian</option>
+                                            <?php foreach($status_kepegawaian->result() as $sk){ ?>
+                                                <option value="<?= $sk->id ?>" <?= (@set_value('status_id') == $sk->id || $pegawai->status_id == $sk->id) ? 'selected' : '' ?> ><?= $sk->status ?></option>
+                                            <?php } ?>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-lg-6">
+                                    <div class="row">
+                                        <div class="col-lg-6">
+                                            <div class="form-group">
+                                                <label>Tanggal Join<small class="text-danger">*</small></label>
+                                                <input class="form-control" type="date" placeholder="Tanggal Join" name="tgl_join" required>
+                                            </div>
+                                        </div>
+                                        <div class="col-lg-6">
+                                            <div class="form-group">
+                                                <label>Tanggal Finish<small class="text-danger">*</small></label>
+                                                <input class="form-control" type="date" placeholder="Tanggal Finish" name="tgl_finish" required>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="text-center">
+                                <button type="submit" class="btn btn-sm btn-round bg-success btn-lg w-100 mt-4 mb-0 text-white">Tambahkan</button>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="card-footer text-center pt-0 px-lg-2 px-1">
+                        <button type="button" class="btn btn-sm btn-link btn-block  ml-auto" data-bs-dismiss="modal">Batal</button>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 </div>
