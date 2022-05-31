@@ -20,99 +20,72 @@ class Menus extends CI_Controller{
     }
 
     function create(){
-        $dataInsert = [
-            'shift_id' => $this->input->post('shift_id', TRUE),
-            'hari_kerja' => $this->input->post('hari_kerja', TRUE),
-            'jam_in' => $this->input->post('jam_in', TRUE),
-            'jam_out' => $this->input->post('jam_out', TRUE),
-        ];
-        $this->db->insert('jam_kerja', $dataInsert);
-        if($this->db->affected_rows() > 0){
-            $this->session->set_flashdata('success', "Data Berhasil Di Tambahkan");
-        }else{
-            $this->session->set_flashdata('error', "Data Gagal Di Tambahkan");
-        }
-        redirect($_SERVER['HTTP_REFERER']);
+        // $dataInsert = [
+        //     'shift_id' => $this->input->post('shift_id', TRUE),
+        //     'hari_kerja' => $this->input->post('hari_kerja', TRUE),
+        //     'jam_in' => $this->input->post('jam_in', TRUE),
+        //     'jam_out' => $this->input->post('jam_out', TRUE),
+        // ];
+        // $this->db->insert('jam_kerja', $dataInsert);
+        // if($this->db->affected_rows() > 0){
+        //     $this->session->set_flashdata('success', "Data Berhasil Di Tambahkan");
+        // }else{
+        //     $this->session->set_flashdata('error', "Data Gagal Di Tambahkan");
+        // }
+        // redirect($_SERVER['HTTP_REFERER']);
     }
 
     function update($id){
-        $dataUpdate = [
-            'shift_id' => $this->input->post('shift_id', TRUE),
-            'hari_kerja' => $this->input->post('hari_kerja', TRUE),
-            'jam_in' => $this->input->post('jam_in', TRUE),
-            'jam_out' => $this->input->post('jam_out', TRUE),
-        ];
-        $this->db->where('id', $id)->update('jam_kerja', $dataUpdate);
-        if($this->db->affected_rows() > 0){
-            $this->session->set_flashdata('success', "Data Berhasil Di Simpan");
-        }else{
-            $this->session->set_flashdata('error', "Data Gagal Di Simpan");
-        }
-        redirect($_SERVER['HTTP_REFERER']);
+        // $dataUpdate = [
+        //     'shift_id' => $this->input->post('shift_id', TRUE),
+        //     'hari_kerja' => $this->input->post('hari_kerja', TRUE),
+        //     'jam_in' => $this->input->post('jam_in', TRUE),
+        //     'jam_out' => $this->input->post('jam_out', TRUE),
+        // ];
+        // $this->db->where('id', $id)->update('jam_kerja', $dataUpdate);
+        // if($this->db->affected_rows() > 0){
+        //     $this->session->set_flashdata('success', "Data Berhasil Di Simpan");
+        // }else{
+        //     $this->session->set_flashdata('error', "Data Gagal Di Simpan");
+        // }
+        // redirect($_SERVER['HTTP_REFERER']);
     }
 
     function delete($id){
-        $this->db->where('id', $id)->delete('jam_kerja');
-        if($this->db->affected_rows() > 0){
-            $this->session->set_flashdata('success', "Data Berhasil Di Hapus");
-        }else{
-            $this->session->set_flashdata('error', "Data Gagal Di Hapus");
-        }
-        redirect($_SERVER['HTTP_REFERER']);
+        // $this->db->where('id', $id)->delete('jam_kerja');
+        // if($this->db->affected_rows() > 0){
+        //     $this->session->set_flashdata('success', "Data Berhasil Di Hapus");
+        // }else{
+        //     $this->session->set_flashdata('error', "Data Gagal Di Hapus");
+        // }
+        // redirect($_SERVER['HTTP_REFERER']);
     }
 
     function edit($id){
-        $working = $this->db->get_where('jam_kerja', ['id' => $id])->row();
-        $shift =  $this->db->order_by('id', "ASC")->get('shift');
+        $menu = $this->db->get_where('menu1', ['id' => $id])->row()
         ?>
             <div class="card card-plain">
                 <div class="card-header pb-0 text-left">
-                    <h5 class="font-weight-bolder">Edit Jam Kerja</h5>
+                    <h5 class="font-weight-bolder">Edit Menu</h5>
                 </div>
                 <div class="card-body pb-0">
-                    <form action="<?= site_url('master/working/update/' . $id) ?>" role="form text-left" method="post">
+                    <form action="<?= site_url('master/menus/updata/' . $id) ?>" role="form text-left" method="post">
                         <div class="row">
                             <div class="col-lg-12">
-                                <div class="form-group">
-                                    <label for="exampleFormControlSelect1">Kode / Shift <small class="text-danger">*</small></label>
-                                    <select name="shift_id" class="form-control" id="exampleFormControlSelect1" required="">
-                                        <option value="" selected="" disabled="">- Pilih Kode / Shift</option>
-                                        <?php foreach($shift->result() as $sr){ ?>
-                                            <option value="<?= $sr->id ?>" <?= ($working->shift_id == $sr->id) ? 'selected' : '' ?>><?= $sr->kode." - ".$sr->keterangan ?></option>
-                                        <?php } ?>
-                                    </select>
-                                </div>
-                            </div>
-                            <div class="col-lg-12">
-                                <div class="form-group">
-                                    <label for="exampleFormControlSelect1">Hari Kerja <small class="text-danger">*</small></label>
-                                    <select name="hari_kerja" class="form-control" id="exampleFormControlSelect1" required="">
-                                        <option value="" selected="" disabled="">- Pilih Hari Kerja</option>
-                                        <option <?= ($working->hari_kerja == "Senin") ? 'selected' : '' ?> value="Senin">Senin</option>
-                                        <option <?= ($working->hari_kerja == "Selasa") ? 'selected' : '' ?> value="Selasa">Selasa</option>
-                                        <option <?= ($working->hari_kerja == "Rabu") ? 'selected' : '' ?> value="Rabu">Rabu</option>
-                                        <option <?= ($working->hari_kerja == "Kamis") ? 'selected' : '' ?> value="Kamis">Kamis</option>
-                                        <option <?= ($working->hari_kerja == "Jum'at") ? 'selected' : '' ?> value="Jum'at">Jum</option>
-                                        <option <?= ($working->hari_kerja == "Sabtu") ? 'selected' : '' ?> value="Sabtu">Sabtu</option>
-                                        <option <?= ($working->hari_kerja == "Minggu") ? 'selected' : '' ?> value="Minggu">Minggu</option>
-                                    </select>
-                                </div>
-                            </div>
-                            <div class="col-lg-12">
-                                <label>Jam (In) <small class="text-danger">*) Format HH:MM</small></label>
+                                <label>Kode <small class="text-danger">*</small></label>
                                 <div class="input-group mb-3">
-                                    <input type="time" class="form-control" placeholder="Jam (In)" aria-label="Jam (In)" name="jam_in" value="<?= $working->jam_in ?>" required>
+                                    <input type="text" class="form-control" placeholder="Kode" aria-label="Kode" name="kode" required>
                                 </div>
                             </div>
                             <div class="col-lg-12">
-                                <label>Jam (Out) <small class="text-danger">*) Format HH:MM</small></label>
+                                <label>Keterangan <small class="text-danger">*</small></label>
                                 <div class="input-group mb-3">
-                                    <input type="time" class="form-control" placeholder="Jam (Out)" aria-label="Jam (Out)" name="jam_out" value="<?= $working->jam_out ?>" required>
+                                    <input type="text" class="form-control" placeholder="Keterangan" aria-label="Keterangan" name="keterangan" required>
                                 </div>
                             </div>
                         </div>
                         <div class="text-center">
-                            <button type="submit" class="btn btn-sm btn-round bg-success btn-lg w-100 mt-4 mb-0 text-white">Simpan</button>
+                            <button type="submit" class="btn btn-sm btn-round bg-success btn-lg w-100 mt-4 mb-0 text-white">Tambahkan</button>
                         </div>
                     </form>
                 </div>

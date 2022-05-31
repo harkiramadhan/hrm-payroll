@@ -103,6 +103,16 @@
                             <input class="form-control <?= (@form_error('no_bpjs_ketenagakerjaan')) ? 'is-invalid' : ((@set_value('no_bpjs_ketenagakerjaan')) ? 'is-valid' : '') ?>" type="number" placeholder="No BPJS Ketenagakerjaan" name="no_bpjs_ketenagakerjaan" value="<?= (@set_value('no_bpjs_ketenagakerjaan')) ? @set_value('no_bpjs_ketenagakerjaan') : $pegawai->no_bpjs_ketenagakerjaan ?>">
                         </div>
 
+                        <div class="col-lg-3 mb-3">
+                            <label>Tanggal Habis Kontrak <small class="text-danger">* <?= strip_tags(@form_error('tgl_habis_kontrak')) ?></small></label>
+                            <input class="form-control <?= (@form_error('tgl_habis_kontrak')) ? 'is-invalid' : ((@set_value('tgl_habis_kontrak')) ? 'is-valid' : '') ?>" type="date" placeholder="Tanggal Habis Kontrak" name="tgl_habis_kontrak" value="<?= (@set_value('tgl_habis_kontrak')) ? @set_value('tgl_habis_kontrak') : $pegawai->tgl_habis_kontrak ?>">
+                        </div>
+
+                        <div class="col-lg-3 mb-3">
+                            <label>Tanggal Resign <small class="text-danger">* <?= strip_tags(@form_error('resign_date')) ?></small></label>
+                            <input class="form-control <?= (@form_error('resign_date')) ? 'is-invalid' : ((@set_value('resign_date')) ? 'is-valid' : '') ?>" type="date" placeholder="Tanggal Resign" name="resign_date" value="<?= (@set_value('resign_date')) ? @set_value('tgl_habis_kontrak') : $pegawai->resign_date ?>">
+                        </div>
+
                     </div>
                     <hr>
                     <div class="row">
@@ -198,7 +208,7 @@
                     <hr class="my-2">
 
                     <div class="row mt-2">
-                        <div class="col-lg-6">
+                        <div class="col-lg-4">
                             <div class="form-group">
                                 <label>Company <small class="text-danger">*</small></label>
                                 <select name="company_id" class="form-control <?= (@form_error('company_id')) ? 'is-invalid' : ((@set_value('company_id')) ? 'is-valid' : '') ?>" required="">
@@ -209,7 +219,18 @@
                                 </select>
                             </div>
                         </div>
-                        <div class="col-lg-6">
+                        <div class="col-lg-4">
+                            <div class="form-group">
+                                <label>Company <small class="text-danger">*</small></label>
+                                <select name="cabang_id" class="form-control <?= (@form_error('cabang_id')) ? 'is-invalid' : ((@set_value('cabang_id')) ? 'is-valid' : '') ?>" required="">
+                                    <option value="" selected="" disabled="">- Pilih Cabang</option>
+                                    <?php foreach($companys->result() as $c){ ?>
+                                        <option value="<?= $c->id ?>" <?= (@set_value('company_id') == $c->id || $pegawai->company_id == $c->id) ? 'selected' : '' ?> ><?= $c->company ?></option>
+                                    <?php } ?>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-lg-4">
                             <div class="form-group">
                                 <label>Jabatan <small class="text-danger">*</small></label>
                                 <select name="jabatan_id" class="form-control <?= (@form_error('jabatan_id')) ? 'is-invalid' : ((@set_value('jabatan_id')) ? 'is-valid' : '') ?>"required="">

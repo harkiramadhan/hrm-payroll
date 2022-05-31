@@ -232,6 +232,7 @@ class Employee extends CI_Controller{
                 'nama_ibu' => $this->input->post('nama_ibu', TRUE),
                 'email' => $this->input->post('email', TRUE),
                 'tgl_habis_kontrak' => $this->input->post('tgl_habis_kontrak', TRUE),
+                'resign_date' => $this->input->post('resign_date', TRUE),
                 'company_id' => $this->input->post('company_id', TRUE),
                 'jabatan_id' => $this->input->post('jabatan_id', TRUE),
                 'divisi_id' => $this->input->post('divisi_id', TRUE),

@@ -351,3 +351,13 @@
 
         return $badge;
     }
+
+    function badgeCompany($status){
+        if($status == 't'){
+            $badge = '<span class="badge bg-success">Default</span>';
+        }else{
+            $badge = "";
+        }
+
+        return $badge;
+    }
