@@ -166,7 +166,7 @@
                     </div>
                 </div>
                 
-                <div class="card p-3 border-radius-xl bg-white js-active mt-4" data-animation="FadeIn">
+                <div class="card p-3 border-radius-xl bg-white js-active mt-4" data-animation="FadeIn" id="sec-detail-kepegawaian">
                     <div class="row">
                         <div class="col-lg-6">
                             <h6><strong>Detail Kepegawaian</strong></h6>

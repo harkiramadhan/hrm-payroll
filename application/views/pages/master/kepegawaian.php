@@ -4,22 +4,23 @@
         <div class="card-header">
             <div class="row">
                 <div class="col-lg-8">
-                    <h5 class="mb-0"><strong>Perusahaan</strong></h5>
-                </div>
-                <div class="col-lg-4 text-end">
-                    <button type="button" class="btn btn-sm btn-round bg-gradient-dark mb-0" data-bs-toggle="modal" data-bs-target="#modalAdd"><i class="fas fa-plus me-2"></i> Perusahaan</button>
+                    <h5 class="mb-0"><strong>Status Kepegawaian</strong></h5>
                 </div>
             </div>
+            <!-- <p class="text-sm mb-0">
+            A lightweight, extendable, dependency-free javascript HTML table plugin.
+            </p> -->
         </div>
         <div class="table-responsive p-4">
             <table id="example" class="table table-striped" style="width:100%">
                 <thead>
                     <tr>
                         <th class="text-center w-5px">No</th>
-                        <th class="">Perusahaan</th>
-                        <th class="text-center w-10p">Kode</th>
-                        <th class="text-center w-10p">Status</th>
-                        <th class="text-center w-10p">Action</th>
+                        <th>Nama</th>
+                        <th class="text-center w-15p">Status Kepegawaian</th>
+                        <th class="text-center w-15p">Join</th>
+                        <th class="text-center w-15p">Finish</th>
+                        <th class="text-center w-5px">Action</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -31,39 +32,26 @@
 
 <!-- Modals -->
 <div class="modal fade" id="modalAdd" tabindex="-1" role="dialog" aria-labelledby="modal-form" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+    <div class="modal-dialog modal-dialog-centered modal-md" role="document">
         <div class="modal-content">
             <div class="modal-body p-0">
                 <div class="card card-plain">
                     <div class="card-header pb-0 text-left">
-                        <h5 class="font-weight-bolder">Tambah Perusahaan</h5>
+                        <h5 class="font-weight-bolder">Tambah Shift</h5>
                     </div>
                     <div class="card-body pb-0">
-                        <form action="<?= site_url('master/company/create') ?>" role="form text-left" method="post">
+                        <form action="<?= site_url('master/shift/create') ?>" role="form text-left" method="post">
                             <div class="row">
                                 <div class="col-lg-12">
-                                    <label>Nama Perusahaan<small class="text-danger">*</small></label>
-                                    <div class="input-group mb-3">
-                                        <input type="text" class="form-control" placeholder="Nama Perusahaan" aria-label="Nama Perusahaan" name="company" required>
-                                    </div>
-                                </div>
-                                <div class="col-lg-8">
                                     <label>Kode <small class="text-danger">*</small></label>
                                     <div class="input-group mb-3">
                                         <input type="text" class="form-control" placeholder="Kode" aria-label="Kode" name="kode" required>
                                     </div>
                                 </div>
-                                <div class="col-lg-4">
-                                    <label>Default Company ?<small class="text-danger">*</small></label>
+                                <div class="col-lg-12">
+                                    <label>Keterangan <small class="text-danger">*</small></label>
                                     <div class="input-group mb-3">
-                                        <div class="form-check form-check-inline">
-                                            <input class="form-check-input" type="radio" name="is_default" id="inlineRadio1" value="t" required="">
-                                            <label class="form-check-label" for="inlineRadio1">Ya</label>
-                                        </div>
-                                        <div class="form-check form-check-inline">
-                                            <input class="form-check-input" type="radio" name="is_default" id="inlineRadio2" value="f" required="">
-                                            <label class="form-check-label" for="inlineRadio2">Tidak</label>
-                                        </div>
+                                        <input type="text" class="form-control" placeholder="Keterangan" aria-label="Keterangan" name="keterangan" required>
                                     </div>
                                 </div>
                             </div>
@@ -82,7 +70,7 @@
 </div>
 
 <div class="modal fade" id="modalEdit" tabindex="-1" role="dialog" aria-labelledby="modal-form" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+    <div class="modal-dialog modal-dialog-centered modal-md" role="document">
         <div class="modal-content">
             <div class="modal-body p-0 data-edit">
               

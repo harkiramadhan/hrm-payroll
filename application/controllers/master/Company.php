@@ -11,7 +11,7 @@ class Company extends CI_Controller{
 
     function index(){
         $var = [
-            'title' => 'Master Company',
+            'title' => 'Master Perusahaan',
             'company' => $this->M_Company->getDefault(),
             'shift' => $this->db->order_by('id', "ASC")->get('shift'),
             'page' => 'master/company'
@@ -82,15 +82,15 @@ class Company extends CI_Controller{
         ?>
             <div class="card card-plain">
                 <div class="card-header pb-0 text-left">
-                    <h5 class="font-weight-bolder">Edit Company</h5>
+                    <h5 class="font-weight-bolder">Edit Perusahaan</h5>
                 </div>
                 <div class="card-body pb-0">
                     <form action="<?= site_url('master/company/update/' . $id) ?>" role="form text-left" method="post">
                         <div class="row">
                             <div class="col-lg-12">
-                                <label>Company<small class="text-danger">*</small></label>
+                                <label>Nama Perusahaan<small class="text-danger">*</small></label>
                                 <div class="input-group mb-3">
-                                    <input type="text" class="form-control" placeholder="Nama Company" aria-label="Nama Company" name="company" value="<?= $company->company ?>" required>
+                                    <input type="text" class="form-control" placeholder="Nama Perusahaan" aria-label="Nama Perusahaan" name="company" value="<?= $company->company ?>" required>
                                 </div>
                             </div>
                             <div class="col-lg-8">
@@ -100,7 +100,7 @@ class Company extends CI_Controller{
                                 </div>
                             </div>
                             <div class="col-lg-4">
-                                <label>Default Company ?<small class="text-danger">*</small></label>
+                                <label>Default Perusahaan ?<small class="text-danger">*</small></label>
                                 <div class="input-group mb-3">
                                     <div class="form-check form-check-inline">
                                         <input class="form-check-input" type="radio" name="is_default" id="inlineRadio1" value="t" <?= ($company->is_default == 't') ? 'checked' : '' ?> required="">
