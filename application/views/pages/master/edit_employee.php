@@ -126,21 +126,32 @@
                         <div class="col-lg-4">
                             <label>Foto Pegawai</label>
                             <?php if($pegawai->foto): ?>
-                                <img src="<?= base_url('uploads/image/' . $pegawai->foto) ?>" alt="Image placeholder" class="card-img-top">
+                                <img src="<?= base_url('uploads/image/' . $pegawai->foto) ?>" alt="Image placeholder" class="card-img-top" id="image-preview-pegawai">
+                            <?php else: ?>
+                                <img src="<?= base_url('assets/img/no-image-available.jpg') ?>" alt="" id="image-preview-pegawai" class="card-img-top">
                             <?php endif; ?>
-                            <input type="file" name="foto" class="form-control mt-2" placeholder="" >
+
+                            <input type="file" name="foto" class="form-control mt-2" placeholder="" id="image-source-pegawai" onchange="previewImagePegawai();" >
                         </div>
                         <div class="col-lg-4">
                             <label>Foto KTP</label>
                             <?php if($pegawai->foto_ktp): ?>
-                                <img src="<?= base_url('uploads/image/' . $pegawai->foto_ktp) ?>" alt="Image placeholder" class="card-img-top">
+                                <img src="<?= base_url('uploads/image/' . $pegawai->foto_ktp) ?>" alt="Image placeholder" class="card-img-top" id="image-preview-ktp">
+                            <?php else: ?>
+                                <img src="<?= base_url('assets/img/no-image-available.jpg') ?>" alt="" id="image-preview-ktp" class="card-img-top">
                             <?php endif; ?>
-                            <input type="file" name="foto_ktp" class="form-control mt-2" placeholder="" >
+
+                            <input type="file" name="foto_ktp" class="form-control mt-2" placeholder="" id="image-source-ktp" onchange="previewImageKtp();">
                         </div>
                         <div class="col-lg-4">
                             <label>Foto Kartu Keluarga</label>
-                            <img src="<?= base_url('') ?>/assets/img/bg-profile.jpg" alt="Image placeholder" class="card-img-top">
-                            <input type="file" name="foto_kk" class="form-control mt-2" placeholder="" >
+                            <?php if($pegawai->foto_kk): ?>
+                                <img src="<?= base_url('uploads/image/' . $pegawai->foto_kk) ?>" alt="Image placeholder" class="card-img-top" id="image-preview-kk">
+                            <?php else: ?>
+                                <img src="<?= base_url('assets/img/no-image-available.jpg') ?>" alt="" id="image-preview-kk" class="card-img-top">
+                            <?php endif; ?>
+
+                            <input type="file" name="foto_kk" class="form-control mt-2" placeholder="" id="image-source-kk" onchange="previewImageKk();">
                         </div>
                     </div>
                 </div>
