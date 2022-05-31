@@ -160,12 +160,54 @@ class Employee extends CI_Controller{
         $dept_id = $deptArr[0];
         $unit_id = $unitArr[0];
         
+        /* Valudation */
         $this->form_validation->set_rules('nik', 'NIK', 'callback_edit_unique[pegawai.nik.'.$id.']', [
             'callback_edit_unique[pegawai.nik.'.$id.']' => '<strong>NIK Sudah Tersedia</strong>'
         ]);
+
         $this->form_validation->set_rules('ektp', 'EKTP', 'callback_edit_unique[pegawai.ektp.'.$id.']', [
             'callback_edit_unique[pegawai.ektp.'.$id.']' => '<strong>E-Ktp Sudah Tersedia</strong>'
         ]);
+
+        $cek = $this->db->get_where('pegawai', ['id' => $id])->row();
+
+        /* Foto Upload */ 
+        $config['upload_path']      = './uploads/image';  
+        $config['allowed_types']    = 'jpg|jpeg|png'; 
+        $config['encrypt_name']    = TRUE;
+        
+        $this->load->library('upload', $config);
+        if($this->upload->do_upload('foto')){
+            @unlink('./uploads/image/' . @$cek->foto);
+
+            $fotoData = $this->upload->data();
+            $foto = $fotoData['file_name'];
+        }else{
+            $foto = @$cek->foto;
+        }
+
+        /* KTP Upload */
+        $this->load->library('upload', $config);
+        if($this->upload->do_upload('foto_ktp')){
+            @unlink('./uploads/image/' . @$cek->foto_ktp);
+
+            $fotoKTPData = $this->upload->data();
+            $fotoKtp = $fotoKTPData['file_name'];
+        }else{
+            $fotoKtp = @$cek->foto_ktp;
+        }
+
+        /* KK Upload */
+        $this->load->library('upload', $config);
+        if($this->upload->do_upload('foto_kk')){
+            @unlink('./uploads/image/' . @$cek->foto_kk);
+
+            $fotoKkData = $this->upload->data();
+            $fotoKk = $fotoKkData['file_name'];
+        }else{
+            $fotoKk = @$cek->foto_kk;
+        }
+
         if ($this->form_validation->run() == FALSE){
             $this->session->set_flashdata('error', strip_tags(validation_errors()));
             $this->edit($id);
@@ -195,14 +237,11 @@ class Employee extends CI_Controller{
                 'divisi_id' => $this->input->post('divisi_id', TRUE),
                 'dept_id' => $dept_id,
                 'unit_id' => $unit_id,
-                'status_id' => $this->input->post('status_id', TRUE),
-                'tgl_join_c1' => ($this->input->post('tgl_join_c1', TRUE) != "") ? $this->input->post('tgl_join_c1', TRUE) : NULL,
-                'tgl_out_c1' => ($this->input->post('tgl_out_c1', TRUE) != "") ? $this->input->post('tgl_out_c1', TRUE) : NULL,
-                'tgl_join_c2' => ($this->input->post('tgl_join_c2', TRUE) != "") ? $this->input->post('tgl_join_c2', TRUE) : NULL,
-                'tgl_out_c2' => ($this->input->post('tgl_out_c2', TRUE) != "") ? $this->input->post('tgl_out_c2', TRUE) : NULL,
-                'tgl_join_p' => ($this->input->post('tgl_join_p', TRUE) != "") ? $this->input->post('tgl_join_p', TRUE) : NULL,
                 'tgl_p' => ($this->input->post('tgl_p', TRUE) != "") ? $this->input->post('tgl_p', TRUE) : NULL,
-                'company_id' => $this->input->post('company_id', TRUE)
+                'company_id' => $this->input->post('company_id', TRUE),
+                'foto' => $foto,
+                'foto_ktp' => $fotoKtp,
+                'foto_kk' => $fotoKk
             ];
             $this->db->where('id', $id)->update('pegawai', $dataUpdate);
             if($this->db->affected_rows() > 0){
@@ -220,7 +259,7 @@ class Employee extends CI_Controller{
                     $this->db->insert('mutasi_pegawai', $dataInsertMutasi);
                 }
                 $this->session->set_flashdata('success', "Data Berhasil Di Simpan");
-                redirect('master/employee', 'refresh');
+                redirect($_SERVER['HTTP_REFERER'], 'refresh');
             }
         }
     }
@@ -257,6 +296,10 @@ class Employee extends CI_Controller{
         
     }
 
+    function delete($id){
+
+    }
+
     function deleteSK($id){
         $this->db->where('id', $id)->delete('mutasi');
         if($this->db->affected_rows() > 0){
@@ -266,10 +309,6 @@ class Employee extends CI_Controller{
         }
 
         redirect($_SERVER['HTTP_REFERER']);
-    }
-
-    function delete($id){
-
     }
 
     function table(){

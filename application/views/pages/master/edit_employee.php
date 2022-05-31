@@ -1,7 +1,7 @@
 <div class="container-fluid py-4">
     <div class="row">
         <div class="col-12 col-lg-10 m-auto">
-            <form action="<?= site_url('master/employee/update/' . $pegawai->id) ?>" method="POST">
+            <form action="<?= site_url('master/employee/update/' . $pegawai->id) ?>" enctype="multipart/form-data" method="POST">
                 <div class="card p-3 border-radius-xl bg-white js-active" data-animation="FadeIn">
                     <h6><strong>Edit Pegawai - <?= $pegawai->nama ?></strong></h6>
                     <div class="row mt-3">
@@ -125,18 +125,22 @@
                     <div class="row mb-3">
                         <div class="col-lg-4">
                             <label>Foto Pegawai</label>
-                            <img src="<?= base_url('') ?>/assets/img/bg-profile.jpg" alt="Image placeholder" class="card-img-top">
-                            <input type="file" class="form-control mt-2" placeholder="" >
+                            <?php if($pegawai->foto): ?>
+                                <img src="<?= base_url('uploads/image/' . $pegawai->foto) ?>" alt="Image placeholder" class="card-img-top">
+                            <?php endif; ?>
+                            <input type="file" name="foto" class="form-control mt-2" placeholder="" >
                         </div>
                         <div class="col-lg-4">
                             <label>Foto KTP</label>
-                            <img src="<?= base_url('') ?>/assets/img/bg-profile.jpg" alt="Image placeholder" class="card-img-top">
-                            <input type="file" class="form-control mt-2" placeholder="" >
+                            <?php if($pegawai->foto_ktp): ?>
+                                <img src="<?= base_url('uploads/image/' . $pegawai->foto_ktp) ?>" alt="Image placeholder" class="card-img-top">
+                            <?php endif; ?>
+                            <input type="file" name="foto_ktp" class="form-control mt-2" placeholder="" >
                         </div>
                         <div class="col-lg-4">
                             <label>Foto Kartu Keluarga</label>
                             <img src="<?= base_url('') ?>/assets/img/bg-profile.jpg" alt="Image placeholder" class="card-img-top">
-                            <input type="file" class="form-control mt-2" placeholder="" >
+                            <input type="file" name="foto_kk" class="form-control mt-2" placeholder="" >
                         </div>
                     </div>
                 </div>
