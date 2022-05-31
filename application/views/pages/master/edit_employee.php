@@ -221,11 +221,11 @@
                         </div>
                         <div class="col-lg-4">
                             <div class="form-group">
-                                <label>Company <small class="text-danger">*</small></label>
+                                <label>Cabang <small class="text-danger">*</small></label>
                                 <select name="cabang_id" class="form-control <?= (@form_error('cabang_id')) ? 'is-invalid' : ((@set_value('cabang_id')) ? 'is-valid' : '') ?>" required="">
                                     <option value="" selected="" disabled="">- Pilih Cabang</option>
-                                    <?php foreach($companys->result() as $c){ ?>
-                                        <option value="<?= $c->id ?>" <?= (@set_value('company_id') == $c->id || $pegawai->company_id == $c->id) ? 'selected' : '' ?> ><?= $c->company ?></option>
+                                    <?php foreach($cabang->result() as $cb){ ?>
+                                        <option value="<?= $cb->id ?>" <?= (@set_value('cabang_id') == $cb->id || $pegawai->cabang_id == $cb->id) ? 'selected' : '' ?> ><?= $cb->cabang ?></option>
                                     <?php } ?>
                                 </select>
                             </div>

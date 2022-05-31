@@ -38,11 +38,12 @@ class Employee extends CI_Controller{
     }
 
     function edit($id){
-        $pegawai = $this->db->select('p.*, a.agama, pd.jenjang, c.company, j.jabatan, d.divisi, dp.departement, u.unit')
+        $pegawai = $this->db->select('p.*, a.agama, pd.jenjang, c.company, cb.cabang, j.jabatan, d.divisi, dp.departement, u.unit')
                         ->from('pegawai p')
                         ->join('agama a', 'p.agama_id = a.id', "LEFT")
                         ->join('jenjang_pendidikan pd', 'p.pendidikan_id = pd.id', "LEFT")
                         ->join('company c', 'p.company_id = c.id', "LEFT")
+                        ->join('cabang cb', 'p.cabang_id = cb.id', "LEFT")
                         ->join('jabatan j', 'p.jabatan_id = j.id', "LEFT")
                         ->join('divisi d', 'p.divisi_id = d.id', "LEFT")
                         ->join('departement dp', 'p.dept_id = dp.id', "LEFT")
@@ -69,6 +70,7 @@ class Employee extends CI_Controller{
             'departement' => $this->db->get_where('departement', ['divisi_id' => $pegawai->divisi_id]),
             'unit' => $this->db->get_where('unit', ['dept_id' => $pegawai->dept_id]),
             'status_kepegawaian' => $this->db->get('status_kepegawaian'),
+            'cabang' => $this->db->get('cabang'),
             'kepegawaian' => $kepegawaian,
             'page' => 'master/edit_employee',
             'ajax' => [
@@ -234,6 +236,7 @@ class Employee extends CI_Controller{
                 'tgl_habis_kontrak' => $this->input->post('tgl_habis_kontrak', TRUE),
                 'resign_date' => $this->input->post('resign_date', TRUE),
                 'company_id' => $this->input->post('company_id', TRUE),
+                'cabang_id' => $this->input->post('cabang_id', TRUE),
                 'jabatan_id' => $this->input->post('jabatan_id', TRUE),
                 'divisi_id' => $this->input->post('divisi_id', TRUE),
                 'dept_id' => $dept_id,
@@ -250,6 +253,7 @@ class Employee extends CI_Controller{
                     'pegawai_id' => $id,
                     'pendidikan_id' => $this->input->post('pendidikan_id', TRUE),
                     'company_id' => $this->input->post('company_id', TRUE),
+                    'cabang_id' => $this->input->post('cabang_id', TRUE),
                     'jabatan_id' => $this->input->post('jabatan_id', TRUE),
                     'divisi_id' => $this->input->post('divisi_id', TRUE),
                     'dept_id' => $dept_id,
