@@ -143,7 +143,7 @@ class Company extends CI_Controller{
                 '<strong>'.$no++.'</strong>',
                 '<strong>'.$row->company.'</strong>',
                 '<p class="text-center mb-0"><strong>'.$row->kode.'</strong></p>',
-                '<p class="text-center mb-o">'.badgeCompany($row->is_default).'</p>',
+                '<p class="text-center mb-0">'.badgeCompany($row->is_default).'</p>',
                 '<div class="btn-group" role="group" aria-label="Basic example">
                     <button type="button" class="btn btn-sm btn-round btn-info text-white px-3 mb-0" onclick="edit('.$row->id.')"><i class="fas fa-pencil-alt me-2" aria-hidden="true"></i>Edit</button>
                     <a class="btn btn-sm btn-round btn-link text-danger px-3 mb-0" href="'.site_url('master/company/delete/' . $row->id).'"><i class="far fa-trash-alt" aria-hidden="true"></i></a>
