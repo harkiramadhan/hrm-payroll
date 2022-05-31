@@ -35,7 +35,6 @@ class Company extends CI_Controller{
             'is_default' => $this->input->post('is_default', TRUE),
         ];
         $this->db->insert('company', $datas);
-
         if($this->db->affected_rows() > 0){
             $this->session->set_flashdata('success', "Data Berhasil Di Tambahkan");
         }else{
@@ -59,9 +58,7 @@ class Company extends CI_Controller{
             'company' => $this->input->post('company', TRUE),
             'is_default' => $this->input->post('is_default', TRUE),
         ];
-        $this->db->where('id', $id);
-        $this->db->update('company', $datas);
-
+        $this->db->where('id', $id)->update('company', $datas);
         if($this->db->affected_rows() > 0){
             $this->session->set_flashdata('success', "Data Berhasil Di Simpan");
         }else{
