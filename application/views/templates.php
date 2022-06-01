@@ -360,7 +360,7 @@
                     }
                 ],
                 pagingType: 'full_numbers',
-                pageLength: 10,
+                pageLength: 15,
                 language: {
                     oPaginate: {
                         sNext: '<i class="fas fa-chevron-right"></i>',
