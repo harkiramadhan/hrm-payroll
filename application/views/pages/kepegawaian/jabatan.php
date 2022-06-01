@@ -40,7 +40,7 @@
                         <h5 class="font-weight-bolder">Tambah Jabatan</h5>
                     </div>
                     <div class="card-body pb-0">
-                        <form action="<?= site_url('master/jabatan/create') ?>" role="form text-left" method="post">
+                        <form action="<?= site_url('kepegawaian/jabatan/create') ?>" role="form text-left" method="post">
                             <div class="row">
                                 <div class="col-lg-12">
                                     <label>Jabatan <small class="text-danger">*</small></label>

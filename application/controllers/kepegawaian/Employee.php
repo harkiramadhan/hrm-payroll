@@ -14,7 +14,7 @@ class Employee extends CI_Controller{
         $var = [
             'title' => 'Master Pegawai',
             'company' => $this->M_Company->getDefault(),
-            'page' => 'master/employee'
+            'page' => 'kepegawaian/employee'
         ];
         $this->load->view('templates', $var);
     }
@@ -29,7 +29,7 @@ class Employee extends CI_Controller{
             'companys' => $this->db->get('company'),
             'divisi' => $this->db->get('divisi'),
             'status_kepegawaian' => $this->db->get('status_kepegawaian'),
-            'page' => 'master/add_employee',
+            'page' => 'kepegawaian/add_employee',
             'ajax' => [
                 'employee'
             ]
@@ -72,7 +72,7 @@ class Employee extends CI_Controller{
             'status_kepegawaian' => $this->db->get('status_kepegawaian'),
             'cabang' => $this->db->get('cabang'),
             'kepegawaian' => $kepegawaian,
-            'page' => 'master/edit_employee',
+            'page' => 'kepegawaian/edit_employee',
             'ajax' => [
                 'employee'
             ]
@@ -151,7 +151,7 @@ class Employee extends CI_Controller{
                     $this->session->set_flashdata('error', "Data Gagal Di Tambahkan");
                 }
 
-                redirect('master/employee', 'refresh');
+                redirect('kepegawaian/employee', 'refresh');
             }
         }
     }
@@ -352,8 +352,8 @@ class Employee extends CI_Controller{
                 '<strong>'.$row->unit.'</strong>',
                 '<strong>'.longdate_indo(date('Y-m-d', strtotime($row->updated_at))).' - '.date('H:i:s', strtotime($row->updated_at)).'</strong>',
                 '<div class="btn-group" role="group" aria-label="Basic example">
-                    <a class="btn btn-sm btn-round btn-info text-white px-3 mb-0" href="'.site_url('master/employee/' . $row->id).'"><i class="fas fa-pencil-alt me-2" aria-hidden="true"></i>Edit</a>
-                    <a class="btn btn-sm btn-round btn-link text-danger px-3 mb-0" href="'.site_url('master/employee/delete/' . $row->id).'"><i class="far fa-trash-alt" aria-hidden="true"></i></a>
+                    <a class="btn btn-sm btn-round btn-info text-white px-3 mb-0" href="'.site_url('kepegawaian/employee/' . $row->id).'"><i class="fas fa-pencil-alt me-2" aria-hidden="true"></i>Edit</a>
+                    <a class="btn btn-sm btn-round btn-link text-danger px-3 mb-0" href="'.site_url('kepegawaian/employee/delete/' . $row->id).'"><i class="far fa-trash-alt" aria-hidden="true"></i></a>
                 </div>'
             ];
         }

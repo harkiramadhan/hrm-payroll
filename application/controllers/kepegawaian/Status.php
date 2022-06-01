@@ -1,5 +1,5 @@
 <?php
-class Kepegawaian extends CI_Controller{
+class Status extends CI_Controller{
     function __construct(){
         parent::__construct();
         $this->load->model([
@@ -13,7 +13,7 @@ class Kepegawaian extends CI_Controller{
         $var = [
             'title' => 'Master Status Kepegawaian',
             'company' => $this->M_Company->getDefault(),
-            'page' => 'master/kepegawaian'
+            'page' => 'kepegawaian/status'
         ];
         $this->load->view('templates', $var);
     }
@@ -42,7 +42,7 @@ class Kepegawaian extends CI_Controller{
                 '<p class="text-center mb-0"><strong>'.$join.'</strong></p>',
                 '<p class="text-center mb-0"><strong>'.$finish.'</strong></p>',
                 '<div class="btn-group" role="group" aria-label="Basic example">
-                    <a class="btn btn-sm btn-round btn-info text-white px-3 mb-0" href="'.site_url('master/employee/' . $row->id).'#sec-detail-kepegawaian"><i class="fas fa-pencil-alt me-2" aria-hidden="true"></i>Edit</a>
+                    <a class="btn btn-sm btn-round btn-info text-white px-3 mb-0" href="'.site_url('kepegawaian/employee/' . $row->id).'#sec-detail-kepegawaian"><i class="fas fa-pencil-alt me-2" aria-hidden="true"></i>Edit</a>
                 </div>'
             ];
         }

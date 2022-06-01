@@ -14,7 +14,7 @@ class Company extends CI_Controller{
             'title' => 'Master Perusahaan',
             'company' => $this->M_Company->getDefault(),
             'shift' => $this->db->order_by('id', "ASC")->get('shift'),
-            'page' => 'master/company'
+            'page' => 'kepegawaian/company'
         ];
         $this->load->view('templates', $var);
     }
@@ -85,7 +85,7 @@ class Company extends CI_Controller{
                     <h5 class="font-weight-bolder">Edit Perusahaan</h5>
                 </div>
                 <div class="card-body pb-0">
-                    <form action="<?= site_url('master/company/update/' . $id) ?>" role="form text-left" method="post">
+                    <form action="<?= site_url('kepegawaian/company/update/' . $id) ?>" role="form text-left" method="post">
                         <div class="row">
                             <div class="col-lg-12">
                                 <label>Nama Perusahaan<small class="text-danger">*</small></label>
@@ -143,12 +143,12 @@ class Company extends CI_Controller{
                 '<p class="text-center mb-0">'.badgeCompany($row->is_default).'</p>',
                 '<div class="btn-group" role="group" aria-label="Basic example">
                     <button type="button" class="btn btn-sm btn-round btn-info text-white px-3 mb-0" onclick="edit('.$row->id.')"><i class="fas fa-pencil-alt me-2" aria-hidden="true"></i>Edit</button>
-                    <a class="btn btn-sm btn-round btn-link text-danger px-3 mb-0" href="'.site_url('master/company/delete/' . $row->id).'"><i class="far fa-trash-alt" aria-hidden="true"></i></a>
+                    <a class="btn btn-sm btn-round btn-link text-danger px-3 mb-0" href="'.site_url('kepegawaian/company/delete/' . $row->id).'"><i class="far fa-trash-alt" aria-hidden="true"></i></a>
                 </div>
                 <script>
                     function edit(id){
                         $.ajax({
-                            url : "'.site_url('master/company/edit/').'" + id,
+                            url : "'.site_url('kepegawaian/company/edit/').'" + id,
                             type : "post",
                             data : {id : id},
                             success: function(res){

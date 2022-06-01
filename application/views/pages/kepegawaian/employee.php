@@ -7,7 +7,7 @@
                     <h5 class="mb-0"><strong>Pegawai</strong></h5>
                 </div>
                 <div class="col-lg-4 text-end">
-                    <a href="<?= site_url('master/employee/add') ?>" class="btn btn-sm btn-round bg-gradient-dark mb-0"><i class="fas fa-plus me-2"></i> Pegawai</a>
+                    <a href="<?= site_url('kepegawaian/employee/add') ?>" class="btn btn-sm btn-round bg-gradient-dark mb-0"><i class="fas fa-plus me-2"></i> Pegawai</a>
                 </div>
             </div>
             <!-- <p class="text-sm mb-0">

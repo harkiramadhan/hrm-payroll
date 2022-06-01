@@ -1,7 +1,7 @@
 <div class="container-fluid py-4">
     <div class="row">
         <div class="col-12 col-lg-8 m-auto">
-            <form action="<?= site_url('master/employee/create') ?>" method="POST">
+            <form action="<?= site_url('kepegawaian/employee/create') ?>" method="POST">
                 <div class="card p-3 border-radius-xl bg-white js-active" data-animation="FadeIn">
                     <h6><strong>Tambah Pegawai</strong></h6>
                     <div class="row mt-3">

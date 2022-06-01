@@ -1,7 +1,7 @@
 <div class="container-fluid py-4">
     <div class="row">
         <div class="col-12 col-lg-10 m-auto">
-            <form action="<?= site_url('master/employee/update/' . $pegawai->id) ?>" enctype="multipart/form-data" method="POST">
+            <form action="<?= site_url('kepegawaian/employee/update/' . $pegawai->id) ?>" enctype="multipart/form-data" method="POST">
                 <div class="card p-3 border-radius-xl bg-white js-active" data-animation="FadeIn">
                     <h6><strong>Edit Pegawai - <?= $pegawai->nama ?></strong></h6>
                     <div class="row mt-3">
@@ -197,7 +197,7 @@
                                     <td><?= longdate_indo($rows->tgl_join) ?></td>
                                     <td><?= longdate_indo($rows->tgl_finish) ?></td>
                                     <td class="text-center">
-                                        <a class="btn btn-sm btn-round btn-link text-danger px-3 mb-0" href="<?= site_url('master/employee/deleteSK/' . $rows->id) ?>"><i class="far fa-trash-alt" aria-hidden="true"></i></a>
+                                        <a class="btn btn-sm btn-round btn-link text-danger px-3 mb-0" href="<?= site_url('kepegawaian/employee/deleteSK/' . $rows->id) ?>"><i class="far fa-trash-alt" aria-hidden="true"></i></a>
                                     </td>
                                 </tr>
                                 <?php } ?>
@@ -312,7 +312,7 @@
                         <h5 class="font-weight-bolder">Tambah Status Kepegawaian <br> <?= @$pegawai->nama ?></h5>
                     </div>
                     <div class="card-body pb-0">
-                        <form action="<?= site_url('master/employee/addStatusKepegawaian') ?>" role="form text-left" method="post">
+                        <form action="<?= site_url('kepegawaian/employee/addStatusKepegawaian') ?>" role="form text-left" method="post">
                             <input type="hidden" name="pegawai_id" value="<?= $pegawai->id ?>">
                             <div class="row">
                                 <div class="col-lg-6">
