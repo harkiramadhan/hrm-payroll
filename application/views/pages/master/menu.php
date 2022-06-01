@@ -49,16 +49,84 @@
                     <div class="card-body pb-0">
                         <form action="<?= site_url('master/menus/create') ?>" role="form text-left" method="post">
                             <div class="row">
-                                <div class="col-lg-12">
-                                    <label>Kode <small class="text-danger">*</small></label>
+                                <div class="col-lg-5">
+                                    <label>Menu <small class="text-danger">*</small></label>
                                     <div class="input-group mb-3">
-                                        <input type="text" class="form-control" placeholder="Kode" aria-label="Kode" name="kode" required>
+                                        <input type="text" class="form-control" placeholder="Menu" aria-label="Menu" name="menu" required>
                                     </div>
                                 </div>
-                                <div class="col-lg-12">
-                                    <label>Keterangan <small class="text-danger">*</small></label>
+                                <div class="col-lg-5">
+                                    <label>Url <small class="text-danger">*</small></label>
                                     <div class="input-group mb-3">
-                                        <input type="text" class="form-control" placeholder="Keterangan" aria-label="Keterangan" name="keterangan" required>
+                                        <input type="text" class="form-control" placeholder="Url" aria-label="Url" name="url" required>
+                                    </div>
+                                </div>
+                                <div class="col-lg-2">
+                                    <label>Urut <small class="text-danger">*</small></label>
+                                    <div class="input-group mb-3">
+                                        <input type="number" class="form-control" placeholder="Urut" aria-label="Urut" name="urut" required>
+                                    </div>
+                                </div>
+                                <div class="col-lg-3">
+                                    <label>Status<small class="text-danger">*</small></label>
+                                    <div class="input-group mb-3">
+                                        <div class="form-check form-check-inline">
+                                            <input class="form-check-input" type="radio" name="status" id="inlineRadio1Status" value="t" required="">
+                                            <label class="form-check-label" for="inlineRadio1Status">Aktif</label>
+                                        </div>
+                                        <div class="form-check form-check-inline">
+                                            <input class="form-check-input" type="radio" name="status" id="inlineRadio2Status" value="f" required="">
+                                            <label class="form-check-label" for="inlineRadio2Status">Tidak</label>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-lg-3">
+                                    <label>Is Root ?<small class="text-danger">*</small></label>
+                                    <div class="input-group mb-3">
+                                        <div class="form-check form-check-inline">
+                                            <input class="form-check-input" type="radio" name="root" id="inlineRadioRoot1" value="t" required="">
+                                            <label class="form-check-label" for="inlineRadioRoot1">Ya</label>
+                                        </div>
+                                        <div class="form-check form-check-inline">
+                                            <input class="form-check-input" type="radio" name="root" id="inlineRadioRoot2" value="f" required="">
+                                            <label class="form-check-label" for="inlineRadioRoot2">Tidak</label>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-lg-3">
+                                    <label>Is Dropdown ?<small class="text-danger">*</small></label>
+                                    <div class="input-group mb-3">
+                                        <div class="form-check form-check-inline">
+                                            <input class="form-check-input" type="radio" name="dropdown" id="inlineRadio1" value="t" required="">
+                                            <label class="form-check-label" for="inlineRadio1">Ya</label>
+                                        </div>
+                                        <div class="form-check form-check-inline">
+                                            <input class="form-check-input" type="radio" name="dropdown" id="inlineRadio2" value="f" required="">
+                                            <label class="form-check-label" for="inlineRadio2">Tidak</label>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-lg-3">
+                                    <div class="form-group">
+                                        <label for="exampleFormControlSelect1">Child From ?</label>
+                                        <select name="root_id" class="form-control" id="exampleFormControlSelect1">
+                                            <option value="" selected="" disabled="">- Pilih Root Menu</option>
+                                            <?php foreach($root->result() as $row){ ?>
+                                                <option value="<?= $row->id ?>"><?= $row->menu ?></option>
+                                            <?php } ?>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-lg-12 mt-3">
+                                    <label>Pilih Icon <small class="text-danger">*</small></label>
+                                    <div class="input-group mb-3 justify-content-center" style="max-height: 350px!important; overflow-y: scroll;">
+                                        <?php foreach($fontawesome->result() as $fa){ ?>
+                                            <div class="form-check form-check-inline text-center">
+                                                <input class="form-check-input" type="radio" name="icon" id="inlineRadioIcon<?= $fa->id ?>" value="<?= $fa->class ?>" required="">
+                                                <label class="form-check-label" for="inlineRadioIcon<?= $fa->id ?>"></label>
+                                                <h4><i class="<?= $fa->class ?> mb-0"></i></h3>
+                                            </div>
+                                        <?php } ?>
                                     </div>
                                 </div>
                             </div>

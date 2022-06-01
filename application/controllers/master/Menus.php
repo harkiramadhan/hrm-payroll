@@ -14,78 +14,158 @@ class Menus extends CI_Controller{
             'title' => 'Master Menu',
             'company' => $this->M_Company->getDefault(),
             'shift' => $this->db->order_by('id', "ASC")->get('shift'),
-            'page' => 'master/menu'
+            'page' => 'master/menu',
+            'fontawesome' => $this->db->get('fontawesome'),
+            'root' => $this->db->get_where('menu1', ['root' => 't', 'status' => 't'])
         ];
         $this->load->view('templates', $var);
     }
 
     function create(){
-        // $dataInsert = [
-        //     'shift_id' => $this->input->post('shift_id', TRUE),
-        //     'hari_kerja' => $this->input->post('hari_kerja', TRUE),
-        //     'jam_in' => $this->input->post('jam_in', TRUE),
-        //     'jam_out' => $this->input->post('jam_out', TRUE),
-        // ];
-        // $this->db->insert('jam_kerja', $dataInsert);
-        // if($this->db->affected_rows() > 0){
-        //     $this->session->set_flashdata('success', "Data Berhasil Di Tambahkan");
-        // }else{
-        //     $this->session->set_flashdata('error', "Data Gagal Di Tambahkan");
-        // }
-        // redirect($_SERVER['HTTP_REFERER']);
+        $dataInsert = [
+            'menu' => $this->input->post('menu', TRUE),
+            'url' => $this->input->post('url', TRUE),
+            'urut' => $this->input->post('urut', TRUE),
+            'root' => $this->input->post('root', TRUE),
+            'status' => $this->input->post('status', TRUE),
+            'dropdown' => $this->input->post('dropdown', TRUE),
+            'root_id' => $this->input->post('root_id', TRUE),
+            'icon' => $this->input->post('icon', TRUE)
+        ];
+        $this->db->insert('menu1', $dataInsert);
+        if($this->db->affected_rows() > 0){
+            $this->session->set_flashdata('success', "Data Berhasil Di Tambahkan");
+        }else{
+            $this->session->set_flashdata('error', "Data Gagal Di Tambahkan");
+        }
+        redirect($_SERVER['HTTP_REFERER']);
     }
 
     function update($id){
-        // $dataUpdate = [
-        //     'shift_id' => $this->input->post('shift_id', TRUE),
-        //     'hari_kerja' => $this->input->post('hari_kerja', TRUE),
-        //     'jam_in' => $this->input->post('jam_in', TRUE),
-        //     'jam_out' => $this->input->post('jam_out', TRUE),
-        // ];
-        // $this->db->where('id', $id)->update('jam_kerja', $dataUpdate);
-        // if($this->db->affected_rows() > 0){
-        //     $this->session->set_flashdata('success', "Data Berhasil Di Simpan");
-        // }else{
-        //     $this->session->set_flashdata('error', "Data Gagal Di Simpan");
-        // }
-        // redirect($_SERVER['HTTP_REFERER']);
+        $dataUpdate = [
+            'menu' => $this->input->post('menu', TRUE),
+            'url' => $this->input->post('url', TRUE),
+            'urut' => $this->input->post('urut', TRUE),
+            'root' => $this->input->post('root', TRUE),
+            'status' => $this->input->post('status', TRUE),
+            'dropdown' => $this->input->post('dropdown', TRUE),
+            'root_id' => $this->input->post('root_id', TRUE),
+            'icon' => $this->input->post('icon', TRUE)
+        ];
+        $this->db->where('id', $id)->update('menu1', $dataUpdate);
+        if($this->db->affected_rows() > 0){
+            $this->session->set_flashdata('success', "Data Berhasil Di Simpan");
+        }else{
+            $this->session->set_flashdata('error', "Data Gagal Di Simpan");
+        }
+        redirect($_SERVER['HTTP_REFERER']);
     }
 
     function delete($id){
-        // $this->db->where('id', $id)->delete('jam_kerja');
-        // if($this->db->affected_rows() > 0){
-        //     $this->session->set_flashdata('success', "Data Berhasil Di Hapus");
-        // }else{
-        //     $this->session->set_flashdata('error', "Data Gagal Di Hapus");
-        // }
-        // redirect($_SERVER['HTTP_REFERER']);
+        $this->db->where('id', $id)->delete('menu1');
+        if($this->db->affected_rows() > 0){
+            $this->session->set_flashdata('success', "Data Berhasil Di Hapus");
+        }else{
+            $this->session->set_flashdata('error', "Data Gagal Di Hapus");
+        }
+        redirect($_SERVER['HTTP_REFERER']);
     }
 
     function edit($id){
-        $menu = $this->db->get_where('menu1', ['id' => $id])->row()
+        $menu = $this->db->get_where('menu1', ['id' => $id])->row();
+        $fontawesome = $this->db->get('fontawesome');
+        $root = $this->db->get_where('menu1', ['root' => 't', 'status' => 't']);
         ?>
             <div class="card card-plain">
                 <div class="card-header pb-0 text-left">
                     <h5 class="font-weight-bolder">Edit Menu</h5>
                 </div>
                 <div class="card-body pb-0">
-                    <form action="<?= site_url('master/menus/updata/' . $id) ?>" role="form text-left" method="post">
+                    <form action="<?= site_url('master/menus/update/' . $id) ?>" role="form text-left" method="post">
                         <div class="row">
-                            <div class="col-lg-12">
-                                <label>Kode <small class="text-danger">*</small></label>
+                            <div class="col-lg-5">
+                                <label>Menu <small class="text-danger">*</small></label>
                                 <div class="input-group mb-3">
-                                    <input type="text" class="form-control" placeholder="Kode" aria-label="Kode" name="kode" required>
+                                    <input type="text" class="form-control" placeholder="Menu" aria-label="Menu" name="menu" value="<?= $menu->menu ?>" required>
                                 </div>
                             </div>
-                            <div class="col-lg-12">
-                                <label>Keterangan <small class="text-danger">*</small></label>
+                            <div class="col-lg-5">
+                                <label>Url <small class="text-danger">*</small></label>
                                 <div class="input-group mb-3">
-                                    <input type="text" class="form-control" placeholder="Keterangan" aria-label="Keterangan" name="keterangan" required>
+                                    <input type="text" class="form-control" placeholder="Url" aria-label="Url" name="url" value="<?= $menu->url ?>" required>
+                                </div>
+                            </div>
+                            <div class="col-lg-2">
+                                <label>Urut <small class="text-danger">*</small></label>
+                                <div class="input-group mb-3">
+                                    <input type="number" class="form-control" placeholder="Urut" aria-label="Urut" name="urut" value="<?= $menu->urut ?>" required>
+                                </div>
+                            </div>
+                            <div class="col-lg-3">
+                                <label>Status<small class="text-danger">*</small></label>
+                                <div class="input-group mb-3">
+                                    <div class="form-check form-check-inline">
+                                        <input class="form-check-input" type="radio" name="status" id="inlineRadio1Status" value="t" <?= ($menu->status == 't') ? 'checked' : '' ?> required="">
+                                        <label class="form-check-label" for="inlineRadio1Status">Aktif</label>
+                                    </div>
+                                    <div class="form-check form-check-inline">
+                                        <input class="form-check-input" type="radio" name="status" id="inlineRadio2Status" value="f" <?= ($menu->status == 'f') ? 'checked' : '' ?> required="">
+                                        <label class="form-check-label" for="inlineRadio2Status">Tidak</label>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-3">
+                                <label>Is Root ?<small class="text-danger">*</small></label>
+                                <div class="input-group mb-3">
+                                    <div class="form-check form-check-inline">
+                                        <input class="form-check-input" type="radio" name="root" id="inlineRadioRoot1" value="t" <?= ($menu->root == 't') ? 'checked' : '' ?> required="">
+                                        <label class="form-check-label" for="inlineRadioRoot1">Ya</label>
+                                    </div>
+                                    <div class="form-check form-check-inline">
+                                        <input class="form-check-input" type="radio" name="root" id="inlineRadioRoot2" value="f" <?= ($menu->root == 'f') ? 'checked' : '' ?> required="">
+                                        <label class="form-check-label" for="inlineRadioRoot2">Tidak</label>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-3">
+                                <label>Is Dropdown ?<small class="text-danger">*</small></label>
+                                <div class="input-group mb-3">
+                                    <div class="form-check form-check-inline">
+                                        <input class="form-check-input" type="radio" name="dropdown" id="inlineRadio1" value="t" <?= ($menu->dropdown == 't') ? 'checked' : '' ?> required="">
+                                        <label class="form-check-label" for="inlineRadio1">Ya</label>
+                                    </div>
+                                    <div class="form-check form-check-inline">
+                                        <input class="form-check-input" type="radio" name="dropdown" id="inlineRadio2" value="f" <?= ($menu->dropdown == 'f') ? 'checked' : '' ?> required="">
+                                        <label class="form-check-label" for="inlineRadio2">Tidak</label>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-3">
+                                <div class="form-group">
+                                    <label for="exampleFormControlSelect1">Child From ?</label>
+                                    <select name="root_id" class="form-control" id="exampleFormControlSelect1">
+                                        <option value="" selected="" disabled="">- Pilih Root Menu</option>
+                                        <?php foreach($root->result() as $row){ ?>
+                                            <option value="<?= $row->id ?>" <?= ($menu->root_id == $row->id) ? 'selected' : '' ?>><?= $row->menu ?></option>
+                                        <?php } ?>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-lg-12 mt-3">
+                                <label>Pilih Icon <small class="text-danger">*</small></label>
+                                <div class="input-group mb-3 justify-content-center" style="max-height: 350px!important; overflow-y: scroll;">
+                                    <?php foreach($fontawesome->result() as $fa){ ?>
+                                        <div class="form-check form-check-inline text-center">
+                                            <input class="form-check-input" type="radio" name="icon" id="inlineRadioIcon<?= $fa->id ?>" value="<?= $fa->class ?>" <?= ($menu->icon == $fa->class) ? 'checked' : '' ?> required="">
+                                            <label class="form-check-label" for="inlineRadioIcon<?= $fa->id ?>"></label>
+                                            <h4><i class="<?= $fa->class ?> mb-0"></i></h3>
+                                        </div>
+                                    <?php } ?>
                                 </div>
                             </div>
                         </div>
                         <div class="text-center">
-                            <button type="submit" class="btn btn-sm btn-round bg-success btn-lg w-100 mt-4 mb-0 text-white">Tambahkan</button>
+                            <button type="submit" class="btn btn-sm btn-round bg-success btn-lg w-100 mt-4 mb-0 text-white">Simpan</button>
                         </div>
                     </form>
                 </div>
