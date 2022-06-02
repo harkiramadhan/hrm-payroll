@@ -22,6 +22,7 @@
                         <th class="text-center w-5px">Jenis</th>
                         <th class="w-5px">Urut</th>
                         <th class="">Tunjangan</th>
+                        <th class="text-center w-5px">Status</th>
                         <th class="text-center w-5px">Action</th>
                     </tr>
                 </thead>
@@ -34,7 +35,7 @@
 
 <!-- Modals -->
 <div class="modal fade" id="modalAdd" tabindex="-1" role="dialog" aria-labelledby="modal-form" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered modal-md" role="document">
+    <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
         <div class="modal-content">
             <div class="modal-body p-0">
                 <div class="card card-plain">
@@ -61,10 +62,23 @@
                                         <input type="number" class="form-control" placeholder="Nomor Urut Tunjangan" aria-label="Nomor Urut Tunjangan" name="urut" required>
                                     </div>
                                 </div>
-                                <div class="col-lg-12">
+                                <div class="col-lg-8">
                                     <label>Tunjangan <small class="text-danger">*</small></label>
                                     <div class="input-group mb-3">
                                         <input type="text" class="form-control" placeholder="Tunjangan" aria-label="Tunjangan" name="tunjangan" required>
+                                    </div>
+                                </div>
+                                <div class="col-lg-4">
+                                    <label>Status<small class="text-danger">*</small></label>
+                                    <div class="input-group mb-3">
+                                        <div class="form-check form-check-inline">
+                                            <input class="form-check-input" type="radio" name="status" id="inlineRadio1" value="t" required="">
+                                            <label class="form-check-label" for="inlineRadio1">Active</label>
+                                        </div>
+                                        <div class="form-check form-check-inline">
+                                            <input class="form-check-input" type="radio" name="status" id="inlineRadio2" value="f" required="">
+                                            <label class="form-check-label" for="inlineRadio2">Non Active</label>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -77,16 +91,6 @@
                         <button type="button" class="btn btn-sm btn-link btn-block  ml-auto" data-bs-dismiss="modal">Batal</button>
                     </div>
                 </div>
-            </div>
-        </div>
-    </div>
-</div>
-
-<div class="modal fade" id="modalEdit" tabindex="-1" role="dialog" aria-labelledby="modal-form" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered modal-md" role="document">
-        <div class="modal-content">
-            <div class="modal-body p-0 data-edit">
-              
             </div>
         </div>
     </div>
