@@ -186,16 +186,19 @@ class Menus extends CI_Controller{
         $data = array();
         $no = 1;
         foreach($get->result() as $row){
+            @$root = $this->db->get_where('menu1', ['id' => $row->root_id])->row()->menu;
+            $badge = ($row->status == 't') ? '<span class="badge badge-sm bg-gradient-success">Active</span>' : '<span class="badge badge-sm bg-gradient-danger">Non Active</span>';
+            $badgeRoot = (@$root) ? '<span class="badge badge-sm bg-primary">'.@$root.'</span>' : ' - ';
             $data[] = [
                 '<strong>'.$row->id.'</strong>',
                 '<strong>'.$row->menu.'</strong>',
                 '<p class="text-center mb-0"><strong>'.$row->urut.'</strong></p>',
                 '<p class="text-center mb-0"><strong><i class="text-primary '.$row->icon.'"></i></strong></p>',
-                '<p class="text-center mb-0"><strong>'.$row->status.'</strong></p>',
+                '<p class="text-center mb-0"><strong>'.$badge.'</strong></p>',
                 '<strong>'.$row->url.'</strong>',
                 '<p class="text-center mb-0"><strong>'.$row->dropdown.'</strong></p>',
                 '<p class="text-center mb-0"><strong>'.$row->root.'</strong></p>',
-                '<p class="text-center mb-0"><strong>'.$row->root_id.'</strong></p>',
+                '<p class="text-center mb-0"><strong>'.$badgeRoot.'</strong></p>',
                 '<div class="btn-group" role="group" aria-label="Basic example">
                     <button type="button" class="btn btn-sm btn-round btn-info text-white px-3 mb-0" onclick="edit('.$row->id.')"><i class="fas fa-pencil-alt me-2" aria-hidden="true"></i>Edit</button>
                     <a class="btn btn-sm btn-round btn-link text-danger px-3 mb-0" href="'.site_url('master/menus/delete/' . $row->id).'"><i class="far fa-trash-alt" aria-hidden="true"></i></a>

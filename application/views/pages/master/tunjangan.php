@@ -22,6 +22,7 @@
                         <th class="text-center w-5px">Jenis</th>
                         <th class="w-5px">Urut</th>
                         <th class="">Tunjangan</th>
+                        <th class="text-center w-15p">Role</th>
                         <th class="text-center w-5px">Status</th>
                         <th class="text-center w-5px">Action</th>
                     </tr>
@@ -45,7 +46,7 @@
                     <div class="card-body pb-0">
                         <form action="<?= site_url('master/tunjangan/create') ?>" role="form text-left" method="post">
                             <div class="row">
-                                <div class="col-lg-8">
+                                <div class="col-lg-4">
                                     <div class="form-group">
                                         <label for="exampleFormControlSelect1">Jenis Tunjangan <small class="text-danger">*</small></label>
                                         <select name="type" class="form-control" id="exampleFormControlSelect1" required>
@@ -53,6 +54,17 @@
                                             <option value="1" >Konsumtif</option>
                                             <option value="2" >Non - Konsumtif</option>
                                             <option value="3" >Pengurangan</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-lg-4">
+                                    <div class="form-group">
+                                        <label for="exampleFormControlSelect1">Role Tunjangan <small class="text-danger">*</small></label>
+                                        <select name="role_id" class="form-control" id="exampleFormControlSelect1" required>
+                                            <option value="" selected="" disabled="">- Pilih Role Tunjangan</option>
+                                            <?php foreach($role as $r){ ?>
+                                                <option value="<?= $r->id ?>" ><?= $r->kode." - ".$r->satuan ?></option>
+                                            <?php } ?>
                                         </select>
                                     </div>
                                 </div>

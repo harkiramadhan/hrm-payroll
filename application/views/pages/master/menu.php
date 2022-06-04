@@ -26,7 +26,7 @@
                         <th class="text-left w-5px">Url</th>
                         <th class="text-center w-5px">Dropdown</th>
                         <th class="text-center w-5px">Root</th>
-                        <th class="text-center w-5px">Root Id</th>
+                        <th class="text-center w-5px">Root Menu</th>
                         <th class="text-center w-5px">Action</th>
                     </tr>
                 </thead>

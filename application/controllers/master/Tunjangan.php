@@ -13,13 +13,15 @@ class Tunjangan extends CI_Controller{
         $var = [
             'title' => 'Master Tunjangan',
             'company' => $this->M_Company->getDefault(),
-            'page' => 'master/tunjangan'
+            'page' => 'master/tunjangan',
+            'role' => $this->db->order_by('id', "DESC")->get_where('role_tunjangan', ['status' => 't'])->result()
         ];
         $this->load->view('templates', $var);
     }
 
     function create(){
         $dataInsert = [
+            'role_id' => $this->input->post('role_id', TRUE),
             'type' => $this->input->post('type', TRUE),
             'tunjangan' => $this->input->post('tunjangan', TRUE),
             'status' => $this->input->post('status'),
@@ -37,6 +39,7 @@ class Tunjangan extends CI_Controller{
 
     function update($id){
         $dataUpdate = [
+            'role_id' => $this->input->post('role_id', TRUE),
             'type' => $this->input->post('type', TRUE),
             'tunjangan' => $this->input->post('tunjangan', TRUE),
             'status' => $this->input->post('status'),
@@ -65,6 +68,7 @@ class Tunjangan extends CI_Controller{
 
     function edit($id){
         $tunjangan = $this->db->get_where('tunjangan', ['id' => $id])->row();
+        $role = $this->db->order_by('id', "DESC")->get_where('role_tunjangan', ['status' => 't'])->result();
         ?>
             <div class="card card-plain">
                 <div class="card-header pb-0 text-left">
@@ -73,7 +77,7 @@ class Tunjangan extends CI_Controller{
                 <div class="card-body pb-0">
                     <form action="<?= site_url('master/tunjangan/update/' . $id) ?>" role="form text-left" method="post">
                         <div class="row">
-                            <div class="col-lg-8">
+                            <div class="col-lg-4">
                                 <div class="form-group">
                                     <label for="exampleFormControlSelect1">Jenis Tunjangan <small class="text-danger">*</small></label>
                                     <select name="type" class="form-control" id="exampleFormControlSelect1" required>
@@ -84,6 +88,17 @@ class Tunjangan extends CI_Controller{
                                     </select>
                                 </div>
                             </div>
+                            <div class="col-lg-4">
+                                    <div class="form-group">
+                                        <label for="exampleFormControlSelect1">Role Tunjangan <small class="text-danger">*</small></label>
+                                        <select name="role_id" class="form-control" id="exampleFormControlSelect1" required>
+                                            <option value="" selected="" disabled="">- Pilih Role Tunjangan</option>
+                                            <?php foreach($role as $r){ ?>
+                                                <option value="<?= $r->id ?>" <?= ($tunjangan->role_id == $r->id) ? 'selected' : '' ?>><?= $r->kode." - ".$r->satuan ?></option>
+                                            <?php } ?>
+                                        </select>
+                                    </div>
+                                </div>
                             <div class="col-lg-4">
                                 <label>Urut <small class="text-danger">*</small></label>
                                 <div class="input-group mb-3">
@@ -151,7 +166,10 @@ class Tunjangan extends CI_Controller{
         $start = intval($this->input->get("start"));
         $length = intval($this->input->get("length"));
 
-        $get = $this->db->order_by('id', "DESC")->get('tunjangan');
+        $get = $this->db->select('r.kode, r.satuan, t.*')
+                        ->from('tunjangan t')
+                        ->join('role_tunjangan r', 't.role_id = r.id', "LEFT")
+                        ->order_by('r.id', "DESC")->get();
 
         $data = array();
         $no = 1;
@@ -163,6 +181,7 @@ class Tunjangan extends CI_Controller{
                 $badgeTunjangan,
                 '<p class="mb-0 text-center"><strong>'.$row->urut.'</strong></p>',
                 '<strong>'.$row->tunjangan.'</strong>',
+                '<strong>'.$row->kode.' - '.$row->satuan.'</strong>',
                 $badge,
                 '<div class="btn-group" role="group" aria-label="Basic example">
                     <button type="button" class="btn btn-sm btn-round btn-info text-white px-3 mb-0" onclick="edit('.$row->id.')"><i class="fas fa-pencil-alt me-2" aria-hidden="true"></i>Edit</button>

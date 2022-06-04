@@ -73,19 +73,19 @@
                                         </select>
                                     </div>
                                 </div>
-                                <div class="col-lg-6">
+                                <div class="col-lg-4">
                                     <label>Jam (In) <small class="text-danger">*) Format HH:MM</small></label>
                                     <div class="input-group mb-3">
                                         <input type="time" class="form-control" placeholder="Jam (In)" aria-label="Jam (In)" name="jam_in" required>
                                     </div>
                                 </div>
-                                <div class="col-lg-6">
+                                <div class="col-lg-4">
                                     <label>Jam (Out) <small class="text-danger">*) Format HH:MM</small></label>
                                     <div class="input-group mb-3">
                                         <input type="time" class="form-control" placeholder="Jam (Out)" aria-label="Jam (Out)" name="jam_out" required>
                                     </div>
                                 </div>
-                                <div class="col-lg-12">
+                                <div class="col-lg-4">
                                     <label>Status<small class="text-danger">*</small></label>
                                     <div class="input-group mb-3">
                                         <div class="form-check form-check-inline">
