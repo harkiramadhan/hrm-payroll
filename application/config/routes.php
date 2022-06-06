@@ -53,7 +53,7 @@ $route['default_controller'] = 'auth';
 $route['404_override'] = '';
 $route['translate_uri_dashes'] = FALSE;
 
-$route['master/employee/(:num)'] = 'master/employee/edit/$1';
+$route['kepegawaian/employee/(:num)'] = 'kepegawaian/employee/edit/$1';
 
 $route['trx/absensi/(:num)'] = 'trx/absensi/detail/$1';
 $route['trx/absensi/(:num)/table'] = 'trx/absensi/tableDetail/$1';

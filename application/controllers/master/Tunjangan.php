@@ -169,7 +169,7 @@ class Tunjangan extends CI_Controller{
         $get = $this->db->select('r.kode, r.satuan, t.*')
                         ->from('tunjangan t')
                         ->join('role_tunjangan r', 't.role_id = r.id', "LEFT")
-                        ->order_by('r.id', "DESC")->get();
+                        ->order_by('t.id', "DESC")->get();
 
         $data = array();
         $no = 1;

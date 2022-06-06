@@ -77,7 +77,7 @@ class Role_tunjangan extends CI_Controller{
                             <div class="col-lg-8">
                                 <label>Keterangan <small class="text-danger">*</small></label>
                                 <div class="input-group mb-3">
-                                    <input type="text" class="form-control" placeholder="Keterangan" aria-label="Keterangan" name="keterangan" value="<?= $role->satuan ?>" required>
+                                    <input type="text" class="form-control" placeholder="Keterangan" aria-label="Keterangan" name="satuan" value="<?= $role->satuan ?>" required>
                                 </div>
                             </div>
                             <div class="col-lg-12">
