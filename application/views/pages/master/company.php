@@ -39,7 +39,7 @@
                         <h5 class="font-weight-bolder">Tambah Perusahaan</h5>
                     </div>
                     <div class="card-body pb-0">
-                        <form action="<?= site_url('kepegawaian/company/create') ?>" role="form text-left" method="post">
+                        <form action="<?= site_url('master/company/create') ?>" role="form text-left" method="post">
                             <div class="row">
                                 <div class="col-lg-12">
                                     <label>Nama Perusahaan<small class="text-danger">*</small></label>

@@ -14,7 +14,7 @@ class Company extends CI_Controller{
             'title' => 'Master Perusahaan',
             'company' => $this->M_Company->getDefault(),
             'shift' => $this->db->order_by('id', "ASC")->get('shift'),
-            'page' => 'kepegawaian/company'
+            'page' => 'master/company'
         ];
         $this->load->view('templates', $var);
     }
@@ -85,7 +85,7 @@ class Company extends CI_Controller{
                     <h5 class="font-weight-bolder">Edit Perusahaan</h5>
                 </div>
                 <div class="card-body pb-0">
-                    <form action="<?= site_url('kepegawaian/company/update/' . $id) ?>" role="form text-left" method="post">
+                    <form action="<?= site_url('master/company/update/' . $id) ?>" role="form text-left" method="post">
                         <div class="row">
                             <div class="col-lg-12">
                                 <label>Nama Perusahaan<small class="text-danger">*</small></label>
@@ -125,6 +125,30 @@ class Company extends CI_Controller{
         <?php
     }
 
+    function remove($id){
+        $company = $this->db->get_where('company', ['id' => $id])->row();
+        ?>
+            <div class="card card-plain">
+                <div class="card-body pb-0">
+                    <form action="<?= site_url('master/company/delete/' . $id) ?>" role="form text-left" method="post">
+                        <div class="row">
+                            <div class="col-lg-12 text-center">
+                                <h1 class="mb-3 text-danger"><i class="fas fa-exclamation"></i></h1>
+                                <h5><strong class="mb-0">Hapus Perusahaan <?= $company->kode." - ".$company->company ?> </strong></h5>
+                            </div>
+                        </div>
+                        <div class="text-center">
+                            <button type="submit" class="btn btn-sm btn-round bg-danger btn-lg w-100 mt-4 mb-0 text-white">Hapus</button>
+                        </div>
+                    </form>
+                </div>
+                <div class="card-footer text-center pt-0 px-lg-2 px-1">
+                    <button type="button" class="btn btn-sm btn-link btn-block  ml-auto" data-bs-dismiss="modal">Batal</button>
+                </div>
+            </div>
+        <?php
+    }
+
     function table(){
         $draw = intval($this->input->get("draw"));
         $start = intval($this->input->get("start"));
@@ -143,17 +167,28 @@ class Company extends CI_Controller{
                 '<p class="text-center mb-0">'.badgeCompany($row->is_default).'</p>',
                 '<div class="btn-group" role="group" aria-label="Basic example">
                     <button type="button" class="btn btn-sm btn-round btn-info text-white px-3 mb-0" onclick="edit('.$row->id.')"><i class="fas fa-pencil-alt me-2" aria-hidden="true"></i>Edit</button>
-                    <a class="btn btn-sm btn-round btn-link text-danger px-3 mb-0" href="'.site_url('kepegawaian/company/delete/' . $row->id).'"><i class="far fa-trash-alt" aria-hidden="true"></i></a>
+                    <button type="button" class="btn btn-sm btn-round btn-link text-danger px-3 mb-0" onclick="remove('.$row->id.')"><i class="far fa-trash-alt" aria-hidden="true"></i></button>
                 </div>
                 <script>
                     function edit(id){
                         $.ajax({
-                            url : "'.site_url('kepegawaian/company/edit/').'" + id,
+                            url : "'.site_url('master/company/edit/').'" + id,
                             type : "post",
                             data : {id : id},
                             success: function(res){
                                 $(".data-edit").html(res)
                                 $("#modalEdit").modal("show")
+                            }
+                        })
+                    }
+                    function remove(id){
+                        $.ajax({
+                            url : "'.site_url('master/company/remove/').'" + id,
+                            type : "post",
+                            data : {id : id},
+                            success: function(res){
+                                $(".data-delete").html(res)
+                                $("#modalDelete").modal("show")
                             }
                         })
                     }
