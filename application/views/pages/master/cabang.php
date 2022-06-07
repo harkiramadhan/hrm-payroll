@@ -21,6 +21,7 @@
                         <th class="text-center w-5px">Id</th>
                         <th class="w-5px">Cabang</th>
                         <th class="">Alamat</th>
+                        <th class="text-center w-5px">Status</th>
                         <th class="text-center w-5px">Action</th>
                     </tr>
                 </thead>
@@ -41,7 +42,7 @@
                         <h5 class="font-weight-bolder">Tambah Cabang</h5>
                     </div>
                     <div class="card-body pb-0">
-                        <form action="<?= site_url('kepegawaian/cabang/create') ?>" role="form text-left" method="post">
+                        <form action="<?= site_url('master/cabang/create') ?>" role="form text-left" method="post">
                             <div class="row">
                                 <div class="col-lg-12">
                                     <label>Cabang <small class="text-danger">*</small></label>
@@ -49,10 +50,23 @@
                                         <input type="text" class="form-control" placeholder="Cabang" aria-label="Cabang" name="cabang" required>
                                     </div>
                                 </div>
-                                <div class="col-lg-12">
+                                <div class="col-lg-8">
                                     <label>Alamat <small class="text-danger">*</small></label>
                                     <div class="input-group mb-3">
                                         <textarea id="" cols="30" rows="5" class="form-control" name="alamat" placeholder="alamat"></textarea>
+                                    </div>
+                                </div>
+                                <div class="col-lg-4">
+                                    <label>Status<small class="text-danger">*</small></label>
+                                    <div class="input-group mb-3">
+                                        <div class="form-check form-check-inline">
+                                            <input class="form-check-input" type="radio" name="status" id="inlineRadio1" value="t" required="">
+                                            <label class="form-check-label" for="inlineRadio1">Active</label>
+                                        </div>
+                                        <div class="form-check form-check-inline">
+                                            <input class="form-check-input" type="radio" name="status" id="inlineRadio2" value="f" required="">
+                                            <label class="form-check-label" for="inlineRadio2">Non Active</label>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -65,16 +79,6 @@
                         <button type="button" class="btn btn-sm btn-link btn-block  ml-auto" data-bs-dismiss="modal">Batal</button>
                     </div>
                 </div>
-            </div>
-        </div>
-    </div>
-</div>
-
-<div class="modal fade" id="modalEdit" tabindex="-1" role="dialog" aria-labelledby="modal-form" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
-        <div class="modal-content">
-            <div class="modal-body p-0 data-edit">
-              
             </div>
         </div>
     </div>
