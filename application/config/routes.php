@@ -54,6 +54,7 @@ $route['404_override'] = '';
 $route['translate_uri_dashes'] = FALSE;
 
 $route['master/template_tunjangan/(:num)'] = 'master/template_tunjangan/detail/$1';
+$route['master/template_tunjangan/(:num)/table'] = 'master/template_tunjangan/tableDetail/$1';
 
 $route['kepegawaian/employee/(:num)'] = 'kepegawaian/employee/edit/$1';
 
