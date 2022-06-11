@@ -339,7 +339,7 @@ class Template_tunjangan extends CI_Controller{
         $start = intval($this->input->get("start"));
         $length = intval($this->input->get("length"));
 
-        $get = $this->db->select('dt.*, t.tunjangan, t.keterangan, rt.kode, rt.satuan')
+        $get = $this->db->select('dt.*, t.tunjangan, t.keterangan, t.type tunjangan_type, rt.kode, rt.satuan')
                         ->from('detail_template_tunjangan dt')
                         ->join('tunjangan t', 'dt.tunjangan_id = t.id')
                         ->join('role_tunjangan rt', 't.role_id = rt.id')
@@ -352,7 +352,7 @@ class Template_tunjangan extends CI_Controller{
         foreach($get->result() as $row){
             $badge = ($row->status == 't') ? '<span class="badge badge-sm bg-gradient-success">Active</span>' : '<span class="badge badge-sm bg-gradient-danger">Non Active</span>';
             $badgeType = ($row->type == 'N') ? '<span class="badge badge-sm bg-gradient-primary">Nominal</span>' : '<span class="badge badge-sm bg-gradient-primary">Presentase</span>';
-            $badgeTunjangan = jenisTunjangan($row->type);
+            $badgeTunjangan = jenisTunjangan($row->tunjangan_type);
             $nominal = ($row->type == 'N') ? rupiah($row->nominal) : $row->nominal."%";
             $data[] = [
                 $no++,
