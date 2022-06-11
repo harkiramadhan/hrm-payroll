@@ -26,6 +26,7 @@ class Tunjangan extends CI_Controller{
             'tunjangan' => $this->input->post('tunjangan', TRUE),
             'status' => $this->input->post('status'),
             'urut' => $this->input->post('urut', TRUE),
+            'keterangan' => $this->input->post('keterangan', TRUE)
         ];
         $this->db->insert('tunjangan', $dataInsert);
         if($this->db->affected_rows() > 0){
@@ -44,6 +45,7 @@ class Tunjangan extends CI_Controller{
             'tunjangan' => $this->input->post('tunjangan', TRUE),
             'status' => $this->input->post('status'),
             'urut' => $this->input->post('urut', TRUE),
+            'keterangan' => $this->input->post('keterangan', TRUE)
         ];
         $this->db->where('id', $id)->update('tunjangan', $dataUpdate);
         if($this->db->affected_rows() > 0){
@@ -105,10 +107,16 @@ class Tunjangan extends CI_Controller{
                                     <input type="number" class="form-control" placeholder="Nomor Urut Tunjangan" aria-label="Nomor Urut Tunjangan" name="urut" value="<?= $tunjangan->urut ?>" required>
                                 </div>
                             </div>
-                            <div class="col-lg-8">
+                            <div class="col-lg-12">
                                 <label>Tunjangan <small class="text-danger">*</small></label>
                                 <div class="input-group mb-3">
                                     <input type="text" class="form-control" placeholder="Tunjangan" aria-label="Tunjangan" name="tunjangan" value="<?= $tunjangan->tunjangan ?>" required>
+                                </div>
+                            </div>
+                            <div class="col-lg-8">
+                                <label>Keterangan <small class="text-danger">*</small></label>
+                                <div class="input-group mb-3">
+                                    <input type="text" class="form-control" placeholder="Keterangan" aria-label="Keterangan" name="keterangan" value="<?= $tunjangan->keterangan ?>" required>
                                 </div>
                             </div>
                             <div class="col-lg-4">
@@ -146,7 +154,7 @@ class Tunjangan extends CI_Controller{
                         <div class="row">
                             <div class="col-lg-12 text-center">
                                 <h1 class="mb-3 text-danger"><i class="fas fa-exclamation"></i></h1>
-                                <h5><strong class="mb-0">Hapus Tunjangan <?= $tunjangan->tunjangan ?> </strong></h5>
+                                <h5><strong class="mb-0">Hapus Tunjangan <?= $tunjangan->tunjangan." - ".$tunjangan->keterangan ?> </strong></h5>
                             </div>
                         </div>
                         <div class="text-center">
@@ -181,6 +189,7 @@ class Tunjangan extends CI_Controller{
                 $badgeTunjangan,
                 '<p class="mb-0 text-center"><strong>'.$row->urut.'</strong></p>',
                 '<strong>'.$row->tunjangan.'</strong>',
+                '<strong>'.$row->keterangan.'</strong>',
                 '<strong>'.$row->kode.' - '.$row->satuan.'</strong>',
                 $badge,
                 '<div class="btn-group" role="group" aria-label="Basic example">

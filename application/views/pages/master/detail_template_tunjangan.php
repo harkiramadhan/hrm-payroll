@@ -51,7 +51,7 @@
                                     <select name="tunjangan_id" class="form-control" id="exampleFormControlSelect1">
                                         <option value="" selected="" disabled="">- Pilih Tunjangan</option>
                                         <?php foreach($tunjangan->result() as $row){ ?>
-                                            <option value="<?= $row->id ?>"><?= $row->tunjangan ?></option>
+                                            <option value="<?= $row->id ?>"><?= $row->tunjangan." - ".$row->satuan." - ".$row->keterangan ?></option>
                                         <?php } ?>
                                     </select>
                                 </div>

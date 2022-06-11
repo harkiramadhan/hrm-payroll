@@ -22,6 +22,7 @@
                         <th class="text-center w-5px">Jenis</th>
                         <th class="w-5px">Urut</th>
                         <th class="">Tunjangan</th>
+                        <th class="">Keterangan</th>
                         <th class="text-center w-15p">Role</th>
                         <th class="text-center w-5px">Status</th>
                         <th class="text-center w-5px">Action</th>
@@ -74,10 +75,16 @@
                                         <input type="number" class="form-control" placeholder="Nomor Urut Tunjangan" aria-label="Nomor Urut Tunjangan" name="urut" required>
                                     </div>
                                 </div>
-                                <div class="col-lg-8">
+                                <div class="col-lg-12">
                                     <label>Tunjangan <small class="text-danger">*</small></label>
                                     <div class="input-group mb-3">
                                         <input type="text" class="form-control" placeholder="Tunjangan" aria-label="Tunjangan" name="tunjangan" required>
+                                    </div>
+                                </div>
+                                <div class="col-lg-8">
+                                    <label>Keterangan <small class="text-danger">*</small></label>
+                                    <div class="input-group mb-3">
+                                        <input type="text" class="form-control" placeholder="Keterangan" aria-label="Keterangan" name="keterangan" required>
                                     </div>
                                 </div>
                                 <div class="col-lg-4">

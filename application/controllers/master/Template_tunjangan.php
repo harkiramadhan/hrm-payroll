@@ -19,9 +19,14 @@ class Template_tunjangan extends CI_Controller{
     }
 
     function detail($id){
+        $tunjangan = $this->db->select('t.*, rt.kode, rt.satuan')
+                            ->from('tunjangan t')
+                            ->join('role_tunjangan rt', 't.role_id = rt.id')
+                            ->where('t.status', 't')
+                            ->order_by('t.id', "DESC")->get();
         $var = [
             'template_tunjangan' => $this->db->get_where('template_tunjangan', ['id' => $id])->row(),
-            'tunjangan' => $this->db->get_where('tunjangan', ['status' => 't']),
+            'tunjangan' => $tunjangan,
             'title' => 'Detail Template Tunjangan',
             'company' => $this->M_Company->getDefault(),
             'page' => 'master/detail_template_tunjangan'
@@ -154,7 +159,11 @@ class Template_tunjangan extends CI_Controller{
 
     function editDetail($id){
         $detail = $this->db->get_where('detail_template_tunjangan', ['id' => $id])->row();
-        $tunjangan = $this->db->get_where('tunjangan', ['status' => 't']);
+        $tunjangan = $this->db->select('t.*, rt.kode, rt.satuan')
+                            ->from('tunjangan t')
+                            ->join('role_tunjangan rt', 't.role_id = rt.id')
+                            ->where('t.status', 't')
+                            ->order_by('t.id', "DESC")->get();
         ?>
             <div class="card card-plain">
                 <div class="card-header pb-0 text-left">
@@ -168,7 +177,7 @@ class Template_tunjangan extends CI_Controller{
                                 <select name="tunjangan_id" class="form-control" id="exampleFormControlSelect1">
                                     <option value="" selected="" disabled="">- Pilih Tunjangan</option>
                                     <?php foreach($tunjangan->result() as $row){ ?>
-                                        <option value="<?= $row->id ?>" <?= ($detail->tunjangan_id == $row->id) ? 'selected' : '' ?>><?= $row->tunjangan ?></option>
+                                        <option value="<?= $row->id ?>" <?= ($detail->tunjangan_id == $row->id) ? 'selected' : '' ?>><?= $row->tunjangan." - ".$row->satuan." - ".$row->keterangan ?></option>
                                     <?php } ?>
                                 </select>
                             </div>
@@ -330,9 +339,10 @@ class Template_tunjangan extends CI_Controller{
         $start = intval($this->input->get("start"));
         $length = intval($this->input->get("length"));
 
-        $get = $this->db->select('dt.*, t.tunjangan')
+        $get = $this->db->select('dt.*, t.tunjangan, t.keterangan, rt.kode, rt.satuan')
                         ->from('detail_template_tunjangan dt')
                         ->join('tunjangan t', 'dt.tunjangan_id = t.id')
+                        ->join('role_tunjangan rt', 't.role_id = rt.id')
                         ->where('dt.template_id', $id)
                         ->order_by('dt.id', "DESC")->get();
 
@@ -342,11 +352,12 @@ class Template_tunjangan extends CI_Controller{
         foreach($get->result() as $row){
             $badge = ($row->status == 't') ? '<span class="badge badge-sm bg-gradient-success">Active</span>' : '<span class="badge badge-sm bg-gradient-danger">Non Active</span>';
             $badgeType = ($row->type == 'N') ? '<span class="badge badge-sm bg-gradient-primary">Nominal</span>' : '<span class="badge badge-sm bg-gradient-primary">Presentase</span>';
+            $badgeTunjangan = jenisTunjangan($row->type);
             $data[] = [
                 $no++,
-                '<strong>'.$row->tunjangan.'</strong>',
-                '<p class="text-center mb-0">'.$row->nominal.'</p>',
-                '<p class="text-center mb-0">'.$badgeType.'</p>',
+                '<strong>'.$row->tunjangan.' - '.$row->keterangan.'</strong>',
+                '<p class="text-right mb-0">'.rupiah($row->nominal).'</p>',
+                '<p class="text-center mb-0">'.$badgeType.' '.$badgeTunjangan.'</p>',
                 '<p class="text-center mb-0">'.$badge.'</p>',
                 '<div class="btn-group" role="group" aria-label="Basic example">
                     <button type="button" class="btn btn-sm btn-round btn-info text-white px-3 mb-0" onclick="edit('.$row->id.')"><i class="fas fa-pencil-alt me-2" aria-hidden="true"></i>Edit</button>
