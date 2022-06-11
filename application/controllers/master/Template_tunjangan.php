@@ -353,12 +353,13 @@ class Template_tunjangan extends CI_Controller{
             $badge = ($row->status == 't') ? '<span class="badge badge-sm bg-gradient-success">Active</span>' : '<span class="badge badge-sm bg-gradient-danger">Non Active</span>';
             $badgeType = ($row->type == 'N') ? '<span class="badge badge-sm bg-gradient-primary">Nominal</span>' : '<span class="badge badge-sm bg-gradient-primary">Presentase</span>';
             $badgeTunjangan = jenisTunjangan($row->type);
+            $nominal = ($row->type == 'N') ? rupiah($row->nominal) : $row->nominal."%";
             $data[] = [
                 $no++,
                 '<strong>'.$row->tunjangan.' - '.$row->keterangan.'</strong>',
-                '<p class="text-right mb-0">'.rupiah($row->nominal).'</p>',
-                '<p class="text-center mb-0">'.$badgeType.' '.$badgeTunjangan.'</p>',
-                '<p class="text-center mb-0">'.$badge.'</p>',
+                '<p class="text-end mb-0">'.$nominal.'</p>',
+                '<p class="text-end mb-0">'.$badgeType.' '.$badgeTunjangan.'</p>',
+                '<p class="text-end mb-0">'.$badge.'</p>',
                 '<div class="btn-group" role="group" aria-label="Basic example">
                     <button type="button" class="btn btn-sm btn-round btn-info text-white px-3 mb-0" onclick="edit('.$row->id.')"><i class="fas fa-pencil-alt me-2" aria-hidden="true"></i>Edit</button>
                     <button type="button" class="btn btn-sm btn-round btn-link text-danger px-3 mb-0" onclick="remove('.$row->id.')"><i class="far fa-trash-alt" aria-hidden="true"></i></button>

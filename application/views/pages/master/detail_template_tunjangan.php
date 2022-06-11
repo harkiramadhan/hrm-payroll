@@ -21,7 +21,7 @@
                         <th class="text-center w-5px">No</th>
                         <th class="">Tunjangan</th>
                         <th class="w-5px">Nominal</th>
-                        <th class="text-center">Tipe</th>
+                        <th class="text-center w-15p">Tipe</th>
                         <th class="text-center w-5px">Status</th>
                         <th class="text-center w-5px">Action</th>
                     </tr>
