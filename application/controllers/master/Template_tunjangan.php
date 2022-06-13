@@ -357,6 +357,7 @@ class Template_tunjangan extends CI_Controller{
             $data[] = [
                 $no++,
                 '<strong>'.$row->tunjangan.' - '.$row->keterangan.'</strong>',
+                '<strong>'.$row->satuan.'</strong>',
                 '<p class="text-end mb-0">'.$nominal.'</p>',
                 '<p class="text-end mb-0">'.$badgeType.' '.$badgeTunjangan.'</p>',
                 '<p class="text-end mb-0">'.$badge.'</p>',
