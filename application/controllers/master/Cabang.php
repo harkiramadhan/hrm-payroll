@@ -21,6 +21,7 @@ class Cabang extends CI_Controller{
 
     function create(){
         $datas = [
+            'kode' => $this->input->post('kode', TRUE),
             'cabang' => $this->input->post('cabang', TRUE),
             'alamat' => $this->input->post('alamat', TRUE),
             'status' => $this->input->post('status', TRUE)
@@ -37,6 +38,7 @@ class Cabang extends CI_Controller{
 
     function update($id){
         $datas = [
+            'kode' => $this->input->post('kode', TRUE),
             'cabang' => $this->input->post('cabang', TRUE),
             'alamat' => $this->input->post('alamat', TRUE),
             'status' => $this->input->post('status', TRUE)
@@ -71,7 +73,13 @@ class Cabang extends CI_Controller{
                 <div class="card-body pb-0">
                     <form action="<?= site_url('master/cabang/update/' . $id) ?>" role="form text-left" method="post">
                         <div class="row">
-                            <div class="col-lg-12">
+                            <div class="col-lg-4">
+                                <label>Kode Cabang <small class="text-danger">*</small></label>
+                                <div class="input-group mb-3">
+                                    <input type="text" class="form-control" placeholder="Kode Cabang" aria-label="Kode Cabang" name="kode" value="<?= $cabang->kode ?>" required>
+                                </div>
+                            </div>
+                            <div class="col-lg-8">
                                 <label>Cabang <small class="text-danger">*</small></label>
                                 <div class="input-group mb-3">
                                     <input type="text" class="form-control" placeholder="Cabang" aria-label="Cabang" name="cabang" value="<?= $cabang->cabang ?>" required>
@@ -147,6 +155,7 @@ class Cabang extends CI_Controller{
             $badge = ($row->status == 't') ? '<span class="badge badge-sm bg-gradient-success">Active</span>' : '<span class="badge badge-sm bg-gradient-danger">Non Active</span>';
             $data[] = [
                 '<strong>'.$no++.'</strong>',
+                '<strong>'.$row->kode.'</strong>',
                 '<strong>'.$row->cabang.'</strong>',
                 '<p class="mb-0"><strong>'.$row->alamat.'</strong></p>',
                 $badge,

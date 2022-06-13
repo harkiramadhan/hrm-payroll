@@ -19,7 +19,8 @@
                 <thead>
                     <tr>
                         <th class="text-center w-5px">Id</th>
-                        <th class="w-5px">Cabang</th>
+                        <th class="w-5px">Kode</th>
+                        <th class="w-15p">Cabang</th>
                         <th class="">Alamat</th>
                         <th class="text-center w-5px">Status</th>
                         <th class="text-center w-5px">Action</th>
@@ -44,7 +45,13 @@
                     <div class="card-body pb-0">
                         <form action="<?= site_url('master/cabang/create') ?>" role="form text-left" method="post">
                             <div class="row">
-                                <div class="col-lg-12">
+                                <div class="col-lg-4">
+                                    <label>Kode Cabang <small class="text-danger">*</small></label>
+                                    <div class="input-group mb-3">
+                                        <input type="text" class="form-control" placeholder="Kode Cabang" aria-label="Kode Cabang" name="kode" required>
+                                    </div>
+                                </div>
+                                <div class="col-lg-8">
                                     <label>Cabang <small class="text-danger">*</small></label>
                                     <div class="input-group mb-3">
                                         <input type="text" class="form-control" placeholder="Cabang" aria-label="Cabang" name="cabang" required>
