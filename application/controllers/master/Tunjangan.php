@@ -5,6 +5,7 @@ class Tunjangan extends CI_Controller{
         $this->load->model([
             'M_Company',
         ]);
+        $this->companyid = $this->session->userdata('company_id');
         if($this->session->userdata('masuk') != TRUE)
             redirect('', 'refresh');
     }
@@ -12,7 +13,7 @@ class Tunjangan extends CI_Controller{
     function index(){
         $var = [
             'title' => 'Master Tunjangan',
-            'company' => $this->M_Company->getDefault(),
+            'company' => $this->M_Company->getById($this->companyid),
             'page' => 'master/tunjangan',
             'role' => $this->db->order_by('id', "DESC")->get_where('role_tunjangan', ['status' => 't'])->result()
         ];
@@ -21,6 +22,7 @@ class Tunjangan extends CI_Controller{
 
     function create(){
         $dataInsert = [
+            'company_id' => $this->companyid,
             'role_id' => $this->input->post('role_id', TRUE),
             'type' => $this->input->post('type', TRUE),
             'tunjangan' => $this->input->post('tunjangan', TRUE),
@@ -177,6 +179,7 @@ class Tunjangan extends CI_Controller{
         $get = $this->db->select('r.kode, r.satuan, t.*')
                         ->from('tunjangan t')
                         ->join('role_tunjangan r', 't.role_id = r.id', "LEFT")
+                        ->where('t.company_id', $this->companyid)
                         ->order_by('t.id', "DESC")->get();
 
         $data = array();

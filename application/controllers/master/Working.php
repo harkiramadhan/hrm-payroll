@@ -5,6 +5,7 @@ class Working extends CI_Controller{
         $this->load->model([
             'M_Company',
         ]);
+        $this->companyid = $this->session->userdata('company_id');
         if($this->session->userdata('masuk') != TRUE)
             redirect('', 'refresh');
     }
@@ -12,8 +13,8 @@ class Working extends CI_Controller{
     function index(){
         $var = [
             'title' => 'Master Jam Kerja',
-            'company' => $this->M_Company->getDefault(),
-            'shift' => $this->db->order_by('id', "ASC")->get_where('shift', ['status' => 't']),
+            'company' => $this->M_Company->getById($this->companyid),
+            'shift' => $this->db->order_by('id', "ASC")->get_where('shift', ['status' => 't', 'company_id' => $this->companyid]),
             'page' => 'master/working_hour'
         ];
         $this->load->view('templates', $var);
@@ -21,6 +22,7 @@ class Working extends CI_Controller{
 
     function create(){
         $dataInsert = [
+            'company_id' => $this->companyid,
             'shift_id' => $this->input->post('shift_id', TRUE),
             'hari_kerja' => $this->input->post('hari_kerja', TRUE),
             'jam_in' => $this->input->post('jam_in', TRUE),
@@ -65,7 +67,7 @@ class Working extends CI_Controller{
 
     function edit($id){
         $working = $this->db->get_where('jam_kerja', ['id' => $id])->row();
-        $shift =  $this->db->order_by('id', "ASC")->get_where('shift', ['status' => 't']);
+        $shift =  $this->db->order_by('id', "ASC")->get_where('shift', ['status' => 't', 'company_id' => $this->companyid]);
         ?>
             <div class="card card-plain">
                 <div class="card-header pb-0 text-left">
@@ -175,7 +177,7 @@ class Working extends CI_Controller{
                         ->from('jam_kerja j')
                         ->join('shift s', 'j.shift_id = s.id')
                         ->order_by('j.id', "DESC")
-                        ->get();
+                        ->where('j.company_id', $this->companyid)->get();
 
         $data = array();
         $no = 1;

@@ -5,6 +5,7 @@ class Divisi extends CI_Controller{
         $this->load->model([
             'M_Company',
         ]);
+        $this->companyid = $this->session->userdata('company_id');
         if($this->session->userdata('masuk') != TRUE)
             redirect('', 'refresh');
     }
@@ -12,7 +13,7 @@ class Divisi extends CI_Controller{
     function index(){
         $var = [
             'title' => 'Master Divisi',
-            'company' => $this->M_Company->getDefault(),
+            'company' => $this->M_Company->getById($this->companyid),
             'page' => 'kepegawaian/divisi'
         ];
         $this->load->view('templates', $var);
@@ -20,6 +21,7 @@ class Divisi extends CI_Controller{
 
     function create(){
         $dataInsert = [
+            'company_id' => $this->companyid,
             'divisi' => $this->input->post('divisi', TRUE),
         ];
         $this->db->insert('divisi', $dataInsert);
@@ -88,7 +90,7 @@ class Divisi extends CI_Controller{
         $start = intval($this->input->get("start"));
         $length = intval($this->input->get("length"));
 
-        $get = $this->db->get('divisi');
+        $get = $this->db->get_where('divisi', ['company_id' => $this->companyid]);
 
         $data = array();
         $no = 1;

@@ -5,6 +5,7 @@ class Menus extends CI_Controller{
         $this->load->model([
             'M_Company',
         ]);
+        $this->companyid = $this->session->userdata('company_id');
         if($this->session->userdata('masuk') != TRUE)
             redirect('', 'refresh');
     }
@@ -12,8 +13,7 @@ class Menus extends CI_Controller{
     function index(){
         $var = [
             'title' => 'Master Menu',
-            'company' => $this->M_Company->getDefault(),
-            'shift' => $this->db->order_by('id', "ASC")->get('shift'),
+            'company' => $this->M_Company->getById($this->companyid),
             'page' => 'master/menu',
             'fontawesome' => $this->db->get('fontawesome'),
             'root' => $this->db->get_where('menu1', ['root' => 't', 'status' => 't'])
@@ -23,6 +23,7 @@ class Menus extends CI_Controller{
 
     function create(){
         $dataInsert = [
+            'company_id' => $this->companyid,
             'menu' => $this->input->post('menu', TRUE),
             'url' => $this->input->post('url', TRUE),
             'urut' => $this->input->post('urut', TRUE),
@@ -181,7 +182,7 @@ class Menus extends CI_Controller{
         $start = intval($this->input->get("start"));
         $length = intval($this->input->get("length"));
 
-        $get = $this->db->get('menu1');
+        $get = $this->db->get_where('menu1', ['company_id' => $this->companyid]);
 
         $data = array();
         $no = 1;

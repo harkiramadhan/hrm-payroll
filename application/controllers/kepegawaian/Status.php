@@ -5,6 +5,7 @@ class Status extends CI_Controller{
         $this->load->model([
             'M_Company',
         ]);
+        $this->companyid = $this->session->userdata('company_id');
         if($this->session->userdata('masuk') != TRUE)
             redirect('', 'refresh');
     }
@@ -12,7 +13,7 @@ class Status extends CI_Controller{
     function index(){
         $var = [
             'title' => 'Master Status Kepegawaian',
-            'company' => $this->M_Company->getDefault(),
+            'company' => $this->M_Company->getById($this->companyid),
             'page' => 'kepegawaian/status'
         ];
         $this->load->view('templates', $var);
@@ -23,14 +24,14 @@ class Status extends CI_Controller{
         $start = intval($this->input->get("start"));
         $length = intval($this->input->get("length"));
 
-        $get = $this->db->get('pegawai');
+        $get = $this->db->get_where('pegawai', ['company_id' => $this->companyid]);
         $data = array();
         $no = 1;
         foreach($get->result() as $row){
             $detail =  $this->db->select("m.tgl_join, m.tgl_finish, sk.status")
                                 ->from('mutasi m')
                                 ->join('status_kepegawaian sk', 'm.status_id = sk.id')
-                                ->where('pegawai_id', $row->id)->order_by('timestamp', "DESC")->get()->row();
+                                ->where('pegawai_id', $row->id)->order_by('m.timestamp', "DESC")->get()->row();
 
             $join = (@$detail->tgl_join) ? longdate_indo(date('Y-m-d', strtotime($detail->tgl_join))) : ' - ';
             $finish = (@$detail->tgl_finish) ? longdate_indo(date('Y-m-d', strtotime($detail->tgl_finish))) : ' - ';

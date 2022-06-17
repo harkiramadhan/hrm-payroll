@@ -5,6 +5,7 @@ class Company extends CI_Controller{
         $this->load->model([
             'M_Company',
         ]);
+        $this->companyid = $this->session->userdata('company_id');
         if($this->session->userdata('masuk') != TRUE)
             redirect('', 'refresh');
     }
@@ -12,8 +13,7 @@ class Company extends CI_Controller{
     function index(){
         $var = [
             'title' => 'Master Perusahaan',
-            'company' => $this->M_Company->getDefault(),
-            'shift' => $this->db->order_by('id', "ASC")->get('shift'),
+            'company' => $this->M_Company->getById($this->companyid),
             'page' => 'master/company'
         ];
         $this->load->view('templates', $var);

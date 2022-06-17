@@ -5,6 +5,7 @@ class Dashboard extends CI_Controller{
         $this->load->model([
             'M_Company'
         ]);
+        $this->companyid = $this->session->userdata('company_id');
         if($this->session->userdata('masuk') != TRUE)
             redirect('', 'refresh');
     }
@@ -12,7 +13,7 @@ class Dashboard extends CI_Controller{
     function index(){
         $var = [
             'title' => 'Dashboard',
-            'company' => $this->M_Company->getDefault(),
+            'company' => $this->M_Company->getById($this->companyid),
             'page' => 'dashboard'
         ];
         $this->load->view('templates', $var);

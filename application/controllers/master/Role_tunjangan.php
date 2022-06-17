@@ -5,6 +5,7 @@ class Role_tunjangan extends CI_Controller{
         $this->load->model([
             'M_Company',
         ]);
+        $this->companyid = $this->session->userdata('company_id');
         if($this->session->userdata('masuk') != TRUE)
             redirect('', 'refresh');
     }
@@ -12,7 +13,7 @@ class Role_tunjangan extends CI_Controller{
     function index(){
         $var = [
             'title' => 'Role Tunjangan',
-            'company' => $this->M_Company->getDefault(),
+            'company' => $this->M_Company->getById($this->companyid),
             'page' => 'master/role_tunjangan'
         ];
         $this->load->view('templates', $var);
@@ -20,6 +21,7 @@ class Role_tunjangan extends CI_Controller{
 
     function create(){
         $dataInsert = [
+            'company_id' => $this->companyid,
             'kode' => $this->input->post('kode', TRUE),
             'satuan' => $this->input->post('satuan', TRUE),
             'status' => $this->input->post('status', TRUE)
@@ -135,7 +137,7 @@ class Role_tunjangan extends CI_Controller{
         $start = intval($this->input->get("start"));
         $length = intval($this->input->get("length"));
 
-        $get = $this->db->order_by('id', "DESC")->get('role_tunjangan');
+        $get = $this->db->order_by('id', "DESC")->get_where('role_tunjangan', ['company_id' => $this->companyid]);
 
         $data = array();
         $no = 1;

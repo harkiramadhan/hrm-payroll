@@ -5,6 +5,7 @@ class Template_tunjangan extends CI_Controller{
         $this->load->model([
             'M_Company',
         ]);
+        $this->companyid = $this->session->userdata('company_id');
         if($this->session->userdata('masuk') != TRUE)
             redirect('', 'refresh');
     }
@@ -12,7 +13,7 @@ class Template_tunjangan extends CI_Controller{
     function index(){
         $var = [
             'title' => 'Master Template Tunjangan',
-            'company' => $this->M_Company->getDefault(),
+            'company' => $this->M_Company->getById($this->companyid),
             'page' => 'master/template_tunjangan'
         ];
         $this->load->view('templates', $var);
@@ -22,8 +23,10 @@ class Template_tunjangan extends CI_Controller{
         $tunjangan = $this->db->select('t.*, rt.kode, rt.satuan')
                             ->from('tunjangan t')
                             ->join('role_tunjangan rt', 't.role_id = rt.id')
-                            ->where('t.status', 't')
-                            ->order_by('t.id', "DESC")->get();
+                            ->where([
+                                't.company_id' => $this->companyid,
+                                't.status' => 't'
+                            ])->order_by('t.id', "DESC")->get();
         $var = [
             'template_tunjangan' => $this->db->get_where('template_tunjangan', ['id' => $id])->row(),
             'tunjangan' => $tunjangan,
@@ -36,6 +39,7 @@ class Template_tunjangan extends CI_Controller{
 
     function create(){
         $dataInsert = [
+            'company_id' => $this->companyid,
             'nama' => $this->input->post('nama', TRUE),
             'status' => $this->input->post('status', TRUE)
         ];
@@ -50,6 +54,7 @@ class Template_tunjangan extends CI_Controller{
 
     function createDetail(){
         $dataInsert = [
+            'company_id' => $this->companyid,
             'template_id' => $this->input->post('template_id', TRUE),
             'tunjangan_id' => $this->input->post('tunjangan_id', TRUE),
             'nominal' => $this->input->post('nominal', TRUE),
@@ -162,8 +167,10 @@ class Template_tunjangan extends CI_Controller{
         $tunjangan = $this->db->select('t.*, rt.kode, rt.satuan')
                             ->from('tunjangan t')
                             ->join('role_tunjangan rt', 't.role_id = rt.id')
-                            ->where('t.status', 't')
-                            ->order_by('t.id', "DESC")->get();
+                            ->where([
+                                't.company_id' => $this->companyid,
+                                't.status' => 't'
+                            ])->order_by('t.id', "DESC")->get();
         ?>
             <div class="card card-plain">
                 <div class="card-header pb-0 text-left">
@@ -184,7 +191,7 @@ class Template_tunjangan extends CI_Controller{
                             <div class="col-lg-4">
                                 <label>Nominal<small class="text-danger">*) Rupiah / Persentase</small></label>
                                 <div class="input-group mb-3">
-                                    <input type="number" class="form-control" placeholder="Nominal" aria-label="Nominal" name="nominal" value="<?= $detail->nominal ?>" required>
+                                    <input type="text" class="form-control" placeholder="Nominal" aria-label="Nominal" name="nominal" value="<?= $detail->nominal ?>" required>
                                 </div>
                             </div>
                             <div class="col-lg-4">
@@ -282,7 +289,7 @@ class Template_tunjangan extends CI_Controller{
         $start = intval($this->input->get("start"));
         $length = intval($this->input->get("length"));
 
-        $get = $this->db->order_by('id', "DESC")->get('template_tunjangan');
+        $get = $this->db->order_by('id', "DESC")->get_where('template_tunjangan', ['company_id' => $this->companyid]);
 
         $data = array();
         $no = 1;

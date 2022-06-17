@@ -5,6 +5,7 @@ class Cabang extends CI_Controller{
         $this->load->model([
             'M_Company',
         ]);
+        $this->companyid = $this->session->userdata('company_id');
         if($this->session->userdata('masuk') != TRUE)
             redirect('', 'refresh');
     }
@@ -12,8 +13,7 @@ class Cabang extends CI_Controller{
     function index(){
         $var = [
             'title' => 'Master Cabang',
-            'company' => $this->M_Company->getDefault(),
-            'shift' => $this->db->order_by('id', "ASC")->get('shift'),
+            'company' => $this->M_Company->getById($this->companyid),
             'page' => 'master/cabang'
         ];
         $this->load->view('templates', $var);
@@ -21,6 +21,7 @@ class Cabang extends CI_Controller{
 
     function create(){
         $datas = [
+            'company_id' => $this->companyid,
             'kode' => $this->input->post('kode', TRUE),
             'cabang' => $this->input->post('cabang', TRUE),
             'alamat' => $this->input->post('alamat', TRUE),
@@ -146,7 +147,7 @@ class Cabang extends CI_Controller{
         $start = intval($this->input->get("start"));
         $length = intval($this->input->get("length"));
 
-        $get = $this->db->get('cabang');
+        $get = $this->db->get_where('cabang', ['company_id' => $this->companyid]);
 
         $data = array();
         $no = 1;

@@ -6,6 +6,7 @@ class Employee extends CI_Controller{
         $this->load->model([
             'M_Company',
         ]);
+        $this->companyid = $this->session->userdata('company_id');
         if($this->session->userdata('masuk') != TRUE)
             redirect('', 'refresh');
     }
@@ -13,7 +14,7 @@ class Employee extends CI_Controller{
     function index(){
         $var = [
             'title' => 'Master Pegawai',
-            'company' => $this->M_Company->getDefault(),
+            'company' => $this->M_Company->getById($this->companyid),
             'page' => 'kepegawaian/employee'
         ];
         $this->load->view('templates', $var);
@@ -64,14 +65,15 @@ class Employee extends CI_Controller{
             'company' => $this->M_Company->getDefault(),
             'agama' => $this->db->get('agama'),
             'pendidikan' => $this->db->get('jenjang_pendidikan'),
-            'jabatan' => $this->db->get('jabatan'),
+            'jabatan' => $this->db->get_where('jabatan', ['company_id' => $this->companyid]),
             'companys' => $this->db->get('company'),
-            'divisi' => $this->db->get('divisi'),
+            'divisi' => $this->db->get_where('divisi', ['company_id' => $this->companyid]),
             'departement' => $this->db->get_where('departement', ['divisi_id' => $pegawai->divisi_id]),
             'unit' => $this->db->get_where('unit', ['dept_id' => $pegawai->dept_id]),
             'status_kepegawaian' => $this->db->get('status_kepegawaian'),
-            'cabang' => $this->db->get('cabang'),
+            'cabang' => $this->db->get_where('cabang', ['company_id' => $this->companyid]),
             'kepegawaian' => $kepegawaian,
+            'templateTunjangan' => $this->db->get_where('template_tunjangan', ['status' => 't', 'company_id' => $this->companyid]),
             'page' => 'kepegawaian/edit_employee',
             'ajax' => [
                 'employee'
@@ -97,6 +99,7 @@ class Employee extends CI_Controller{
             $this->add();
         }else{
             $dataInsert = [
+                'company_id' => $this->companyid,
                 'nik' => $this->input->post('nik', TRUE),
                 'nama' => $this->input->post('nama', TRUE),
                 'ektp' => $this->input->post('ektp', TRUE),
@@ -128,6 +131,8 @@ class Employee extends CI_Controller{
                 'tgl_out_c2' => ($this->input->post('tgl_out_c2', TRUE) != "") ? $this->input->post('tgl_out_c2', TRUE) : NULL,
                 'tgl_join_p' => ($this->input->post('tgl_join_p', TRUE) != "") ? $this->input->post('tgl_join_p', TRUE) : NULL,
                 'tgl_p' => ($this->input->post('tgl_p', TRUE) != "") ? $this->input->post('tgl_p', TRUE) : NULL,
+                'nominal_gapok' => $this->input->post('nominal_gapok', TRUE),
+                'nominal_gaji_dilaporkan' => $this->input->post('nominal_gaji_dilaporkan', TRUE),
                 'company_id' => $this->input->post('company_id', TRUE),
                 'created_at' => date('Y-m-d H:i:s')
             ];
@@ -157,11 +162,6 @@ class Employee extends CI_Controller{
     }
 
     function update($id){
-        $deptArr = explode('_', $this->input->post('dept_id', TRUE));
-        $unitArr = explode('_', $this->input->post('unit_id', TRUE));
-        $dept_id = $deptArr[0];
-        $unit_id = $unitArr[0];
-        
         /* Valudation */
         $this->form_validation->set_rules('nik', 'NIK', 'callback_edit_unique[pegawai.nik.'.$id.']', [
             'callback_edit_unique[pegawai.nik.'.$id.']' => '<strong>NIK Sudah Tersedia</strong>'
@@ -215,58 +215,92 @@ class Employee extends CI_Controller{
             $this->edit($id);
         }else{
             $dataUpdate = [
-                'nik' => $this->input->post('nik', TRUE),
-                'nama' => $this->input->post('nama', TRUE),
-                'ektp' => $this->input->post('ektp', TRUE),
-                'tgl_lahir' => $this->input->post('tgl_lahir', TRUE),
-                'nikah' => $this->input->post('nikah', TRUE),
-                'agama_id' => $this->input->post('agama_id', TRUE),
-                'pendidikan_id' => $this->input->post('pendidikan_id', TRUE),
-                'nama_bank' => $this->input->post('nama_bank', TRUE),
-                'nama_rekening' => $this->input->post('nama_rekening', TRUE),
-                'no_rekening' => $this->input->post('no_rekening', TRUE),
-                'no_kk' => $this->input->post('no_kk', TRUE),
-                'no_npwp' => $this->input->post('no_npwp', TRUE),
-                'no_bpjs_kesehatan' => $this->input->post('no_bpjs_kesehatan', TRUE),
-                'no_bpjs_ketenagakerjaan' => $this->input->post('no_bpjs_ketenagakerjaan', TRUE),
-                'alamat_domisili' => $this->input->post('alamat_domisili', TRUE),
-                'alamat_ktp' => $this->input->post('alamat_ktp', TRUE),
-                'nama_ibu' => $this->input->post('nama_ibu', TRUE),
-                'email' => $this->input->post('email', TRUE),
-                'tgl_habis_kontrak' => $this->input->post('tgl_habis_kontrak', TRUE),
-                'resign_date' => $this->input->post('resign_date', TRUE),
-                'company_id' => $this->input->post('company_id', TRUE),
-                'cabang_id' => $this->input->post('cabang_id', TRUE),
-                'jabatan_id' => $this->input->post('jabatan_id', TRUE),
-                'divisi_id' => $this->input->post('divisi_id', TRUE),
-                'dept_id' => $dept_id,
-                'unit_id' => $unit_id,
-                'tgl_p' => ($this->input->post('tgl_p', TRUE) != "") ? $this->input->post('tgl_p', TRUE) : NULL,
-                'company_id' => $this->input->post('company_id', TRUE),
+                'nik' => ($this->input->post('nik', TRUE) == TRUE) ? $this->input->post('nik', TRUE) : $cek->nik,
+                'nama' => ($this->input->post('nama', TRUE) == TRUE) ? $this->input->post('nama', TRUE) : $cek->nama,
+                'ektp' => ($this->input->post('ektp', TRUE) == TRUE) ? $this->input->post('ektp', TRUE) : $cek->ektp,
+                'tgl_lahir' => ($this->input->post('tgl_lahir', TRUE) == TRUE) ? $this->input->post('tgl_lahir', TRUE) : $cek->tgl_lahir,
+                'nikah' => ($this->input->post('nikah', TRUE) == TRUE) ? $this->input->post('nikah', TRUE) : $cek->nikah,
+                'agama_id' => ($this->input->post('agama_id', TRUE) == TRUE) ? $this->input->post('agama_id', TRUE) : $cek->agama_id,
+                'pendidikan_id' => ($this->input->post('pendidikan_id', TRUE) == TRUE) ? $this->input->post('pendidikan_id', TRUE) : $cek->pendidikan_id,
+                'no_kk' => ($this->input->post('no_kk', TRUE) == TRUE) ? $this->input->post('no_kk', TRUE) : $cek->no_kk,
+                'no_npwp' => ($this->input->post('no_npwp', TRUE) == TRUE) ? $this->input->post('no_npwp', TRUE) : $cek->no_npwp,
+                'no_bpjs_kesehatan' => ($this->input->post('no_bpjs_kesehatan', TRUE) == TRUE) ? $this->input->post('no_bpjs_kesehatan', TRUE) : $cek->no_bpjs_kesehatan,
+                'no_bpjs_ketenagakerjaan' => ($this->input->post('no_bpjs_ketenagakerjaan', TRUE) == TRUE) ? $this->input->post('no_bpjs_ketenagakerjaan', TRUE) : $cek->no_bpjs_ketenagakerjaan,
+                'alamat_domisili' => ($this->input->post('alamat_domisili', TRUE) == TRUE) ? $this->input->post('alamat_domisili', TRUE) : $cek->alamat_domisili,
+                'alamat_ktp' => ($this->input->post('alamat_ktp', TRUE) == TRUE) ? $this->input->post('alamat_ktp', TRUE) : $cek->alamat_ktp,
+                'nama_ibu' => ($this->input->post('nama_ibu', TRUE) == TRUE) ? $this->input->post('nama_ibu', TRUE) : $cek->nama_ibu,
+                'email' => ($this->input->post('email', TRUE) == TRUE) ? $this->input->post('email', TRUE) : $cek->email,
                 'foto' => $foto,
                 'foto_ktp' => $fotoKtp,
                 'foto_kk' => $fotoKk
             ];
             $this->db->where('id', $id)->update('pegawai', $dataUpdate);
             if($this->db->affected_rows() > 0){
-                $dataInsertMutasi = [
-                    'pegawai_id' => $id,
-                    'pendidikan_id' => $this->input->post('pendidikan_id', TRUE),
-                    'company_id' => $this->input->post('company_id', TRUE),
-                    'cabang_id' => $this->input->post('cabang_id', TRUE),
-                    'jabatan_id' => $this->input->post('jabatan_id', TRUE),
-                    'divisi_id' => $this->input->post('divisi_id', TRUE),
-                    'dept_id' => $dept_id,
-                    'unit_id' => $unit_id
-                ];
-                $getWhere = $this->db->get_where('mutasi_pegawai', $dataInsertMutasi);
-                if($getWhere->num_rows() > 0){}else{
-                    $this->db->insert('mutasi_pegawai', $dataInsertMutasi);
-                }
                 $this->session->set_flashdata('success', "Data Berhasil Di Simpan");
-                redirect($_SERVER['HTTP_REFERER'], 'refresh');
+            }else{
+                $this->session->set_flashdata('error', "Data Gagal Di Simpan");
             }
+
+            redirect($_SERVER['HTTP_REFERER'], 'refresh');
         }
+    }
+
+    function updateKepegawian($id){
+        $deptArr = explode('_', $this->input->post('dept_id', TRUE));
+        $unitArr = explode('_', $this->input->post('unit_id', TRUE));
+        $dept_id = $deptArr[0];
+        $unit_id = $unitArr[0];
+
+        $cek = $this->db->get_where('pegawai', ['id' => $id])->row();
+        $dataUpdate = [
+            'tgl_habis_kontrak' => ($this->input->post('tgl_habis_kontrak', TRUE) == TRUE) ? $this->input->post('tgl_habis_kontrak', TRUE) : $cek->tgl_habis_kontrak,
+            'resign_date' => ($this->input->post('resign_date', TRUE) == TRUE) ? $this->input->post('resign_date', TRUE) : $cek->resign_date,
+            'company_id' => ($this->input->post('company_id', TRUE) == TRUE) ? $this->input->post('company_id', TRUE) : $cek->company_id,
+            'cabang_id' => ($this->input->post('cabang_id', TRUE) == TRUE) ? $this->input->post('cabang_id', TRUE) : $cek->cabang_id,
+            'jabatan_id' => ($this->input->post('jabatan_id', TRUE) == TRUE) ? $this->input->post('jabatan_id', TRUE) : $cek->jabatan_id,
+            'divisi_id' => ($this->input->post('divisi_id', TRUE) == TRUE) ? $this->input->post('divisi_id', TRUE) : $cek->divisi_id,
+            'dept_id' => $dept_id,
+            'unit_id' => $unit_id,
+            'company_id' => ($this->input->post('company_id', TRUE) == TRUE) ? $this->input->post('company_id', TRUE) : $cek->company_id,
+        ];
+        $this->db->where('id', $id)->update('pegawai', $dataUpdate);
+        if($this->db->affected_rows() > 0){
+            $dataInsertMutasi = [
+                'pegawai_id' => $id,
+                'pendidikan_id' => $cek->pendidikan_id,
+                'company_id' => ($this->input->post('company_id', TRUE) == TRUE) ? $this->input->post('company_id', TRUE) : $cek->company_id,
+                'cabang_id' => ($this->input->post('cabang_id', TRUE) == TRUE) ? $this->input->post('cabang_id', TRUE) : $cek->cabang_id,
+                'jabatan_id' => ($this->input->post('jabatan_id', TRUE) == TRUE) ? $this->input->post('jabatan_id', TRUE) : $cek->jabatan_id,
+                'divisi_id' => ($this->input->post('divisi_id', TRUE) == TRUE) ? $this->input->post('divisi_id', TRUE) : $cek->divisi_id,
+                'dept_id' => $dept_id,
+                'unit_id' => $unit_id
+            ];
+            $getWhere = $this->db->get_where('mutasi_pegawai', $dataInsertMutasi);
+            if($getWhere->num_rows() > 0){}else{
+                $this->db->insert('mutasi_pegawai', $dataInsertMutasi);
+            }
+            $this->session->set_flashdata('success', "Data Berhasil Di Simpan");
+        }else{
+            $this->session->set_flashdata('error', "Data Gagal Di Simpan");
+        }
+        redirect($_SERVER['HTTP_REFERER'], 'refresh');
+    }
+
+    function updateKeuangan($id){
+        $dataUpdate = [
+            'nama_bank' => ($this->input->post('nama_bank', TRUE) == TRUE) ? $this->input->post('nama_bank', TRUE) : $cek->nama_bank,
+            'nama_rekening' => ($this->input->post('nama_rekening', TRUE) == TRUE) ? $this->input->post('nama_rekening', TRUE) : $cek->nama_rekening,
+            'no_rekening' => ($this->input->post('no_rekening', TRUE) == TRUE) ? $this->input->post('no_rekening', TRUE) : $cek->no_rekening,
+            'nominal_gapok' => ($this->input->post('nominal_gapok', TRUE) == TRUE) ? $this->input->post('nominal_gapok', TRUE) : $cek->nominal_gapok,
+            'nominal_gaji_dilaporkan' => ($this->input->post('nominal_gaji_dilaporkan', TRUE) == TRUE) ? $this->input->post('nominal_gaji_dilaporkan', TRUE) : $cek->nominal_gaji_dilaporkan,
+        ];
+        $this->db->where('id', $id)->update('pegawai', $dataUpdate);
+        if($this->db->affected_rows() > 0){
+            $this->session->set_flashdata('success', "Data Berhasil Di Simpan");
+        }else{
+            $this->session->set_flashdata('error', "Data Gagal Di Simpan");
+        }
+        redirect($_SERVER['HTTP_REFERER'], 'refresh');
     }
 
     function addStatusKepegawaian(){
@@ -330,7 +364,7 @@ class Employee extends CI_Controller{
                         ->join('divisi d', 'p.divisi_id = d.id', "LEFT")
                         ->join('departement dp', 'p.dept_id = dp.id', "LEFT")
                         ->join('unit u', 'p.unit_id = u.id', "LEFT")
-                        ->get();
+                        ->where('p.company_id', $this->companyid)->order_by('id', "DESC")->get();
 
         $data = array();
         $no = 1;
@@ -369,20 +403,20 @@ class Employee extends CI_Controller{
 
     function get_dept(){
         $divisi_id = $this->input->get('id', TRUE);
-        $getDepartement = $this->db->get_where('departement', ['divisi_id' => $divisi_id])->result();
+        $getDepartement = $this->db->get_where('departement', ['divisi_id' => $divisi_id, 'company_id' => $this->companyid])->result();
         $this->output->set_content_type('application/json')->set_output(json_encode($getDepartement));
     }
 
     function get_unit(){
         $dept_id = $this->input->get('id', TRUE);
         $explode = explode('_', $dept_id);
-        $getUnit = $this->db->get_where('unit', ['dept_id' => $explode[0]])->result();
+        $getUnit = $this->db->get_where('unit', ['dept_id' => $explode[0], 'company_id' => $this->companyid])->result();
         $this->output->set_content_type('application/json')->set_output(json_encode($getUnit));
     }
 
     function edit_unique($str, $field){
         sscanf($field, '%[^.].%[^.].%[^.]', $table, $field, $id);
         return isset($this->db)
-            ? ($this->db->limit(1)->get_where($table, array($field => $str, 'id !=' => $id))->num_rows() === 0) : FALSE;
+            ? ($this->db->limit(1)->get_where($table, [$field => $str, 'id !=' => $id, 'company_id !=' => $this->companyid])->num_rows() === 0) : FALSE;
     }
 }

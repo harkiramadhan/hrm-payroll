@@ -27,6 +27,7 @@ class Auth extends CI_Controller{
                     $this->session->set_userdata('masuk', TRUE);
                     $this->session->set_userdata('userid', $user->id);
                     $this->session->set_userdata('username', $user->username);
+                    $this->session->set_userdata('company_id', $user->company_id);
 
                     redirect('dashboard', "refresh");
                 }else{

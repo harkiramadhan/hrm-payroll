@@ -5,6 +5,7 @@ class Departement extends CI_Controller{
         $this->load->model([
             'M_Company',
         ]);
+        $this->companyid = $this->session->userdata('company_id');
         if($this->session->userdata('masuk') != TRUE)
             redirect('', 'refresh');
     }
@@ -12,8 +13,8 @@ class Departement extends CI_Controller{
     function index(){
         $var = [
             'title' => 'Master Departement',
-            'company' => $this->M_Company->getDefault(),
-            'divisi' => $this->db->order_by('divisi', "ASC")->get('divisi'),
+            'company' => $this->M_Company->getById($this->companyid),
+            'divisi' => $this->db->order_by('divisi', "ASC")->get_where('divisi', ['company_id' => $this->companyid]),
             'page' => 'kepegawaian/departement'
         ];
         $this->load->view('templates', $var);
@@ -21,6 +22,7 @@ class Departement extends CI_Controller{
 
     function create(){
         $dataInsert = [
+            'company_id' => $this->companyid,
             'divisi_id' => $this->input->post('divisi_id', TRUE),
             'departement' => $this->input->post('departement', TRUE)
         ];
@@ -59,7 +61,7 @@ class Departement extends CI_Controller{
 
     function edit($id){
         $departement = $this->db->get_where('departement', ['id' => $id])->row();
-        $divisi = $this->db->order_by('divisi', "ASC")->get('divisi');
+        $divisi = $this->db->order_by('divisi', "ASC")->get_where('divisi', ['company_id' => $this->companyid]);
         ?>
             <div class="card card-plain">
                 <div class="card-header pb-0 text-left">
@@ -106,7 +108,7 @@ class Departement extends CI_Controller{
         $get = $this->db->select('d.*, dv.divisi')
                         ->from('departement d')
                         ->join('divisi dv', 'd.divisi_id = dv.id')
-                        ->get();
+                        ->where('d.company_id', $this->companyid)->get();
 
         $data = array();
         $no = 1;

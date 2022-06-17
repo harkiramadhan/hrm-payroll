@@ -4,6 +4,7 @@
                     ->from('menu1')
                     ->order_by('urut', "ASC")
                     ->where([
+                        'company_id' => $this->session->userdata('company_id'),
                         'status' => 't',
                         'root' => 't'
                     ])->get();
@@ -65,6 +66,25 @@
 
         .w-20p{
             width: 20%!important;
+        }
+
+        .custom-checkbox .custom-control-input ~ .custom-control-label::before {
+            box-shadow: 0 0 0 0 #fff, 0 0 0 0.1rem rgba(82, 95, 127, 0.226);
+            background-color: #e2e2e2;
+        }
+
+        .custom-checkbox .custom-control-input:checked ~ .custom-control-label::before {
+            box-shadow: 0 0 0 0 #fff, 0 0 0 0.1rem rgba(82, 95, 127, 0.582)
+        }
+
+        .custom-checkbox .custom-control-input:checked:focus ~ .custom-control-label::before {
+            box-shadow: 0 0 0 0 #fff, 0 0 0 0.1rem rgba(82, 95, 127, 0.226)
+        }
+        .custom-checkbox .custom-control-input:focus ~ .custom-control-label::before {
+            box-shadow: 0 0 0 0 #fff, 0 0 0 0.1rem rgba(82, 95, 127, 0.226)
+        }
+        .custom-checkbox .custom-control-input:active ~ .custom-control-label::before {
+            background-color: #C8FFC8; 
         }
     </style>
     <div class="min-height-300 bg-primary position-absolute w-100"></div>

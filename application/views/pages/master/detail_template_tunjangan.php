@@ -59,7 +59,7 @@
                                 <div class="col-lg-4">
                                     <label>Nominal<small class="text-danger">*) Rupiah / Persentase</small></label>
                                     <div class="input-group mb-3">
-                                        <input type="number" class="form-control" placeholder="Nominal" aria-label="Nominal" name="nominal" required>
+                                        <input type="text" class="form-control" placeholder="Nominal" aria-label="Nominal" name="nominal" required>
                                     </div>
                                 </div>
                                 <div class="col-lg-4">

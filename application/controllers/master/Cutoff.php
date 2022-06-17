@@ -5,6 +5,7 @@ class Cutoff extends CI_Controller{
         $this->load->model([
             'M_Company',
         ]);
+        $this->companyid = $this->session->userdata('company_id');
         if($this->session->userdata('masuk') != TRUE)
             redirect('', 'refresh');
     }
@@ -12,7 +13,7 @@ class Cutoff extends CI_Controller{
     function index(){
         $var = [
             'title' => 'Master Cutoff',
-            'company' => $this->M_Company->getDefault(),
+            'company' => $this->M_Company->getById($this->companyid),
             'page' => 'master/cutoff'
         ];
         $this->load->view('templates', $var);
@@ -20,13 +21,14 @@ class Cutoff extends CI_Controller{
 
     function create(){
         if($this->input->post('is_active') == 1){
-            $cek = $this->db->get_where('cutoff', ['is_active' => 't']);
+            $cek = $this->db->get_where('cutoff', ['is_active' => 't', 'company_id' => $this->companyid]);
             if($cek->num_rows() > 0){   
                 var_dump($cek->row());
                 $this->db->where('id', $cek->row()->id)->update('cutoff', ['is_active' => 'f']);
             }
         }
         $dataInsert = [
+            'company_id' => $this->companyid,
             'periode' => $this->input->post('periode', TRUE),
             'start_date' => $this->input->post('start_date', TRUE),
             'end_date' => $this->input->post('end_date', TRUE),
@@ -43,7 +45,7 @@ class Cutoff extends CI_Controller{
 
     function update($id){
         if($this->input->post('is_active') == 1){
-            $cek = $this->db->get_where('cutoff', ['is_active' => 't']);
+            $cek = $this->db->get_where('cutoff', ['is_active' => 't', 'company_id' => $this->companyid]);
             if($cek->num_rows() > 0){   
                 var_dump($cek->row());
                 $this->db->where('id', $cek->row()->id)->update('cutoff', ['is_active' => 'f']);
@@ -157,7 +159,7 @@ class Cutoff extends CI_Controller{
         $start = intval($this->input->get("start"));
         $length = intval($this->input->get("length"));
 
-        $get = $this->db->order_by('id', "DESC")->get('cutoff');
+        $get = $this->db->order_by('id', "DESC")->get_where('cutoff', ['company_id' => $this->companyid]);
 
         $data = array();
         $no = 1;

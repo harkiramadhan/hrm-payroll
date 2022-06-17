@@ -5,6 +5,7 @@ class Jabatan extends CI_Controller{
         $this->load->model([
             'M_Company',
         ]);
+        $this->companyid = $this->session->userdata('company_id');
         if($this->session->userdata('masuk') != TRUE)
             redirect('', 'refresh');
     }
@@ -12,7 +13,7 @@ class Jabatan extends CI_Controller{
     function index(){
         $var = [
             'title' => 'Master Jabatan',
-            'company' => $this->M_Company->getDefault(),
+            'company' => $this->M_Company->getById($this->companyid),
             'page' => 'kepegawaian/jabatan'
         ];
         $this->load->view('templates', $var);
@@ -20,6 +21,7 @@ class Jabatan extends CI_Controller{
 
     function create(){
         $dataInsert = [
+            'company_id' => $this->companyid,
             'jabatan' => $this->input->post('jabatan', TRUE)
         ];
         $this->db->insert('jabatan', $dataInsert);
@@ -88,7 +90,7 @@ class Jabatan extends CI_Controller{
         $start = intval($this->input->get("start"));
         $length = intval($this->input->get("length"));
 
-        $get = $this->db->order_by('id', "ASC")->get('jabatan');
+        $get = $this->db->order_by('id', "ASC")->get_where('jabatan', ['company_id' => $this->companyid]);
 
         $data = array();
         $no = 1;

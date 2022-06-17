@@ -5,6 +5,7 @@ class Shift extends CI_Controller{
         $this->load->model([
             'M_Company',
         ]);
+        $this->companyid = $this->session->userdata('company_id');
         if($this->session->userdata('masuk') != TRUE)
             redirect('', 'refresh');
     }
@@ -12,7 +13,7 @@ class Shift extends CI_Controller{
     function index(){
         $var = [
             'title' => 'Master Shift',
-            'company' => $this->M_Company->getDefault(),
+            'company' => $this->M_Company->getById($this->companyid),
             'page' => 'master/shift'
         ];
         $this->load->view('templates', $var);
@@ -20,6 +21,7 @@ class Shift extends CI_Controller{
 
     function create(){
         $dataInsert = [
+            'company_id' => $this->companyid,
             'kode' => $this->input->post('kode', TRUE),
             'keterangan' => $this->input->post('keterangan', TRUE),
             'status' => $this->input->post('status', TRUE)
@@ -135,7 +137,7 @@ class Shift extends CI_Controller{
         $start = intval($this->input->get("start"));
         $length = intval($this->input->get("length"));
 
-        $get = $this->db->order_by('id', "DESC")->get('shift');
+        $get = $this->db->order_by('id', "DESC")->get_where('shift', ['company_id' => $this->companyid]);
 
         $data = array();
         $no = 1;

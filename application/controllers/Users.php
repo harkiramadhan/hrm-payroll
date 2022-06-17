@@ -5,6 +5,7 @@ class Users extends CI_Controller{
         $this->load->model([
             'M_Company',
         ]);
+        $this->companyid = $this->session->userdata('company_id');
         if($this->session->userdata('masuk') != TRUE)
             redirect('', 'refresh');
     }
@@ -12,7 +13,7 @@ class Users extends CI_Controller{
     function index(){
         $var = [
             'title' => 'Users',
-            'company' => $this->M_Company->getDefault(),
+            'company' => $this->M_Company->getById($this->companyid),
             'page' => 'users'
         ];
         $this->load->view('templates', $var);
@@ -24,6 +25,7 @@ class Users extends CI_Controller{
             $this->session->set_flashdata('error', "Username Sudah Tersedia");
         }else{
             $dataInsert = [
+                'company_id' => $this->companyid,
                 'username' => $this->input->post('username', TRUE),
                 'status' => ($this->input->post('status', TRUE) == 1) ? 't' : 'f',
                 'password' => md5($this->input->post('password', TRUE))
@@ -70,7 +72,7 @@ class Users extends CI_Controller{
     }
 
     function edit($id){
-        $user = $this->db->get_where('user', ['id' => $id])->row();
+        $user = $this->db->get_where('user', ['id' => $id, 'company_id' => $this->companyid])->row();
         ?>
             <div class="card card-plain">
                 <div class="card-header pb-0 text-left">
@@ -122,7 +124,7 @@ class Users extends CI_Controller{
         $start = intval($this->input->get("start"));
         $length = intval($this->input->get("length"));
 
-        $get = $this->db->get('user');
+        $get = $this->db->get_where('user', ['company_id' => $this->companyid]);
 
         $data = array();
         $no = 1;

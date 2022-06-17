@@ -7,4 +7,12 @@ class M_Company extends CI_Model{
                             'is_default' => 't'
                         ])->get()->row();
     }
+
+    function getById($company_id){
+        return $this->db->select('*')
+                        ->from('company')
+                        ->where([
+                            'id' => $company_id
+                        ])->get()->row();
+    }
 }

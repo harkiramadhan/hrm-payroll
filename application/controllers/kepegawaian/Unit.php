@@ -5,6 +5,7 @@ class Unit extends CI_Controller{
         $this->load->model([
             'M_Company',
         ]);
+        $this->companyid = $this->session->userdata('company_id');
         if($this->session->userdata('masuk') != TRUE)
             redirect('', 'refresh');
     }
@@ -12,8 +13,8 @@ class Unit extends CI_Controller{
     function index(){
         $var = [
             'title' => 'Master Unit',
-            'company' => $this->M_Company->getDefault(),
-            'divisi' => $this->db->order_by('divisi', "ASC")->get('divisi'),
+            'company' => $this->M_Company->getById($this->companyid),
+            'divisi' => $this->db->order_by('divisi', "ASC")->get_where('divisi', ['company_id' => $this->companyid]),
             'page' => 'kepegawaian/unit',
             'ajax' => [
                 'unit'
@@ -24,6 +25,7 @@ class Unit extends CI_Controller{
 
     function create(){
         $dataInsert = [
+            'company_id' => $this->companyid,
             'divisi_id' => $this->input->post('divisi_id', TRUE),
             'dept_id' => $this->input->post('dept_id', TRUE),
             'unit' => $this->input->post('unit', TRUE)
@@ -70,8 +72,8 @@ class Unit extends CI_Controller{
                         ->where(['u.id' => $id])
                         ->get()->row();
         
-        $divisi = $this->db->order_by('divisi', "ASC")->get('divisi');
-        $departement = $this->db->get_where('departement', ['divisi_id' => $unit->divisi_id]);
+        $divisi = $this->db->order_by('divisi', "ASC")->get_where('divisi', ['company_id' => $this->companyid]);
+        $departement = $this->db->get_where('departement', ['divisi_id' => $unit->divisi_id, 'company_id' => $this->companyid]);
         ?>
             <div class="card card-plain">
                 <div class="card-header pb-0 text-left">
@@ -153,7 +155,7 @@ class Unit extends CI_Controller{
                         ->from('unit u')
                         ->join('departement d', 'u.dept_id = d.id')
                         ->join('divisi dv', 'd.divisi_id = dv.id')
-                        ->get();
+                        ->where('u.company_id', $this->companyid)->get();
 
         $data = array();
         $no = 1;
@@ -194,7 +196,7 @@ class Unit extends CI_Controller{
 
     function get_dept(){
         $divisi_id = $this->input->get('id', TRUE);
-        $getDepartement = $this->db->get_where('departement', ['divisi_id' => $divisi_id])->result();
+        $getDepartement = $this->db->get_where('departement', ['divisi_id' => $divisi_id, 'company_id' => $this->companyid])->result();
         $this->output->set_content_type('application/json')->set_output(json_encode($getDepartement));
     }
 }

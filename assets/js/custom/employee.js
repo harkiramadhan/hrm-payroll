@@ -1,7 +1,16 @@
+$(document).ready(function(){
+    var href = localStorage.getItem('activeTab')
+    $('a[href="'+ href +'"]').tab('show')
+})
+
+$(document).on('click', 'input[type="checkbox"]', function() {      
+    $('input[type="checkbox"]').not(this).prop('checked', false);      
+});
+
 $('#select-div').change(function(){
     var id = $(this).val()
     $.ajax({
-        url: siteUrl + 'master/employee/get_dept',
+        url: siteUrl + 'kepegawaian/employee/get_dept',
         type: 'get',
         data: {id : id},
         success: function(res){
@@ -24,7 +33,7 @@ $('#select-div').change(function(){
 $('#select-dept').change(function(){
     var id = $(this).val()
     $.ajax({
-        url: siteUrl + 'master/employee/get_unit',
+        url: siteUrl + 'kepegawaian/employee/get_unit',
         type: 'get',
         data: {id : id},
         success: function(res){
@@ -42,6 +51,11 @@ $('#select-dept').change(function(){
             }
         }
     })
+})
+
+$('.nav-link').click(function(){
+    var href = $(this).attr('href')
+    localStorage.setItem('activeTab', href)
 })
 
 function previewImagePegawai() {
