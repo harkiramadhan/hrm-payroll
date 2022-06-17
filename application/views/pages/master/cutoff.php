@@ -20,9 +20,9 @@
                     <tr>
                         <th class="text-center w-5px">No</th>
                         <th class="">Periode</th>
-                        <th class="w-5px">Start Date</th>
-                        <th class="w-5px">End Date</th>
-                        <th class="text-center w-5px">Status</th>
+                        <th class="w-15p">Start Date</th>
+                        <th class="w-15p">End Date</th>
+                        <th class="w-15p">Status</th>
                         <th class="text-center w-5px">Action</th>
                     </tr>
                 </thead>
@@ -45,11 +45,23 @@
                     <div class="card-body pb-0">
                         <form action="<?= site_url('master/cutoff/create') ?>" role="form text-left" method="post">
                             <div class="row">
-                                <div class="col-lg-12">
-                                    <label>Periode <small class="text-danger">*</small></label>
-                                    <div class="input-group mb-3">
-                                        <input type="text" class="form-control" placeholder="Periode" aria-label="Periode" name="periode" required>
-                                    </div>
+                                <div class="col-lg-6">
+                                    <label>Bulan <small class="text-danger">*</small></label>
+                                    <select name="bulan" class="form-control" id="exampleFormControlSelect1" required>
+                                        <option value="" selected="" disabled="">- Pilih Bulan</option>
+                                        <?php foreach(range(1,12) as $row){ ?>
+                                            <option value="<?= $row ?>"><?= bulan($row) ?></option>
+                                        <?php } ?>
+                                    </select>
+                                </div>
+                                <div class="col-lg-6">
+                                    <label>Tahun <small class="text-danger">*</small></label>
+                                    <select name="tahun" class="form-control" id="exampleFormControlSelect2" required>
+                                        <option value="" selected="" disabled="">- Pilih Tahun</option>
+                                        <?php foreach(range(date('Y') - 2,date('Y') + 2) as $y){ ?>
+                                            <option value="<?= $y ?>"><?= $y ?></option>
+                                        <?php } ?>
+                                    </select>
                                 </div>
                                 <div class="col-lg-4">
                                     <label>Tanggal Mulai<small class="text-danger">*</small></label>

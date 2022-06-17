@@ -29,7 +29,8 @@ class Cutoff extends CI_Controller{
         }
         $dataInsert = [
             'company_id' => $this->companyid,
-            'periode' => $this->input->post('periode', TRUE),
+            'bulan' => $this->input->post('bulan', TRUE),
+            'tahun' => $this->input->post('tahun', TRUE),
             'start_date' => $this->input->post('start_date', TRUE),
             'end_date' => $this->input->post('end_date', TRUE),
             'is_active' => ($this->input->post('is_active', TRUE) == 1) ? 't' : 'f',
@@ -52,7 +53,8 @@ class Cutoff extends CI_Controller{
             }
         }
         $dataInsert = [
-            'periode' => $this->input->post('periode', TRUE),
+            'bulan' => $this->input->post('bulan', TRUE),
+            'tahun' => $this->input->post('tahun', TRUE),
             'start_date' => $this->input->post('start_date', TRUE),
             'end_date' => $this->input->post('end_date', TRUE),
             'is_active' => ($this->input->post('is_active', TRUE) == 1) ? 't' : 'f',
@@ -86,11 +88,23 @@ class Cutoff extends CI_Controller{
                 <div class="card-body pb-0">
                     <form action="<?= site_url('master/cutoff/update/' . $id) ?>" role="form text-left" method="post">
                         <div class="row">
-                            <div class="col-lg-12">
-                                <label>Periode <small class="text-danger">*</small></label>
-                                <div class="input-group mb-3">
-                                    <input type="text" class="form-control" placeholder="Periode" aria-label="Periode" name="periode" value="<?= $cutoff->periode ?>" required>
-                                </div>
+                            <div class="col-lg-6">
+                                <label>Bulan <small class="text-danger">*</small></label>
+                                <select name="bulan" class="form-control" id="exampleFormControlSelect1" required>
+                                    <option value="" selected="" disabled="">- Pilih Bulan</option>
+                                    <?php foreach(range(1,12) as $row){ ?>
+                                        <option value="<?= $row ?>" <?= ($cutoff->bulan == $row) ? 'selected' : '' ?>><?= bulan($row) ?></option>
+                                    <?php } ?>
+                                </select>
+                            </div>
+                            <div class="col-lg-6">
+                                <label>Tahun <small class="text-danger">*</small></label>
+                                <select name="tahun" class="form-control" id="exampleFormControlSelect2" required>
+                                    <option value="" selected="" disabled="">- Pilih Tahun</option>
+                                    <?php foreach(range(date('Y') - 2,date('Y') + 2) as $y){ ?>
+                                        <option value="<?= $y ?>" <?= ($cutoff->tahun == $y) ? 'selected' : '' ?>><?= $y ?></option>
+                                    <?php } ?>
+                                </select>
                             </div>
                             <div class="col-lg-4">
                                 <label>Tanggal Mulai<small class="text-danger">*</small></label>
@@ -165,9 +179,10 @@ class Cutoff extends CI_Controller{
         $no = 1;
         foreach($get->result() as $row){
             $badge = ($row->is_active == 't') ? '<span class="badge badge-sm bg-gradient-success">Active</span>' : '<span class="badge badge-sm bg-gradient-danger">Non Active</span>';
+            $periode = "Periode ".bulan($row->bulan)." ".$row->tahun;
             $data[] = [
                 $no++,
-                '<strong>'.$row->periode.'</strong>',
+                '<strong>'.$periode.'</strong>',
                 '<strong>'.longdate_indo(date('Y-m-d', strtotime($row->start_date))).'</strong>',
                 '<strong>'.longdate_indo(date('Y-m-d', strtotime($row->end_date))).'</strong>',
                 $badge,
