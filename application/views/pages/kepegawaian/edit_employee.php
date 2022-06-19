@@ -32,13 +32,15 @@
                             </div>
                             
                             <div class="row mt-3">
+                                <?php if($pegawai->kode_cabang != NULL): ?>
                                 <div class="col-lg-3 mb-3">
-                                    <label>NIP <small class="text-danger">* <?= strip_tags(@form_error('nik')) ?></small></label>
-                                    <input class="form-control <?= (@form_error('nik')) ? 'is-invalid' : ((@set_value('nik')) ? 'is-valid' : '') ?>" type="number" placeholder="NIP" name="nik" value="<?= (@set_value('nik')) ? @set_value('nik') : $pegawai->nik ?>">
+                                    <label>NIP</label>
+                                    <input class="form-control" type="text" placeholder="NIP" name="nik" value="<?= $pegawai->kode_cabang."".sprintf("%05s", $pegawai->nik) ?>" disabled>
                                 </div>
+                                <?php endif; ?>
 
                                 <div class="col-lg-3 mb-3">
-                                    <label>No Kartu Keluarga <small class="text-danger">* <?= strip_tags(@form_error('no_kk')) ?></small></label>
+                                    <label>No Kartu Keluarga</label>
                                     <input class="form-control <?= (@form_error('no_kk')) ? 'is-invalid' : ((@set_value('no_kk')) ? 'is-valid' : '') ?>" type="number" placeholder="No Kartu Keluarga" name="no_kk" value="<?= (@set_value('no_kk')) ? @set_value('no_kk') : $pegawai->no_kk ?>">
                                 </div>
 
@@ -48,12 +50,12 @@
                                 </div>
 
                                 <div class="col-lg-3 mb-3">
-                                    <label>NPWP <small class="text-danger">* <?= strip_tags(@form_error('no_npwp')) ?></small></label>
+                                    <label>NPWP</label>
                                     <input class="form-control <?= (@form_error('no_npwp')) ? 'is-invalid' : ((@set_value('no_npwp')) ? 'is-valid' : '') ?>" type="number" placeholder="No NPWP" name="no_npwp" value="<?= (@set_value('no_npwp')) ? @set_value('no_npwp') : $pegawai->no_npwp ?>">
                                 </div>
                                 
                                 <div class="col-lg-6 mb-3">
-                                    <label>Nama Lengkap</label>
+                                    <label>Nama Lengkap <small class="text-danger">* <?= strip_tags(@form_error('nama')) ?></small></label>
                                     <input class="form-control <?= (@form_error('nama')) ? 'is-invalid' : ((@set_value('nama')) ? 'is-valid' : '') ?>" type="text" placeholder="Nama Lengkap" name="nama" value="<?= (@set_value('nama')) ? @set_value('nama') : $pegawai->nama ?>">
                                 </div>
 
@@ -84,7 +86,7 @@
 
                                 <div class="col-lg-3 mb-3">
                                     <div class="form-group">
-                                        <label>Agama <small class="text-danger">*</small></label>
+                                        <label>Agama <small class="text-danger">* <?= strip_tags(@form_error('agama_id')) ?></small></label>
                                         <select name="agama_id" class="form-control <?= (@form_error('agama_id')) ? 'is-invalid' : ((@set_value('agama_id')) ? 'is-valid' : '') ?>" required="">
                                             <option value="" disabled="">- Pilih Agama</option>
                                             <?php foreach($agama->result() as $ag){ ?>
@@ -95,7 +97,7 @@
                                 </div>
                                 
                                 <div class="col-lg-3 mb-3">
-                                    <label>Status Pernikahan<small class="text-danger">*</small></label>
+                                    <label>Status Pernikahan<small class="text-danger">* <?= strip_tags(@form_error('nikah')) ?></small></label>
                                     <select name="nikah" class="form-control <?= (@form_error('nikah')) ? 'is-invalid' : ((@set_value('nikah')) ? 'is-valid' : '') ?>" required="">
                                         <option value="" selected="" disabled="">- Pilih Status Pernikahan</option>
                                         <?php foreach($pernikahan->result() as $n){ ?>
@@ -106,7 +108,7 @@
 
                                 <div class="col-lg-3 mb-3">
                                     <div class="form-group">
-                                        <label>Jenjang Pendidikan <small class="text-danger">*</small></label>
+                                        <label>Jenjang Pendidikan <small class="text-danger">* <?= strip_tags(@form_error('pendidikan_id')) ?></small></label>
                                         <select name="pendidikan_id" class="form-control <?= (@form_error('pendidikan_id')) ? 'is-invalid' : ((@set_value('pendidikan_id')) ? 'is-valid' : '') ?>" required="">
                                             <option value="" selected="" disabled="">- Pilih Pendidikan</option>
                                             <?php foreach($pendidikan->result() as $p){ ?>
@@ -117,12 +119,17 @@
                                 </div>
 
                                 <div class="col-lg-3 mb-3">
-                                    <label>BPJS Kesehatan <small class="text-danger">* <?= strip_tags(@form_error('no_bpjs_kesehatan')) ?></small></label>
+                                    <label>Jumlah Tanggungan</label>
+                                    <input class="form-control <?= (@form_error('jumlan_tanggungan')) ? 'is-invalid' : ((@set_value('jumlan_tanggungan')) ? 'is-valid' : '') ?>" type="number" placeholder="Jumlah Tanggungan" name="jumlan_tanggungan" value="<?= (@set_value('jumlan_tanggungan')) ? @set_value('jumlan_tanggungan') : $pegawai->jumlan_tanggungan ?>">
+                                </div>
+
+                                <div class="col-lg-3 mb-3">
+                                    <label>BPJS Kesehatan</label>
                                     <input class="form-control <?= (@form_error('no_bpjs_kesehatan')) ? 'is-invalid' : ((@set_value('no_bpjs_kesehatan')) ? 'is-valid' : '') ?>" type="number" placeholder="No BPJS Kesehatan" name="no_bpjs_kesehatan" value="<?= (@set_value('no_bpjs_kesehatan')) ? @set_value('no_bpjs_kesehatan') : $pegawai->no_bpjs_kesehatan ?>">
                                 </div>
 
                                 <div class="col-lg-3 mb-3">
-                                    <label>BPJS Ketenagakerjaan <small class="text-danger">* <?= strip_tags(@form_error('no_bpjs_ketenagakerjaan')) ?></small></label>
+                                    <label>BPJS Ketenagakerjaan</label>
                                     <input class="form-control <?= (@form_error('no_bpjs_ketenagakerjaan')) ? 'is-invalid' : ((@set_value('no_bpjs_ketenagakerjaan')) ? 'is-valid' : '') ?>" type="number" placeholder="No BPJS Ketenagakerjaan" name="no_bpjs_ketenagakerjaan" value="<?= (@set_value('no_bpjs_ketenagakerjaan')) ? @set_value('no_bpjs_ketenagakerjaan') : $pegawai->no_bpjs_ketenagakerjaan ?>">
                                 </div>
                             </div>
@@ -245,8 +252,8 @@
                                 </div>
                                 <div class="col-lg-4">
                                     <div class="form-group">
-                                        <label>Jabatan <small class="text-danger">*</small></label>
-                                        <select name="jabatan_id" class="form-control <?= (@form_error('jabatan_id')) ? 'is-invalid' : ((@set_value('jabatan_id')) ? 'is-valid' : '') ?>"required="">
+                                        <label>Jabatan</label>
+                                        <select name="jabatan_id" class="form-control <?= (@form_error('jabatan_id')) ? 'is-invalid' : ((@set_value('jabatan_id')) ? 'is-valid' : '') ?>">
                                             <option value="" selected="" disabled="">- Pilih Jabatan</option>
                                             <?php foreach($jabatan->result() as $j){ ?>
                                                 <option value="<?= $j->id ?>" <?= (@set_value('jabatan_id') == $j->id || $pegawai->jabatan_id) ? 'selected' : '' ?> ><?= $j->jabatan ?></option>
@@ -256,8 +263,8 @@
                                 </div>
                                 <div class="col-lg-4">
                                     <div class="form-group">
-                                        <label for="select-div">Divisi <small class="text-danger">*</small></label>
-                                        <select name="divisi_id" class="form-control <?= (@form_error('divisi_id')) ? 'is-invalid' : ((@set_value('divisi_id')) ? 'is-valid' : '') ?>" required="" id="select-div">
+                                        <label for="select-div">Divisi</label>
+                                        <select name="divisi_id" class="form-control <?= (@form_error('divisi_id')) ? 'is-invalid' : ((@set_value('divisi_id')) ? 'is-valid' : '') ?>" id="select-div">
                                             <option value="" selected="" disabled="">- Pilih Divisi</option>
                                             <?php foreach($divisi->result() as $d){ ?>
                                                 <option value="<?= $d->id ?>" <?= (@set_value('divisi_id') == $d->id || $pegawai->divisi_id == $d->id) ? 'selected' : '' ?> ><?= $d->divisi ?></option>
@@ -267,7 +274,7 @@
                                 </div>
                                 <div class="col-lg-4">
                                     <div class="form-group">
-                                        <label>Departement <small class="text-danger">*</small></label>
+                                        <label>Departement</label>
                                         <select name="dept_id" class="form-control <?= (@form_error('dept_id')) ? 'is-invalid' : ((@set_value('dept_id')) ? 'is-valid' : '') ?>" id="select-dept" <?= (@form_error('dept_id')) ? 'disabled' : '' ?>>
                                             <option value="" selected="" disabled="">- Pilih Departement</option>
                                             <?php 
@@ -287,7 +294,7 @@
                                 </div>
                                 <div class="col-lg-4">
                                     <div class="form-group">
-                                        <label>Unit <small class="text-danger">*</small></label>
+                                        <label>Unit</label>
                                         <select name="unit_id" class="form-control <?= (@form_error('unit_id')) ? 'is-invalid' : ((@set_value('unit_id')) ? 'is-valid' : '') ?>" id="select-unit" <?= (@form_error('unit_id')) ? 'disabled' : '' ?>>
                                             <option value="" selected="" disabled="">- Pilih Unit</option>
                                             <?php 

@@ -15,6 +15,7 @@ class Absensi extends CI_Controller{
             'M_Company',
             'M_Cutoff'
         ]);
+        $this->companyid = $this->session->userdata('company_id');
         if($this->session->userdata('masuk') != TRUE)
             redirect('', 'refresh');
     }
@@ -49,7 +50,8 @@ class Absensi extends CI_Controller{
                             ->from('log_upload_absensi la')
                             ->join('pegawai p', 'la.pegawai_id = p.id')
                             ->where([
-                                'la.cutoff_id' => $cutoffid
+                                'la.cutoff_id' => $cutoffid,
+                                'la.company_id' => $this->companyid
                             ])->get();
         $data = array();
         $no = 1;
@@ -87,7 +89,8 @@ class Absensi extends CI_Controller{
                             ->join('pegawai p', 'a.nik = p.nik')
                             ->join('shift s', 'a.shift_id = s.id')
                             ->where([
-                                'a.log_id' => $id
+                                'a.log_id' => $id,
+                                'a.company_id' => $this->companyid
                             ])->get();
         $data = array();
         $no = 1;
@@ -131,7 +134,7 @@ class Absensi extends CI_Controller{
 
     /* PhpSpreadsheet Code Here! */
     function download(){
-        $shift = $this->db->get_where('shift')->result();
+        $shift = $this->db->get_where('shift', ['status' => 't', 'company_id' => $this->companyid])->result();
 
         $spreadsheet = new Spreadsheet();  
         $Excel_writer = new Xlsx($spreadsheet);
@@ -236,13 +239,11 @@ class Absensi extends CI_Controller{
                     $spreadsheet = $reader->load($inputFileName);
                     $sheetData = $spreadsheet->getActiveSheet()->toArray(null,true,true,true);
 
-                    // echo $sheetData[2]['C'];
-                    // die();
-
                     if($sheetData[1]['B'] == 'Format Import Absensi' && $sheetData[2]['D'] == 'Tanggal Masuk (DD-MM-YY H:I)' && $sheetData[2]['E'] == 'Tanggal Keluar (DD-MM-YY H:I)'){
                         $count = 0;
                         $dataLog = [
-                            'pegawai_id' => $this->session->userdata('userid'),
+                            'company_id' => $this->companyid,
+                            'pegawai_id' => $this->session->userdata('pegawai_id'),
                             'cutoff_id' => $cutoffid,
                             'filename' => $fileImport
                         ];
@@ -254,6 +255,7 @@ class Absensi extends CI_Controller{
                                 $shift = $this->db->limit(1)->get_where('shift', ['kode' => $sheetData[$row]['F']]);
                                 if($shift->num_rows() > 0){
                                     $datas = [
+                                        'company_id' => $this->companyid,
                                         'log_id' => $logid,
                                         'nik' => $sheetData[$row]['B'],
                                         'jam_in' => date('Y-m-d H:i:s', strtotime($sheetData[$row]['D'].":00")),
