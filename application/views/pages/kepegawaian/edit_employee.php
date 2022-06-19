@@ -205,10 +205,64 @@
                                             <td class="text-center"><?= $nos++ ?></td>
                                             <td><?= $rows->status ?></td>
                                             <td><?= longdate_indo($rows->tgl_join) ?></td>
-                                            <td><?= longdate_indo($rows->tgl_finish) ?></td>
-                                            <td class="text-center">
+                                            <td><?= ($rows->tgl_finish) ? longdate_indo($rows->tgl_finish) : '-' ?></td>
+                                            <td class="text-center btn-group">
+                                                <button type="button" class="btn btn-sm btn-round btn-info text-white px-3 mb-0 btn-edit-kepegawaian" id="<?= $rows->id ?>"><i class="fas fa-pencil-alt" aria-hidden="true"></i></button>
                                                 <a class="btn btn-sm btn-round btn-link text-danger px-3 mb-0" href="<?= site_url('kepegawaian/employee/deleteSK/' . $rows->id) ?>"><i class="far fa-trash-alt" aria-hidden="true"></i></a>
                                             </td>
+                                        </tr>
+                                        <?php } ?>
+                                    </tbody>
+                                </table>
+                            </div>
+                            
+                            <hr class="my-2">
+
+                            <div class="row mt-3">
+                                <div class="col-lg-6">
+                                    <h6><strong>Tunjangan <span class="badge badge-sm bg-gradient-success"><?= @$tunjanganPegawai->nama ?></span></strong></h6>
+                                </div>
+                                <div class="col-lg-6 text-end">
+                                    <?php if(@$tunjanganPegawai->id): ?>
+                                        <button type="button" class="btn btn-sm btn-round btn-info mb-0" data-bs-toggle="modal" data-bs-target="#modalAddTunjangan"><i class="fas fa-pencil-alt me-2"></i> Tunjangan</button>
+                                    <?php else: ?>
+                                        <button type="button" class="btn btn-sm btn-round bg-gradient-dark mb-0" data-bs-toggle="modal" data-bs-target="#modalAddTunjangan"><i class="fas fa-plus me-2"></i> Tunjangan</button>
+                                    <?php endif; ?>
+                                </div>
+                            </div>
+                            
+                            <div class="table-responsive p-0 mt-4">
+                                <table class="table table-striped" style="width:100%">
+                                    <thead>
+                                        <tr>
+                                            <th class="text-center w-5px">No</th>
+                                            <th class="">Tunjangan</th>
+                                            <th class="w-5px">Role</th>
+                                            <th class="w-5px">Nominal</th>
+                                            <th class="w-5px">Tipe</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <?php 
+                                            $not = 1;
+                                            $getTunjangan = $this->db->select('dt.*, t.tunjangan, t.keterangan, t.type tunjangan_type, rt.kode, rt.satuan')
+                                                                    ->from('detail_template_tunjangan dt')
+                                                                    ->join('tunjangan t', 'dt.tunjangan_id = t.id')
+                                                                    ->join('role_tunjangan rt', 't.role_id = rt.id')
+                                                                    ->where('dt.template_id', @$tunjanganPegawai->id)
+                                                                    ->order_by('dt.id', "DESC")->get();
+
+                                            foreach($getTunjangan->result() as $tem){
+                                                $badgeType = ($tem->type == 'N') ? '<span class="badge badge-sm bg-gradient-primary">Nominal</span>' : '<span class="badge badge-sm bg-gradient-primary">Presentase</span>';
+                                                $badgeTunjangan = jenisTunjangan($tem->tunjangan_type);
+                                                $nominal = ($tem->type == 'N') ? rupiah($tem->nominal) : $tem->nominal."%";
+                                        ?>
+                                        <tr>
+                                            <td class="text-center"><?= $not++ ?></td>
+                                            <td><?= $tem->tunjangan.' - '.$tem->keterangan ?></td>
+                                            <td><?= $tem->satuan ?></td>
+                                            <td><?= $nominal ?></td>
+                                            <td><?= $badgeType.' '.$badgeTunjangan ?></td>
                                         </tr>
                                         <?php } ?>
                                     </tbody>
@@ -227,18 +281,7 @@
                                     <label>Tanggal Resign <small class="text-danger">* <?= strip_tags(@form_error('resign_date')) ?></small></label>
                                     <input class="form-control <?= (@form_error('resign_date')) ? 'is-invalid' : ((@set_value('resign_date')) ? 'is-valid' : '') ?>" type="date" placeholder="Tanggal Resign" name="resign_date" value="<?= (@set_value('resign_date')) ? @set_value('tgl_habis_kontrak') : $pegawai->resign_date ?>">
                                 </div>
-
-                                <div class="col-lg-4">
-                                    <div class="form-group">
-                                        <label>Company <small class="text-danger">*</small></label>
-                                        <select name="company_id" class="form-control <?= (@form_error('company_id')) ? 'is-invalid' : ((@set_value('company_id')) ? 'is-valid' : '') ?>" required="">
-                                            <option value="" selected="" disabled="">- Pilih Company</option>
-                                            <?php foreach($companys->result() as $c){ ?>
-                                                <option value="<?= $c->id ?>" <?= (@set_value('company_id') == $c->id || $pegawai->company_id == $c->id) ? 'selected' : '' ?> ><?= $c->company ?></option>
-                                            <?php } ?>
-                                        </select>
-                                    </div>
-                                </div>
+                                
                                 <div class="col-lg-4">
                                     <div class="form-group">
                                         <label>Cabang <small class="text-danger">*</small></label>
@@ -327,9 +370,6 @@
                                 <div class="col-lg-6">
                                     <h6><strong>Keuangan</strong></h6>
                                 </div>
-                                <div class="col-lg-6 text-end">
-                                    <button type="button" class="btn btn-sm btn-round bg-gradient-dark mb-0" data-bs-toggle="modal" data-bs-target="#modalAddTunjangan"><i class="fas fa-plus me-2"></i> Tunjangan</button>
-                                </div>
                             </div>
 
                             <div class="row">
@@ -389,7 +429,7 @@
                                         <select name="status_id" class="form-control <?= (@form_error('status_id')) ? 'is-invalid' : ((@set_value('status_id')) ? 'is-valid' : '') ?>" required="">
                                             <option value="" selected="" disabled="">- Pilih Status Kepegawaian</option>
                                             <?php foreach($status_kepegawaian->result() as $sk){ ?>
-                                                <option value="<?= $sk->id ?>" <?= (@set_value('status_id') == $sk->id || $pegawai->status_id == $sk->id) ? 'selected' : '' ?> ><?= $sk->status ?></option>
+                                                <option value="<?= $sk->id ?>" ><?= $sk->status ?></option>
                                             <?php } ?>
                                         </select>
                                     </div>
@@ -404,8 +444,8 @@
                                         </div>
                                         <div class="col-lg-6">
                                             <div class="form-group">
-                                                <label>Tanggal Finish<small class="text-danger">*</small></label>
-                                                <input class="form-control" type="date" placeholder="Tanggal Finish" name="tgl_finish" required>
+                                                <label>Tanggal Finish</label>
+                                                <input class="form-control" type="date" placeholder="Tanggal Finish" name="tgl_finish">
                                             </div>
                                         </div>
                                     </div>
@@ -425,6 +465,14 @@
     </div>
 </div>
 
+<div class="modal fade" id="modal-edit-kepegawaian" tabindex="-1" role="dialog" aria-labelledby="modal-form" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+        <div class="modal-content modal-content-edit-kepegawiaan">
+            
+        </div>
+    </div>
+</div>
+
 <div class="modal fade" id="modalAddTunjangan" tabindex="-1" role="dialog" aria-labelledby="modal-form" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
         <div class="modal-content">
@@ -434,7 +482,7 @@
                         <h5 class="font-weight-bolder">Pilih Template Tunjangan - <?= @$pegawai->nama ?></h5>
                     </div>
                     <div class="card-body pb-0">
-                        <form action="<?= site_url('kepegawaian/employee/addTunjangan') ?>" role="form text-left" method="post">
+                        <form action="<?= site_url('kepegawaian/employee/createTunjangan') ?>" role="form text-left" method="post">
                             <input type="hidden" name="pegawai_id" value="<?= $pegawai->id ?>">
                            
                             <?php 
@@ -452,8 +500,8 @@
                                         <div class="row">
                                             <div class="col-lg-6">
                                                 <div class="form-check">
-                                                    <input type="checkbox" class="form-check-input mt-1" name="template_id" id="checkTemplate<?= $r->id ?>" value="<?= $r->id ?>">
-                                                    <label class="custom-control-label" for="checkTemplate<?= $r->id ?>"><h6><strong><?= $r->nama ?></strong></h6></label>
+                                                    <input type="checkbox" class="form-check-input mt-1" name="template_id" id="checkTemplate<?= $r->id ?>" value="<?= $r->id ?>" <?= (@$tunjanganPegawai->id == $r->id) ? 'checked' : ''  ?>>
+                                                    <label class="custom-control-label" for="checkTemplate<?= $r->id ?>" ><h6><strong><?= $r->nama ?></strong></h6></label>
                                                 </div>
                                             </div>
                                             <div class="col-lg-6 text-lg-end">
@@ -464,15 +512,16 @@
                                         </div>
                                     </div>
 
-                                    <div class="collapse" id="collapseExample<?= $r->id ?>">
+                                    <div class="collapse <?= (@$tunjanganPegawai->id == $r->id) ? 'show' : ''  ?>" id="collapseExample<?= $r->id ?>">
                                         <div class="card-body pt-2">
                                             <?php foreach($tunjangan->result() as $t){ 
                                                 $badgeType = ($t->type == 'N') ? '<span class="badge badge-sm bg-gradient-primary me-2">&nbsp;&nbsp;Nominal&nbsp;&nbsp;</span>' : '<span class="badge badge-sm bg-gradient-primary me-2">Presentase</span>';
                                                 $badgeTunjangan = jenisTunjangan($t->tunjangan_type);
                                                 $nominal = ($t->type == 'N') ? rupiah($t->nominal) : $t->nominal."%";    
                                             ?>
+                                                <hr class="my-1">
                                                 <div class="d-flex justify-content-between">
-                                                    <strong><?= $t->tunjangan." : ".$nominal ?></strong>
+                                                    <strong><?= $t->tunjangan." - ".$t->satuan." : ".$nominal ?></strong>
                                                     <strong><?= $badgeTunjangan ?></strong>
                                                 </div>
                                             <?php } ?>

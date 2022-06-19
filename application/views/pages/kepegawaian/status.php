@@ -17,7 +17,8 @@
                     <tr>
                         <th class="text-center w-5px">No</th>
                         <th>Nama</th>
-                        <th class="text-center w-15p">Status Kepegawaian</th>
+                        <th class="w-5p">Status Kepegawaian</th>
+                        <th class="w-5p">Status</th>
                         <th class="text-center w-15p">Join</th>
                         <th class="text-center w-15p">Finish</th>
                         <th class="text-center w-5px">Action</th>

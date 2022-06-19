@@ -53,6 +53,21 @@ $('#select-dept').change(function(){
     })
 })
 
+$('.btn-edit-kepegawaian').click(function(){
+    var id = $(this).attr('id')
+    $.ajax({
+        url: baseUrl + 'kepegawaian/employee/modalEditKepegawaian',
+        type: 'get',
+        data: {id : id},
+        beforeSend: function(){
+            $('#modal-edit-kepegawaian').modal('show')
+        },
+        success: function(res){
+            $('.modal-content-edit-kepegawiaan').html(res)
+        }
+    })
+})
+
 $('.nav-link').click(function(){
     var href = $(this).attr('href')
     localStorage.setItem('activeTab', href)

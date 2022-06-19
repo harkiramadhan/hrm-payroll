@@ -20,6 +20,7 @@ class Status extends CI_Controller{
     }
 
     function table(){
+        $now = time(); 
         $draw = intval($this->input->get("draw"));
         $start = intval($this->input->get("start"));
         $length = intval($this->input->get("length"));
@@ -28,18 +29,36 @@ class Status extends CI_Controller{
         $data = array();
         $no = 1;
         foreach($get->result() as $row){
-            $detail =  $this->db->select("m.tgl_join, m.tgl_finish, sk.status")
+            $detail =  $this->db->select("m.tgl_join, m.tgl_finish, sk.status, sk.warning")
                                 ->from('mutasi m')
                                 ->join('status_kepegawaian sk', 'm.status_id = sk.id')
-                                ->where('pegawai_id', $row->id)->order_by('m.timestamp', "DESC")->get()->row();
+                                ->where('pegawai_id', $row->id)->order_by('m.id', "DESC")->get()->row();
 
             $join = (@$detail->tgl_join) ? longdate_indo(date('Y-m-d', strtotime($detail->tgl_join))) : ' - ';
-            $finish = (@$detail->tgl_finish) ? longdate_indo(date('Y-m-d', strtotime($detail->tgl_finish))) : ' - ';
+            $finish = (@$detail->tgl_finish == '0000-00-00' || @$detail->tgl_finish == NULL) ? ' - ' : longdate_indo(date('Y-m-d', strtotime(@$detail->tgl_finish)));
             $status = (@$detail->status) ? $detail->status : ' - ';
+            $warningDate = strtotime(@$detail->tgl_finish.'-'.@$detail->warning.' days');
+            $datediff = $now - $warningDate;
+            $date1 = new DateTime();
+            $date2 = new DateTime(@$detail->tgl_finish);
+            @$totalan = $date1->diff($date2);
+
+            if(date('Y-m-d') >= date('Y-m-d',strtotime(@$detail->tgl_finish))){
+                $total = @$totalan->days + 1;
+                $warningStatus = '<span class="badge badge-sm bg-danger">Lewat '.@$total.' Hari</span>';
+            }else{
+                if(round($datediff / (60 * 60 * 24)) >= -@$detail->warning){
+                    $warningStatus = '<span class="badge badge-sm bg-warning">Sisa '.@$totalan->days.' Hari</span>';
+                }else{
+                    $warningStatus = '<span class="badge badge-sm bg-success">Active</span>';
+                }
+            }
+
             $data[] = [
                 $no++,
                 '<strong>'.$row->nama.'</strong>',
-                '<p class="text-center mb-0"><strong>'.$status.'</strong></p>',
+                '<p class="mb-0"><strong>'.$status.'</strong></p>',
+                (@$detail->tgl_finish == '0000-00-00' || @$detail->tgl_finish == NULL) ? '-' : @$warningStatus,
                 '<p class="text-center mb-0"><strong>'.$join.'</strong></p>',
                 '<p class="text-center mb-0"><strong>'.$finish.'</strong></p>',
                 '<div class="btn-group" role="group" aria-label="Basic example">

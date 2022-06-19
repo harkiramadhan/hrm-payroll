@@ -56,6 +56,14 @@ class Employee extends CI_Controller{
                                 ->where([
                                     'm.pegawai_id' => $id
                                 ])->order_by('tgl_join', "ASC")->get();
+
+        $tunjanganPegawai = $this->db->select('tm.*')
+                                    ->from('tunjangan_pegawai tp')
+                                    ->join('template_tunjangan tm', 'tp.template_id = tm.id')
+                                    ->where([
+                                        'tp.pegawai_id' => $id
+                                    ])->get()->row();
+
         $var = [
             'title' => 'Edit Pegawai ' . $pegawai->nama,
             'pegawai' => $pegawai,
@@ -67,11 +75,12 @@ class Employee extends CI_Controller{
             'divisi' => $this->db->get_where('divisi', ['company_id' => $this->companyid]),
             'departement' => $this->db->get_where('departement', ['divisi_id' => $pegawai->divisi_id]),
             'unit' => $this->db->get_where('unit', ['dept_id' => $pegawai->dept_id]),
-            'status_kepegawaian' => $this->db->get('status_kepegawaian'),
+            'status_kepegawaian' => $this->db->get_where('status_kepegawaian', ['company_id' => $this->companyid, 'is_active' => 't']),
             'cabang' => $this->db->get_where('cabang', ['company_id' => $this->companyid]),
             'kepegawaian' => $kepegawaian,
             'templateTunjangan' => $this->db->get_where('template_tunjangan', ['status' => 't', 'company_id' => $this->companyid]),
             'pernikahan' => $this->db->get('status_pernikahan'),
+            'tunjanganPegawai' => $tunjanganPegawai,
             'page' => 'kepegawaian/edit_employee',
             'ajax' => [
                 'employee'
@@ -148,7 +157,7 @@ class Employee extends CI_Controller{
             }
             
             $nik = '';
-            @$lastNik = $this->db->select('nik')->get_where('pegawai', ['company_id' => $this->companyid])->row()->nik;
+            @$lastNik = $this->db->select('nik')->order_by('nik', "DESC")->get_where('pegawai', ['company_id' => $this->companyid])->row()->nik;
 
             if(@$lastNik){
                 $nik = @$lastNik + 1;
@@ -189,6 +198,30 @@ class Employee extends CI_Controller{
 
             redirect('kepegawaian/employee/' . $pegawai_id, 'refresh');
         }
+    }
+
+    function createTunjangan(){
+        $cek = $this->db->get_where('tunjangan_pegawai', ['pegawai_id' => $this->input->post('pegawai_id', TRUE)]);
+        if($cek->num_rows() > 0){
+            $dataUpdate = [
+                'template_id' => $this->input->post('template_id', TRUE),
+            ];
+            $this->db->where('id', $cek->row()->id)->update('tunjangan_pegawai', $dataUpdate);
+        }else{
+            $dataInsert = [
+                'template_id' => $this->input->post('template_id', TRUE),
+                'pegawai_id' => $this->input->post('pegawai_id', TRUE)
+            ];
+            $this->db->insert('tunjangan_pegawai', $dataInsert);
+        }
+
+        if($this->db->affected_rows() > 0){
+            $this->session->set_flashdata('success', "Data Berhasil Di Simpan");
+        }else{
+            $this->session->set_flashdata('error', "Data Gagal Di Simpan");
+        }
+
+        redirect($_SERVER['HTTP_REFERER'],'refresh');
     }
 
     function update($id){
@@ -382,6 +415,61 @@ class Employee extends CI_Controller{
         }
 
         redirect($_SERVER['HTTP_REFERER']);
+    }
+
+    function modalEditKepegawaian(){
+        $id = $this->input->get('id', TRUE);
+        $data = $this->db->get_where('mutasi', ['id' => $id])->row();
+        $status_kepegawaian = $this->db->get_where('status_kepegawaian', ['company_id' => $this->companyid, 'is_active' => 't']);
+        ?>
+            <div class="modal-body p-0">
+                <div class="card card-plain">
+                    <div class="card-header pb-0 text-left">
+                        <h5 class="font-weight-bolder">Tambah Status Kepegawaian - <?= @$pegawai->nama ?></h5>
+                    </div>
+                    <div class="card-body pb-0">
+                        <form action="<?= site_url('kepegawaian/employee/addStatusKepegawaian') ?>" role="form text-left" method="post">
+                            <input type="hidden" name="pegawai_id" value="<?= $data->pegawai_id ?>">
+                            <div class="row">
+                                <div class="col-lg-6">
+                                    <div class="form-group">
+                                        <label>Status Kepegawaian <small class="text-danger">*</small></label>
+                                        <select name="status_id" class="form-control <?= (@form_error('status_id')) ? 'is-invalid' : ((@set_value('status_id')) ? 'is-valid' : '') ?>" required="">
+                                            <option value="" selected="" disabled="">- Pilih Status Kepegawaian</option>
+                                            <?php foreach($status_kepegawaian->result() as $sk){ ?>
+                                                <option value="<?= $sk->id ?>" <?=  ($sk->id == $data->status_id) ? 'selected' : '' ?> ><?= $sk->status ?></option>
+                                            <?php } ?>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-lg-6">
+                                    <div class="row">
+                                        <div class="col-lg-6">
+                                            <div class="form-group">
+                                                <label>Tanggal Join<small class="text-danger">*</small></label>
+                                                <input class="form-control" type="date" placeholder="Tanggal Join" name="tgl_join" value="<?= $data->tgl_join ?>" required>
+                                            </div>
+                                        </div>
+                                        <div class="col-lg-6">
+                                            <div class="form-group">
+                                                <label>Tanggal Finish</label>
+                                                <input class="form-control" type="date" placeholder="Tanggal Finish" name="tgl_finish" value="<?= $data->tgl_finish ?>">
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="text-center">
+                                <button type="submit" class="btn btn-sm btn-round bg-success btn-lg w-100 mt-4 mb-0 text-white">Tambahkan</button>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="card-footer text-center pt-0 px-lg-2 px-1">
+                        <button type="button" class="btn btn-sm btn-link btn-block  ml-auto" data-bs-dismiss="modal">Batal</button>
+                    </div>
+                </div>
+            </div>
+        <?php
     }
 
     function table(){

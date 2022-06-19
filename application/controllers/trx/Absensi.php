@@ -90,7 +90,7 @@ class Absensi extends CI_Controller{
                             ->join('shift s', 'a.shift_id = s.id')
                             ->where([
                                 'a.log_id' => $id,
-                                'a.company_id' => $this->companyid
+                                'a.company_id' => $this->companyid,
                             ])->get();
         $data = array();
         $no = 1;
@@ -249,15 +249,19 @@ class Absensi extends CI_Controller{
                         ];
                         $this->db->insert('log_upload_absensi', $dataLog);
                         $logid = $this->db->insert_id();
-                        for($row = 3; $row <= count($sheetData); $row++){
-                            $cek = $this->db->get_where('pegawai', ['nik' => $sheetData[$row]['B']]);
+                        for($row = 4; $row <= count($sheetData); $row++){
+                            $separate = $this->stringSeperator($sheetData[$row]['B']);
+                            $nip = (int)$separate['nip'];
+                            $cabang = $separate['cabang'];
+
+                            $cek = $this->db->limit(1)->get_where('pegawai', ['nik' => $nip, 'kode_cabang' => $cabang]);
                             if($cek->num_rows() > 0){
                                 $shift = $this->db->limit(1)->get_where('shift', ['kode' => $sheetData[$row]['F']]);
                                 if($shift->num_rows() > 0){
                                     $datas = [
                                         'company_id' => $this->companyid,
                                         'log_id' => $logid,
-                                        'nik' => $sheetData[$row]['B'],
+                                        'nik' => $nip,
                                         'jam_in' => date('Y-m-d H:i:s', strtotime($sheetData[$row]['D'].":00")),
                                         'jam_out' => date('Y-m-d H:i:s', strtotime($sheetData[$row]['E'].":00")),
                                         'shift_id' => $shift->row()->id,
@@ -328,5 +332,27 @@ class Absensi extends CI_Controller{
             $this->form_validation->set_message('checkFileValidation', 'Silahkan Pilih File Terlebih Dahulu');
             return false;
         }
+    }
+
+    function stringSeperator($string){
+        $numbers =array();
+        $alpha = array();
+        $array = str_split($string);
+        for($x = 0; $x< count($array); $x++){
+            if(is_numeric($array[$x]))
+                array_push($numbers,$array[$x]);
+            else
+                array_push($alpha,$array[$x]);
+        }// end for         
+    
+        $alpha = implode($alpha);
+        $numbers = implode($numbers);
+    
+        $arr = [
+            'cabang' => $alpha,
+            'nip' => $numbers
+        ];
+        return $arr;
+    
     }
 }
