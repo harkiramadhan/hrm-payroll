@@ -75,9 +75,9 @@ $query_builder = TRUE;
 
 $db['default'] = array(
 	'dsn'	=> '',
-	'hostname' => '127.0.0.1',
-	'username' => 'root',
-	'password' => '',
+	'hostname' => 'www.simpaud.com',
+	'username' => 'simdev',
+	'password' => 's1mpaud3v',
 	'database' => 'hrm_payroll',
 	'dbdriver' => 'mysqli',
 	'dbprefix' => '',

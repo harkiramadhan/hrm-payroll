@@ -173,7 +173,7 @@ class Absensi extends CI_Controller{
         $sheetStyle->mergeCells('F2:F3');
         $sheetStyle->mergeCells('I2:I3');
         $sheetStyle->setCellValue('B1','Format Import Absensi');
-        $sheetStyle->setCellValue('B2','NIK');
+        $sheetStyle->setCellValue('B2','NIP');
         $sheetStyle->setCellValue('C2','Nama');
         $sheetStyle->setCellValue('D2','Tanggal Masuk (DD-MM-YY H:I)');
         $sheetStyle->setCellValue('D3','31-01-2022 08:59');
