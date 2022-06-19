@@ -179,7 +179,7 @@ class Cutoff extends CI_Controller{
         $no = 1;
         foreach($get->result() as $row){
             $badge = ($row->is_active == 't') ? '<span class="badge badge-sm bg-gradient-success">Active</span>' : '<span class="badge badge-sm bg-gradient-danger">Non Active</span>';
-            $periode = "Periode ".bulan($row->bulan)." ".$row->tahun;
+            $periode = bulan($row->bulan)." ".$row->tahun;
             $data[] = [
                 $no++,
                 '<strong>'.$periode.'</strong>',

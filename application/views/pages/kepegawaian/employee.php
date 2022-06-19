@@ -19,19 +19,10 @@
                 <thead>
                     <tr>
                         <th class="text-center w-5px">No</th>
-                        <th class="text-center">NIK</th>
+                        <th class="text-center w-5px">NIP</th>
                         <th>Nama</th>
-                        <!-- <th class="text-center">E-Ktp</th> -->
-                        <!-- <th class="text-center">Tanggal Lahir</th> -->
-                        <th class="text-center">Nikah</th>
-                        <!-- <th class="text-center">Agama</th> -->
-                        <!-- <th class="text-center">Pendidikan</th> -->
-                        <th class="text-center">Company</th>
-                        <th class="text-center">Jabatan</th>
-                        <th class="text-center">Divisi</th>
-                        <th class="text-center">Departemen</th>
-                        <th class="text-center">Unit</th>
-                        <th class="text-center">Last Update</th>
+                        <th class="text-center w-10p">Divisi/Jabatan</th>
+                        <th class="text-center">Departemen/Unit</th>
                         <th class="text-center w-5px">Action</th>
                     </tr>
                 </thead>

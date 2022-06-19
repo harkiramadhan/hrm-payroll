@@ -145,44 +145,47 @@ class Absensi extends CI_Controller{
         ];
 
         $sheet->getColumnDimension('A')->setAutoSize(true);
-        $sheet->getColumnDimension('B')->setAutoSize(true);
-        $sheet->getColumnDimension('C')->setAutoSize(true);
+        $sheet->getColumnDimension('B')->setWidth(30);
+        $sheet->getColumnDimension('C')->setWidth(40);
         $sheet->getColumnDimension('D')->setAutoSize(true);
         $sheet->getColumnDimension('E')->setAutoSize(true);
         $sheet->getColumnDimension('F')->setAutoSize(true);
         $sheet->getColumnDimension('G')->setAutoSize(true);
         $sheet->getColumnDimension('H')->setAutoSize(true);
-        $sheet->getStyle('A:H')->getAlignment()->setHorizontal('center');
-        $sheet->getStyle('A:H')->getAlignment()->setVertical('center');
-        $sheet->getStyle('B1:H3')->applyFromArray($styleBold);
-        $sheet->getStyle('C3')->getFont()->getColor()->setRGB ('FFFF0000');
+        $sheet->getColumnDimension('I')->setAutoSize(true);
+        $sheet->getStyle('A:I')->getAlignment()->setHorizontal('center');
+        $sheet->getStyle('A:I')->getAlignment()->setVertical('center');
+        $sheet->getStyle('B1:I3')->applyFromArray($styleBold);
         $sheet->getStyle('D3')->getFont()->getColor()->setRGB ('FFFF0000');
-        $sheet->getStyle('F3')->getFont()->getColor()->setRGB ('FFFF0000');
-        $sheet->getStyle('H2')->getFill()
+        $sheet->getStyle('E3')->getFont()->getColor()->setRGB ('FFFF0000');
+        $sheet->getStyle('G3')->getFont()->getColor()->setRGB ('FFFF0000');
+        $sheet->getStyle('I2')->getFill()
                 ->setFillType(\PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID)->getStartColor()->setRGB('ffe100');
 
         $sheetStyle = $spreadsheet->getActiveSheet();
 
-        $sheetStyle->mergeCells('B1:H1');
+        $sheetStyle->mergeCells('B1:I1');
         $sheetStyle->mergeCells('B2:B3');
-        $sheetStyle->mergeCells('E2:E3');
-        $sheetStyle->mergeCells('H2:H3');
+        $sheetStyle->mergeCells('C2:C3');
+        $sheetStyle->mergeCells('F2:F3');
+        $sheetStyle->mergeCells('I2:I3');
         $sheetStyle->setCellValue('B1','Format Import Absensi');
         $sheetStyle->setCellValue('B2','NIK');
-        $sheetStyle->setCellValue('C2','Tanggal Masuk (DD-MM-YY H:I)');
-        $sheetStyle->setCellValue('C3','31-01-2022 08:59');
-        $sheetStyle->setCellValue('D2','Tanggal Keluar (DD-MM-YY H:I)');
-        $sheetStyle->setCellValue('D3','31-01-2022 18:59');
-        $sheetStyle->setCellValue('E2','Kode Shift');
-        $sheetStyle->setCellValue('F2','Keterangan');
-        $sheetStyle->setCellValue('F3','S= Sakit, C= Cuti, I= Izin, A= Alpa');
-        $sheetStyle->setCellValue('H2','Kode Shift Tersedia');
+        $sheetStyle->setCellValue('C2','Nama');
+        $sheetStyle->setCellValue('D2','Tanggal Masuk (DD-MM-YY H:I)');
+        $sheetStyle->setCellValue('D3','31-01-2022 08:59');
+        $sheetStyle->setCellValue('E2','Tanggal Keluar (DD-MM-YY H:I)');
+        $sheetStyle->setCellValue('E3','31-01-2022 18:59');
+        $sheetStyle->setCellValue('F2','Kode Shift');
+        $sheetStyle->setCellValue('G2','Keterangan');
+        $sheetStyle->setCellValue('G3','S= Sakit, C= Cuti, I= Izin, A= Alpa');
+        $sheetStyle->setCellValue('I2','Kode Shift Tersedia');
 
         $excel_row = 4;
         foreach($shift as $row){
-            $spreadsheet->getActiveSheet()->setCellValueByColumnAndRow(8, $excel_row, $row->kode);
-            $sheet->getStyle('H' . $excel_row)->applyFromArray($styleBold);
-            $sheet->getStyle('H' . $excel_row)->getFill()
+            $spreadsheet->getActiveSheet()->setCellValueByColumnAndRow(9, $excel_row, $row->kode);
+            $sheet->getStyle('I' . $excel_row)->applyFromArray($styleBold);
+            $sheet->getStyle('I' . $excel_row)->getFill()
                 ->setFillType(\PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID)->getStartColor()->setRGB('fffe00');
             $excel_row++;
         }
@@ -236,7 +239,7 @@ class Absensi extends CI_Controller{
                     // echo $sheetData[2]['C'];
                     // die();
 
-                    if($sheetData[1]['B'] == 'Format Import Absensi' && $sheetData[2]['C'] == 'Tanggal Masuk (DD-MM-YY H:I)' && $sheetData[2]['D'] == 'Tanggal Keluar (DD-MM-YY H:I)'){
+                    if($sheetData[1]['B'] == 'Format Import Absensi' && $sheetData[2]['D'] == 'Tanggal Masuk (DD-MM-YY H:I)' && $sheetData[2]['E'] == 'Tanggal Keluar (DD-MM-YY H:I)'){
                         $count = 0;
                         $dataLog = [
                             'pegawai_id' => $this->session->userdata('userid'),
@@ -248,15 +251,15 @@ class Absensi extends CI_Controller{
                         for($row = 3; $row <= count($sheetData); $row++){
                             $cek = $this->db->get_where('pegawai', ['nik' => $sheetData[$row]['B']]);
                             if($cek->num_rows() > 0){
-                                $shift = $this->db->limit(1)->get_where('shift', ['kode' => $sheetData[$row]['E']]);
+                                $shift = $this->db->limit(1)->get_where('shift', ['kode' => $sheetData[$row]['F']]);
                                 if($shift->num_rows() > 0){
                                     $datas = [
                                         'log_id' => $logid,
                                         'nik' => $sheetData[$row]['B'],
-                                        'jam_in' => date('Y-m-d H:i:s', strtotime($sheetData[$row]['C'].":00")),
-                                        'jam_out' => date('Y-m-d H:i:s', strtotime($sheetData[$row]['D'].":00")),
+                                        'jam_in' => date('Y-m-d H:i:s', strtotime($sheetData[$row]['D'].":00")),
+                                        'jam_out' => date('Y-m-d H:i:s', strtotime($sheetData[$row]['E'].":00")),
                                         'shift_id' => $shift->row()->id,
-                                        'keterangan' => ucfirst($sheetData[$row]['F'])
+                                        'keterangan' => ucfirst($sheetData[$row]['G'])
                                     ];
                                     $this->db->insert('absensi', $datas);
                                     if($this->db->affected_rows() > 0){

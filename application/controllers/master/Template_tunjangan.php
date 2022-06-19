@@ -57,7 +57,7 @@ class Template_tunjangan extends CI_Controller{
             'company_id' => $this->companyid,
             'template_id' => $this->input->post('template_id', TRUE),
             'tunjangan_id' => $this->input->post('tunjangan_id', TRUE),
-            'nominal' => $this->input->post('nominal', TRUE),
+            'nominal' => str_replace(',','.', $this->input->post('nominal', TRUE)),
             'type' => $this->input->post('type', TRUE),
             'status' => $this->input->post('status', TRUE)
         ];
@@ -87,7 +87,7 @@ class Template_tunjangan extends CI_Controller{
     function updateDetail($id){
         $dataUpdate = [
             'tunjangan_id' => $this->input->post('tunjangan_id', TRUE),
-            'nominal' => $this->input->post('nominal', TRUE),
+            'nominal' => str_replace(',','.', $this->input->post('nominal', TRUE)),
             'type' => $this->input->post('type', TRUE),
             'status' => $this->input->post('status', TRUE)
         ];

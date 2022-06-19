@@ -22,4 +22,18 @@ class Welcome extends CI_Controller {
 	{
 		$this->load->view('welcome_message');
 	}
+
+	function test(){
+		$begin = new DateTime( "2022-05-01" );
+		$end   = new DateTime( "2022-05-30" );
+
+		$count = 0;
+		for($i = $begin; $i <= $end; $i->modify('+1 day')){
+			if($i->format('D') == 'Sun' || $i->format('D') == 'Mon'){
+				echo $i->format("Y-m-d D")."<br>";
+				$count ++;
+			}
+		}
+		echo $count;
+	}
 }

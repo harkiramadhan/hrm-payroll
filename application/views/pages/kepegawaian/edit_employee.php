@@ -33,8 +33,8 @@
                             
                             <div class="row mt-3">
                                 <div class="col-lg-3 mb-3">
-                                    <label>NIK <small class="text-danger">* <?= strip_tags(@form_error('nik')) ?></small></label>
-                                    <input class="form-control <?= (@form_error('nik')) ? 'is-invalid' : ((@set_value('nik')) ? 'is-valid' : '') ?>" type="number" placeholder="NIK" name="nik" value="<?= (@set_value('nik')) ? @set_value('nik') : $pegawai->nik ?>">
+                                    <label>NIP <small class="text-danger">* <?= strip_tags(@form_error('nik')) ?></small></label>
+                                    <input class="form-control <?= (@form_error('nik')) ? 'is-invalid' : ((@set_value('nik')) ? 'is-valid' : '') ?>" type="number" placeholder="NIP" name="nik" value="<?= (@set_value('nik')) ? @set_value('nik') : $pegawai->nik ?>">
                                 </div>
 
                                 <div class="col-lg-3 mb-3">
@@ -96,16 +96,12 @@
                                 
                                 <div class="col-lg-3 mb-3">
                                     <label>Status Pernikahan<small class="text-danger">*</small></label>
-                                    <div class="input-group input-group-sm mb-3">
-                                        <div class="form-check form-check-inline">
-                                            <input class="form-check-input" type="radio" name="nikah" id="inlineRadio1" value="t" required="" <?= (@set_value('nikah') == 't' || $pegawai->nikah == 't') ? 'checked' : '' ?>>
-                                            <label class="form-check-label" for="inlineRadio1">Menikah</label>
-                                        </div>
-                                        <div class="form-check form-check-inline">
-                                            <input class="form-check-input" type="radio" name="nikah" id="inlineRadio2" value="f" required="" <?= (@set_value('nikah') == 'f' || $pegawai->nikah == 'f') ? 'checked' : '' ?>>
-                                            <label class="form-check-label" for="inlineRadio2">Belum Menikah</label>
-                                        </div>
-                                    </div>
+                                    <select name="nikah" class="form-control <?= (@form_error('nikah')) ? 'is-invalid' : ((@set_value('nikah')) ? 'is-valid' : '') ?>" required="">
+                                        <option value="" selected="" disabled="">- Pilih Status Pernikahan</option>
+                                        <?php foreach($pernikahan->result() as $n){ ?>
+                                            <option value="<?= $n->id ?>" <?= (@set_value('nikah') == $n->id || $pegawai->nikah == $n->id) ? 'selected' : '' ?> ><?= $n->status ?></option>
+                                        <?php } ?>
+                                    </select>
                                 </div>
 
                                 <div class="col-lg-3 mb-3">
@@ -331,13 +327,13 @@
 
                             <div class="row">
                                 <div class="col-lg-6 mb-3">
-                                    <label>Nominal Gapok</label>
-                                    <input class="form-control <?= (@form_error('nominal_gapok')) ? 'is-invalid' : ((@set_value('nominal_gapok')) ? 'is-valid' : '') ?>" type="text" placeholder="Nominal Gapok" name="nominal_gapok" value="<?= (@set_value('nominal_gapok')) ? @set_value('nominal_gapok') : $pegawai->nominal_gapok ?>">
+                                    <label>Nominal Gaji Pokok</label>
+                                    <input class="form-control <?= (@form_error('nominal_gapok')) ? 'is-invalid' : ((@set_value('nominal_gapok')) ? 'is-valid' : '') ?>" type="text" placeholder="Nominal Gaji Pokok" name="nominal_gapok" value="<?= (@set_value('nominal_gapok')) ? @set_value('nominal_gapok') : $pegawai->nominal_gapok ?>">
                                 </div>
 
                                 <div class="col-lg-6 mb-3">
-                                    <label>Nominal Gapok Dilaporkan</label>
-                                    <input class="form-control <?= (@form_error('nominal_gaji_dilaporkan')) ? 'is-invalid' : ((@set_value('nominal_gaji_dilaporkan')) ? 'is-valid' : '') ?>" type="text" placeholder="Nominal Gaji Dilaporkan" name="nominal_gaji_dilaporkan" value="<?= (@set_value('nominal_gaji_dilaporkan')) ? @set_value('nominal_gaji_dilaporkan') : $pegawai->nominal_gaji_dilaporkan ?>">
+                                    <label>Nominal Gaji Pokok Dilaporkan</label>
+                                    <input class="form-control <?= (@form_error('nominal_gaji_dilaporkan')) ? 'is-invalid' : ((@set_value('nominal_gaji_dilaporkan')) ? 'is-valid' : '') ?>" type="text" placeholder="Nominal Gaji Pokok Dilaporkan" name="nominal_gaji_dilaporkan" value="<?= (@set_value('nominal_gaji_dilaporkan')) ? @set_value('nominal_gaji_dilaporkan') : $pegawai->nominal_gaji_dilaporkan ?>">
                                 </div>
 
                                 <div class="col-lg-4 mb-3">

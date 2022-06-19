@@ -74,6 +74,7 @@ class Employee extends CI_Controller{
             'cabang' => $this->db->get_where('cabang', ['company_id' => $this->companyid]),
             'kepegawaian' => $kepegawaian,
             'templateTunjangan' => $this->db->get_where('template_tunjangan', ['status' => 't', 'company_id' => $this->companyid]),
+            'pernikahan' => $this->db->get('status_pernikahan'),
             'page' => 'kepegawaian/edit_employee',
             'ajax' => [
                 'employee'
@@ -369,22 +370,12 @@ class Employee extends CI_Controller{
         $data = array();
         $no = 1;
         foreach($get->result() as $row){
-            $nikah = ($row->nikah == 't') ? '<p class="mb-0 text-center"><span class="badge bg-primary">Menikah</span></p>' : '<p class="mb-0 text-center"><span class="badge bg-default">Belum Menikah</span></p>';
             $data[] = [
                 $no++,
-                '<p class="mb-0 text-center"><strong>'.$row->nik.'</strong></p>',
+                '<p class="mb-0"><strong>'.$row->nik.'</strong></p>',
                 '<strong>'.$row->nama.'</strong>',
-                // '<p class="text-center"><strong>'.$row->ektp.'</strong></p>',
-                // '<p class="text-center"><strong>'.$row->tgl_lahir.'</strong></p>',
-                $nikah,
-                // '<p class="text-center"><strong>'.$row->agama.'</strong></p>',
-                // '<p class="text-center"><strong>'.$row->jenjang.'</strong></p>',
-                '<p class="mb-0 text-center"><strong>'.$row->company.'</strong></p>',
-                '<strong>'.$row->jabatan.'</strong>',
-                '<p class="mb-0 text-center"><strong>'.$row->divisi.'</strong></p>',
-                '<strong>'.$row->departement.'</strong>',
-                '<strong>'.$row->unit.'</strong>',
-                '<strong>'.longdate_indo(date('Y-m-d', strtotime($row->updated_at))).' - '.date('H:i:s', strtotime($row->updated_at)).'</strong>',
+                '<p class="mb-0"><strong>'.$row->divisi.' / '.$row->jabatan.'</strong></p>',
+                '<strong>'.$row->departement.' / '.$row->unit.'</strong>',
                 '<div class="btn-group" role="group" aria-label="Basic example">
                     <a class="btn btn-sm btn-round btn-info text-white px-3 mb-0" href="'.site_url('kepegawaian/employee/' . $row->id).'"><i class="fas fa-pencil-alt me-2" aria-hidden="true"></i>Edit</a>
                     <a class="btn btn-sm btn-round btn-link text-danger px-3 mb-0" href="'.site_url('kepegawaian/employee/delete/' . $row->id).'"><i class="far fa-trash-alt" aria-hidden="true"></i></a>
