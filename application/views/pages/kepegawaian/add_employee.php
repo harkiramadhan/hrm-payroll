@@ -125,6 +125,18 @@
                                     <label>BPJS Ketenagakerjaan</label>
                                     <input class="form-control <?= (@form_error('no_bpjs_ketenagakerjaan')) ? 'is-invalid' : ((@set_value('no_bpjs_ketenagakerjaan')) ? 'is-valid' : '') ?>" type="number" placeholder="No BPJS Ketenagakerjaan" name="no_bpjs_ketenagakerjaan" value="<?= (@set_value('no_bpjs_ketenagakerjaan')) ? @set_value('no_bpjs_ketenagakerjaan') : '' ?>">
                                 </div>
+
+                                <div class="col-lg-3 mb-3">
+                                    <div class="form-group">
+                                        <label>Cabang <small class="text-danger">*</small></label>
+                                        <select name="cabang_id" class="form-control <?= (@form_error('cabang_id')) ? 'is-invalid' : ((@set_value('cabang_id')) ? 'is-valid' : '') ?>" required="">
+                                            <option value="" selected="" disabled="">- Pilih Cabang</option>
+                                            <?php foreach($cabang->result() as $cb){ ?>
+                                                <option value="<?= $cb->id ?>" ><?= $cb->cabang ?></option>
+                                            <?php } ?>
+                                        </select>
+                                    </div>
+                                </div>
                             </div>
                             <hr>
                             <div class="row">

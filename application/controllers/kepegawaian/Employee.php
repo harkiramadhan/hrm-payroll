@@ -27,6 +27,7 @@ class Employee extends CI_Controller{
             'agama' => $this->db->get('agama'),
             'pendidikan' => $this->db->get('jenjang_pendidikan'),
             'pernikahan' => $this->db->get('status_pernikahan'),
+            'cabang' => $this->db->get_where('cabang', ['company_id' => $this->companyid]),
             'page' => 'kepegawaian/add_employee',
             'ajax' => [
                 'employee'
@@ -95,6 +96,13 @@ class Employee extends CI_Controller{
         $unitArr = explode('_', $this->input->post('unit_id', TRUE));
         $dept_id = $deptArr[0];
         $unit_id = $unitArr[0];
+
+        if($this->input->post('cabang_id', TRUE) != NULL){
+            $cekCabang = $this->db->get_where('cabang', ['id' => $this->input->post('cabang_id', TRUE)])->row();
+            $kode_cabang = $cekCabang->kode;
+        }else{
+            $kode_cabang = NULL;
+        }
         
         $this->form_validation->set_rules('ektp', 'EKTP', 'required|is_unique[pegawai.ektp]', [
             'is_unique' => '<strong>E-Ktp Sudah Tersedia</strong>',
@@ -114,6 +122,10 @@ class Employee extends CI_Controller{
         
         $this->form_validation->set_rules('pendidikan_id', 'Pendidikan', 'required', [
             'required' => '<strong>Pendidikan Wajib Di Isi</strong>'
+        ]);
+
+        $this->form_validation->set_rules('cabang_id', 'Cabang', 'required', [
+            'required' => '<strong>Cabang Wajib Di Isi</strong>'
         ]);
 
         if ($this->form_validation->run() == FALSE){
@@ -168,6 +180,7 @@ class Employee extends CI_Controller{
 
             $dataInsert = [
                 'company_id' => $this->companyid,
+                'kode_cabang' => $kode_cabang,
                 'nik' => $nik,
                 'nama' => $this->input->post('nama', TRUE),
                 'ektp' => $this->input->post('ektp', TRUE),
