@@ -81,6 +81,7 @@ class Employee extends CI_Controller{
             'templateTunjangan' => $this->db->get_where('template_tunjangan', ['status' => 't', 'company_id' => $this->companyid]),
             'pernikahan' => $this->db->get('status_pernikahan'),
             'tunjanganPegawai' => $tunjanganPegawai,
+            'family' => $this->db->get_where('family', ['pegawai_id' => $id]),
             'page' => 'kepegawaian/edit_employee',
             'ajax' => [
                 'employee'
@@ -221,6 +222,25 @@ class Employee extends CI_Controller{
             $this->session->set_flashdata('error', "Data Gagal Di Simpan");
         }
 
+        redirect($_SERVER['HTTP_REFERER'],'refresh');
+    }
+
+    function createFamily(){
+        $dataInsert = [
+            'pegawai_id' => $this->input->post('pegawai_id', TRUE),
+            'nama' => $this->input->post('nama', TRUE),
+            'nik' => $this->input->post('nik', TRUE),
+            'tgll' => $this->input->post('tgll', TRUE),
+            'jenkel' => $this->input->post('jenkel', TRUE),
+            'tipe' => $this->input->post('tipe', TRUE),
+            'status' => $this->input->post('status', TRUE),
+        ];
+        $this->db->insert('family', $dataInsert);
+        if($this->db->affected_rows() > 0){
+            $this->session->set_flashdata('success', "Data Berhasil Di Simpan");
+        }else{
+            $this->session->set_flashdata('error', "Data Gagal Di Simpan");
+        }
         redirect($_SERVER['HTTP_REFERER'],'refresh');
     }
 
@@ -370,6 +390,24 @@ class Employee extends CI_Controller{
         redirect($_SERVER['HTTP_REFERER'], 'refresh');
     }
 
+    function updateFamily($id){
+        $dataUpdate = [
+            'nama' => $this->input->post('nama', TRUE),
+            'nik' => $this->input->post('nik', TRUE),
+            'tgll' => $this->input->post('tgll', TRUE),
+            'jenkel' => $this->input->post('jenkel', TRUE),
+            'tipe' => $this->input->post('tipe', TRUE),
+            'status' => $this->input->post('status', TRUE),
+        ];
+        $this->db->where('id', $id)->update('family', $dataUpdate);
+        if($this->db->affected_rows() > 0){
+            $this->session->set_flashdata('success', "Data Berhasil Di Simpan");
+        }else{
+            $this->session->set_flashdata('error', "Data Gagal Di Simpan");
+        }
+        redirect($_SERVER['HTTP_REFERER'],'refresh');
+    }
+
     function addStatusKepegawaian(){
         $datas = [
             'pegawai_id' => $this->input->post('pegawai_id', TRUE),
@@ -408,6 +446,17 @@ class Employee extends CI_Controller{
 
     function deleteSK($id){
         $this->db->where('id', $id)->delete('mutasi');
+        if($this->db->affected_rows() > 0){
+            $this->session->set_flashdata('success', "Data Berhasil Di Hapus");
+        }else{
+            $this->session->set_flashdata('error', "Data Gagal Di Hapus");
+        }
+
+        redirect($_SERVER['HTTP_REFERER']);
+    }
+
+    function deleteFamily($id){
+        $this->db->where('id', $id)->delete('family');
         if($this->db->affected_rows() > 0){
             $this->session->set_flashdata('success', "Data Berhasil Di Hapus");
         }else{
@@ -461,6 +510,89 @@ class Employee extends CI_Controller{
                             </div>
                             <div class="text-center">
                                 <button type="submit" class="btn btn-sm btn-round bg-success btn-lg w-100 mt-4 mb-0 text-white">Tambahkan</button>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="card-footer text-center pt-0 px-lg-2 px-1">
+                        <button type="button" class="btn btn-sm btn-link btn-block  ml-auto" data-bs-dismiss="modal">Batal</button>
+                    </div>
+                </div>
+            </div>
+        <?php
+    }
+
+    function modalEditFamily(){
+        $id = $this->input->get('id', TRUE);
+        $data = $this->db->get_where('family', ['id' => $id])->row();
+        ?>
+            <div class="modal-body p-0">
+                <div class="card card-plain">
+                    <div class="card-header pb-0 text-left">
+                        <h5 class="font-weight-bolder">Edit Keluarga</h5>
+                    </div>
+                    <div class="card-body pb-0">
+                        <form action="<?= site_url('kepegawaian/employee/updateFamily/' . $id) ?>" role="form text-left" method="post">
+                            <div class="row">
+                                <div class="col-lg-12">
+                                    <label>Nama <small class="text-danger">*</small></label>
+                                    <div class="input-group mb-3">
+                                        <input type="text" class="form-control" placeholder="Nama" aria-label="Nama" name="nama" value="<?= $data->nama ?>" required>
+                                    </div>
+                                </div>
+                                <div class="col-lg-8">
+                                    <label>NIK <small class="text-danger">*</small></label>
+                                    <div class="input-group mb-3">
+                                        <input type="number" class="form-control" placeholder="NIK" aria-label="NIK" name="nik" value="<?= $data->nik ?>" required>
+                                    </div>
+                                </div>
+                                <div class="col-lg-4">
+                                    <label>Tanggal Lahir <small class="text-danger">*</small></label>
+                                    <div class="input-group mb-3">
+                                        <input type="date" class="form-control" placeholder="Tanggal Lahir" aria-label="Tanggal Lahir" name="tgll" value="<?= $data->tgll ?>" required>
+                                    </div>
+                                </div>
+                                <div class="col-lg-4">
+                                    <label>Jenis Kelamin<small class="text-danger">*</small></label>
+                                    <div class="input-group mb-3">
+                                        <div class="form-check form-check-inline">
+                                            <input class="form-check-input" type="radio" name="jenkel" id="inlineRadioJenkel1" value="L" <?= ($data->jenkel == 'L') ? 'checked' : '' ?> required="">
+                                            <label class="form-check-label" for="inlineRadioJenkel1">Laki Laki</label>
+                                        </div>
+                                        <div class="form-check form-check-inline">
+                                            <input class="form-check-input" type="radio" name="jenkel" id="inlineRadioJenkel2" value="P" <?= ($data->jenkel == 'P') ? 'checked' : '' ?> required="">
+                                            <label class="form-check-label" for="inlineRadioJenkel2">Perempuan</label>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-lg-4">
+                                    <label>Tipe<small class="text-danger">*</small></label>
+                                    <div class="input-group mb-3">
+                                        <div class="form-check form-check-inline">
+                                            <input class="form-check-input" type="radio" name="tipe" id="inlineRadioTipe1" value="P" <?= ($data->tipe == 'P') ? 'checked' : '' ?> required="">
+                                            <label class="form-check-label" for="inlineRadioTipe1">Pasangan</label>
+                                        </div>
+                                        <div class="form-check form-check-inline">
+                                            <input class="form-check-input" type="radio" name="tipe" id="inlineRadioTipe2" value="A" <?= ($data->tipe == 'A') ? 'checked' : '' ?> required="">
+                                            <label class="form-check-label" for="inlineRadioTipe2">Anak</label>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-lg-4">
+                                    <label>Status<small class="text-danger">*</small></label>
+                                    <div class="input-group mb-3">
+                                        <div class="form-check form-check-inline">
+                                            <input class="form-check-input" type="radio" name="status" id="inlineRadioStatus1" value="H" <?= ($data->status == 'H') ? 'checked' : '' ?> required="">
+                                            <label class="form-check-label" for="inlineRadioStatus1">Hidup</label>
+                                        </div>
+                                        <div class="form-check form-check-inline">
+                                            <input class="form-check-input" type="radio" name="status" id="inlineRadioStatus2" value="M" <?= ($data->status == 'M') ? 'checked' : '' ?> required="">
+                                            <label class="form-check-label" for="inlineRadioStatus2">Meninggal</label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="text-center">
+                                <button type="submit" class="btn btn-sm btn-round bg-success btn-lg w-100 mt-4 mb-0 text-white">Simpan</button>
                             </div>
                         </form>
                     </div>

@@ -68,6 +68,21 @@ $('.btn-edit-kepegawaian').click(function(){
     })
 })
 
+$('.btn-edit-family').click(function(){
+    var id = $(this).attr('id')
+    $.ajax({
+        url: baseUrl + 'kepegawaian/employee/modalEditFamily',
+        type: 'get',
+        data: {id : id},
+        beforeSend: function(){
+            $('#modal-edit-family').modal('show')
+        },
+        success: function(res){
+            $('.modal-content-edit-family').html(res)
+        }
+    })
+})
+
 $('.nav-link').click(function(){
     var href = $(this).attr('href')
     localStorage.setItem('activeTab', href)

@@ -36,4 +36,8 @@ class Welcome extends CI_Controller {
 		}
 		echo $count;
 	}
+	function prof(){
+		$this->output->enable_profiler(TRUE);
+		
+	}
 }

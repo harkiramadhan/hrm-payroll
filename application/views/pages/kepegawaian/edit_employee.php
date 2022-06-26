@@ -9,6 +9,11 @@
                         </a>
                     </li>
                     <li class="nav-item">
+                        <a class="nav-link mb-0 px-0 py-1" data-bs-toggle="tab" href="#family-tabs" role="tab" aria-controls="code" aria-selected="false" tabindex="-1">
+                            <i class="fas fa-child text-sm me-2"></i> Family
+                        </a>
+                    </li>
+                    <li class="nav-item">
                         <a class="nav-link mb-0 px-0 py-1" data-bs-toggle="tab" href="#kepegawaian-tabs" role="tab" aria-controls="code" aria-selected="false" tabindex="-1">
                             <i class="fas fa-users text-sm me-2"></i> Kepegawaian
                         </a>
@@ -173,6 +178,58 @@
                         </div>
                     </form>
                 </div>
+
+                <div class="tab-pane fade " id="family-tabs" role="tabpanel">
+                    <!-- Family Tabs -->
+                    <div class="card p-3 border-radius-xl bg-white js-active mt-4" data-animation="FadeIn" id="sec-detail-kepegawaian">
+                        <div class="row">
+                            <div class="col-lg-6">
+                                <h6><strong>Keluarga</strong></h6>
+                            </div>
+                            <div class="col-lg-6 text-end">
+                                <button type="button" class="btn btn-sm btn-round bg-gradient-dark mb-0" data-bs-toggle="modal" data-bs-target="#modalAddFamily"><i class="fas fa-plus me-2" aria-hidden="true"></i> Keluarga</button>
+                            </div>
+                        </div>
+                        
+                        <div class="table-responsive p-0 mt-4">
+                            <table class="table table-striped" style="width:100%">
+                                <thead>
+                                    <tr>
+                                        <th class="text-center w-5px">No</th>
+                                        <th class="w-5px">NIK</th>
+                                        <th class="">Nama</th>
+                                        <th class="text-center w-5px">Jenis Kelamin</th>
+                                        <th class="w-5px">Tipe</th>
+                                        <th class="w-5px">Tanggal Lahir</th>
+                                        <th class="text-center w-5px">Status</th>
+                                        <th class="text-center w-5px"></th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <?php 
+                                        $not = 1;
+                                        foreach($family->result() as $f){
+                                    ?>
+                                    <tr>
+                                        <td class="text-center"><?= $not++ ?></td>
+                                        <td><?= $f->nik ?></td>
+                                        <td><?= $f->nama ?></td>
+                                        <td class="text-center"><?= ($f->jenkel == 'L') ? 'Laki Laki' : 'Perempuan' ?></td>
+                                        <td class="text-center"><?= ($f->tipe == 'p') ? 'Pasangan' : 'Anak' ?></td>
+                                        <td><?= longdate_indo($f->tgll) ?></td>
+                                        <td class="text-center"><?= ($f->status == 'H') ? 'Hidup' : 'Meninggal Dunia' ?></td>
+                                        <td class="text-center btn-group">
+                                            <button type="button" class="btn btn-sm btn-round btn-info text-white px-3 mb-0 btn-edit-family" id="<?= $f->id ?>"><i class="fas fa-pencil-alt" aria-hidden="true"></i></button>
+                                            <a class="btn btn-sm btn-round btn-link text-danger px-3 mb-0" href="<?= site_url('kepegawaian/employee/deleteFamily/' . $f->id) ?>"><i class="far fa-trash-alt" aria-hidden="true"></i></a>
+                                        </td>
+                                    </tr>
+                                    <?php } ?>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                
                 <div class="tab-pane fade " id="kepegawaian-tabs" role="tabpanel">
                     <!-- Kepegawaian  -->
                     <form action="<?= site_url('kepegawaian/employee/updateKepegawian/' . $pegawai->id) ?>" enctype="multipart/form-data" method="POST">
@@ -362,6 +419,7 @@
                         </div>
                     </form>
                 </div>
+
                 <div class="tab-pane fade " id="keuangan-tabs" role="tabpanel">
                     <!-- Keuangan -->
                     <form action="<?= site_url('kepegawaian/employee/updateKeuangan/' . $pegawai->id) ?>" enctype="multipart/form-data" method="POST">
@@ -540,6 +598,98 @@
                     </div>
                 </div>
             </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="modalAddFamily" tabindex="-1" role="dialog" aria-labelledby="modal-form" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-body p-0">
+                <div class="card card-plain">
+                    <div class="card-header pb-0 text-left">
+                        <h5 class="font-weight-bolder">Tambah Keluarga</h5>
+                    </div>
+                    <div class="card-body pb-0">
+                        <form action="<?= site_url('kepegawaian/employee/createFamily') ?>" role="form text-left" method="post">
+                            <input type="hidden" name="pegawai_id" value="<?= $pegawai->id ?>">
+                            <div class="row">
+                                <div class="col-lg-12">
+                                    <label>Nama <small class="text-danger">*</small></label>
+                                    <div class="input-group mb-3">
+                                        <input type="text" class="form-control" placeholder="Nama" aria-label="Nama" name="nama" required>
+                                    </div>
+                                </div>
+                                <div class="col-lg-8">
+                                    <label>NIK <small class="text-danger">*</small></label>
+                                    <div class="input-group mb-3">
+                                        <input type="number" class="form-control" placeholder="NIK" aria-label="NIK" name="nik" required>
+                                    </div>
+                                </div>
+                                <div class="col-lg-4">
+                                    <label>Tanggal Lahir <small class="text-danger">*</small></label>
+                                    <div class="input-group mb-3">
+                                        <input type="date" class="form-control" placeholder="Tanggal Lahir" aria-label="Tanggal Lahir" name="tgll" required>
+                                    </div>
+                                </div>
+                                <div class="col-lg-4">
+                                    <label>Jenis Kelamin<small class="text-danger">*</small></label>
+                                    <div class="input-group mb-3">
+                                        <div class="form-check form-check-inline">
+                                            <input class="form-check-input" type="radio" name="jenkel" id="inlineRadioJenkel1" value="L" required="">
+                                            <label class="form-check-label" for="inlineRadioJenkel1">Laki Laki</label>
+                                        </div>
+                                        <div class="form-check form-check-inline">
+                                            <input class="form-check-input" type="radio" name="jenkel" id="inlineRadioJenkel2" value="P" required="">
+                                            <label class="form-check-label" for="inlineRadioJenkel2">Perempuan</label>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-lg-4">
+                                    <label>Tipe<small class="text-danger">*</small></label>
+                                    <div class="input-group mb-3">
+                                        <div class="form-check form-check-inline">
+                                            <input class="form-check-input" type="radio" name="tipe" id="inlineRadioTipe1" value="P" required="">
+                                            <label class="form-check-label" for="inlineRadioTipe1">Pasangan</label>
+                                        </div>
+                                        <div class="form-check form-check-inline">
+                                            <input class="form-check-input" type="radio" name="tipe" id="inlineRadioTipe2" value="A" required="">
+                                            <label class="form-check-label" for="inlineRadioTipe2">Anak</label>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-lg-4">
+                                    <label>Status<small class="text-danger">*</small></label>
+                                    <div class="input-group mb-3">
+                                        <div class="form-check form-check-inline">
+                                            <input class="form-check-input" type="radio" name="status" id="inlineRadioStatus1" value="H" required="">
+                                            <label class="form-check-label" for="inlineRadioStatus1">Hidup</label>
+                                        </div>
+                                        <div class="form-check form-check-inline">
+                                            <input class="form-check-input" type="radio" name="status" id="inlineRadioStatus2" value="M" required="">
+                                            <label class="form-check-label" for="inlineRadioStatus2">Meninggal</label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="text-center">
+                                <button type="submit" class="btn btn-sm btn-round bg-success btn-lg w-100 mt-4 mb-0 text-white">Tambahkan</button>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="card-footer text-center pt-0 px-lg-2 px-1">
+                        <button type="button" class="btn btn-sm btn-link btn-block  ml-auto" data-bs-dismiss="modal">Batal</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="modal-edit-family" tabindex="-1" role="dialog" aria-labelledby="modal-form" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+        <div class="modal-content modal-content-edit-family">
+            
         </div>
     </div>
 </div>
