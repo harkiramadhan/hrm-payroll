@@ -13,6 +13,7 @@
                 <thead>
                     <tr>
                         <th class="text-center w-5px">No</th>
+                        <th class="w-15p">NIP</th>
                         <th>Nama</th>
                         <th class="w-10">Shift</th>
                         <th class="w-20p">Tanggal In</th>

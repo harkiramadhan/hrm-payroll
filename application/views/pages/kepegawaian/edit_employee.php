@@ -215,7 +215,7 @@
                                         <td><?= $f->nik ?></td>
                                         <td><?= $f->nama ?></td>
                                         <td class="text-center"><?= ($f->jenkel == 'L') ? 'Laki Laki' : 'Perempuan' ?></td>
-                                        <td class="text-center"><?= ($f->tipe == 'p') ? 'Pasangan' : 'Anak' ?></td>
+                                        <td class="text-center"><?= ($f->tipe == 'P') ? 'Pasangan' : 'Anak' ?></td>
                                         <td><?= longdate_indo($f->tgll) ?></td>
                                         <td class="text-center"><?= ($f->status == 'H') ? 'Hidup' : 'Meninggal Dunia' ?></td>
                                         <td class="text-center btn-group">
