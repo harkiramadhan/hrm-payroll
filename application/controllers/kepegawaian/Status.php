@@ -59,8 +59,9 @@ class Status extends CI_Controller{
                 '<strong>'.$row->nama.'</strong>',
                 '<p class="mb-0"><strong>'.$status.'</strong></p>',
                 (@$detail->tgl_finish == '0000-00-00' || @$detail->tgl_finish == NULL) ? '-' : @$warningStatus,
-                '<p class="text-center mb-0"><strong>'.$join.'</strong></p>',
-                '<p class="text-center mb-0"><strong>'.$finish.'</strong></p>',
+                '<p class="text-left mb-0"><strong>'.$join.'</strong></p>',
+                '<p class="text-left mb-0"><strong>'.$finish.'</strong></p>',
+                '<p class="text-left mb-0"><strong>'.masaKerja(@$detail->tgl_join, @$detail->tgl_finish).'</strong></p>',
                 '<div class="btn-group" role="group" aria-label="Basic example">
                     <a class="btn btn-sm btn-round btn-info text-white px-3 mb-0" href="'.site_url('kepegawaian/employee/' . $row->id).'#sec-detail-kepegawaian"><i class="fas fa-pencil-alt me-2" aria-hidden="true"></i>Edit</a>
                 </div>'

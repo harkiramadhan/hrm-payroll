@@ -21,6 +21,7 @@
                         <th class="w-5p">Status</th>
                         <th class="text-center w-15p">Join</th>
                         <th class="text-center w-15p">Finish</th>
+                        <th class="text-center w-15p">Masa Kerja</th>
                         <th class="text-center w-5px">Action</th>
                     </tr>
                 </thead>

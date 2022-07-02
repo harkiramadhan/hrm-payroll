@@ -387,3 +387,20 @@
         $hasil_rupiah = number_format($angka,0,',','.');
         return $hasil_rupiah;
     }
+
+    function masaKerja($firstDate, $lastDate){
+        $last = ($lastDate == '0000-00-00' || $lastDate == NULL) ? 'today' : $lastDate;
+        $tanggal = new DateTime($firstDate);
+        $today = new DateTime($last);
+        $y = $today->diff($tanggal)->y;
+        $m = $today->diff($tanggal)->m;
+        $d = $today->diff($tanggal)->d;
+        if($y > 0){
+            $string = $y . " Thn " . $m . " Bln " . $d . " Hr";
+        }elseif($m > 0){
+            $string = $m . " Bln " . $d . " Hr";
+        }else{
+            $string = $d . " Hr";
+        }
+        return $string;
+    }
