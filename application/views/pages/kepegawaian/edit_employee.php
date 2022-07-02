@@ -85,8 +85,8 @@
                                 </div>
                                 
                                 <div class="col-lg-3 mb-3">
-                                    <label>Tanggal Lahir</label>
-                                    <input class="form-control <?= (@form_error('tgl_lahir')) ? 'is-invalid' : ((@set_value('tgl_lahir')) ? 'is-valid' : '') ?>" type="date" placeholder="Tanggal Lahir" name="tgl_lahir" value="<?= (@set_value('tgl_lahir')) ? @set_value('tgl_lahir') : $pegawai->tgl_lahir ?>">
+                                <label>Tanggal Lahir <small class="text-danger">* <?= strip_tags(@form_error('tgl_lahir')) ?></small></label>
+                                    <input class="form-control <?= (@form_error('tgl_lahir')) ? 'is-invalid' : ((@set_value('tgl_lahir')) ? 'is-valid' : '') ?>" type="date" placeholder="Tanggal Lahir" name="tgl_lahir" value="<?= (@set_value('tgl_lahir')) ? @set_value('tgl_lahir') : $pegawai->tgl_lahir ?>" required>
                                 </div>
 
                                 <div class="col-lg-3 mb-3">
@@ -136,6 +136,18 @@
                                 <div class="col-lg-3 mb-3">
                                     <label>BPJS Ketenagakerjaan</label>
                                     <input class="form-control <?= (@form_error('no_bpjs_ketenagakerjaan')) ? 'is-invalid' : ((@set_value('no_bpjs_ketenagakerjaan')) ? 'is-valid' : '') ?>" type="number" placeholder="No BPJS Ketenagakerjaan" name="no_bpjs_ketenagakerjaan" value="<?= (@set_value('no_bpjs_ketenagakerjaan')) ? @set_value('no_bpjs_ketenagakerjaan') : $pegawai->no_bpjs_ketenagakerjaan ?>">
+                                </div>
+
+                                <div class="col-lg-3">
+                                    <div class="form-group">
+                                        <label>Cabang <small class="text-danger">*</small></label>
+                                        <select name="cabang_id" class="form-control <?= (@form_error('cabang_id')) ? 'is-invalid' : ((@set_value('cabang_id')) ? 'is-valid' : '') ?>" required="">
+                                            <option value="" selected="" disabled="">- Pilih Cabang</option>
+                                            <?php foreach($cabang->result() as $cb){ ?>
+                                                <option value="<?= $cb->id ?>" <?= (@set_value('cabang_id') == $cb->id || $pegawai->cabang_id == $cb->id) ? 'selected' : '' ?> ><?= $cb->cabang ?></option>
+                                            <?php } ?>
+                                        </select>
+                                    </div>
                                 </div>
                             </div>
                             <hr>
@@ -329,27 +341,7 @@
                             <hr class="my-2">
 
                             <div class="row mt-2">
-                                <div class="col-lg-6 mb-3">
-                                    <label>Tanggal Habis Kontrak <small class="text-danger">* <?= strip_tags(@form_error('tgl_habis_kontrak')) ?></small></label>
-                                    <input class="form-control <?= (@form_error('tgl_habis_kontrak')) ? 'is-invalid' : ((@set_value('tgl_habis_kontrak')) ? 'is-valid' : '') ?>" type="date" placeholder="Tanggal Habis Kontrak" name="tgl_habis_kontrak" value="<?= (@set_value('tgl_habis_kontrak')) ? @set_value('tgl_habis_kontrak') : $pegawai->tgl_habis_kontrak ?>">
-                                </div>
 
-                                <div class="col-lg-6 mb-3">
-                                    <label>Tanggal Resign <small class="text-danger">* <?= strip_tags(@form_error('resign_date')) ?></small></label>
-                                    <input class="form-control <?= (@form_error('resign_date')) ? 'is-invalid' : ((@set_value('resign_date')) ? 'is-valid' : '') ?>" type="date" placeholder="Tanggal Resign" name="resign_date" value="<?= (@set_value('resign_date')) ? @set_value('tgl_habis_kontrak') : $pegawai->resign_date ?>">
-                                </div>
-                                
-                                <div class="col-lg-4">
-                                    <div class="form-group">
-                                        <label>Cabang <small class="text-danger">*</small></label>
-                                        <select name="cabang_id" class="form-control <?= (@form_error('cabang_id')) ? 'is-invalid' : ((@set_value('cabang_id')) ? 'is-valid' : '') ?>" required="">
-                                            <option value="" selected="" disabled="">- Pilih Cabang</option>
-                                            <?php foreach($cabang->result() as $cb){ ?>
-                                                <option value="<?= $cb->id ?>" <?= (@set_value('cabang_id') == $cb->id || $pegawai->cabang_id == $cb->id) ? 'selected' : '' ?> ><?= $cb->cabang ?></option>
-                                            <?php } ?>
-                                        </select>
-                                    </div>
-                                </div>
                                 <div class="col-lg-4">
                                     <div class="form-group">
                                         <label>Jabatan</label>

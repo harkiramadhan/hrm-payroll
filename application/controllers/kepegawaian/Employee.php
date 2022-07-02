@@ -128,6 +128,10 @@ class Employee extends CI_Controller{
             'required' => '<strong>Cabang Wajib Di Isi</strong>'
         ]);
 
+        $this->form_validation->set_rules('tgl_lahir', 'Tanggal Lahir', 'required', [
+            'required' => '<strong>Tanggal Lahir Wajib Di Isi</strong>'
+        ]);
+
         if ($this->form_validation->run() == FALSE){
             $this->session->set_flashdata('error', strip_tags(validation_errors()));
             $this->add();
@@ -306,6 +310,15 @@ class Employee extends CI_Controller{
             $this->session->set_flashdata('error', strip_tags(validation_errors()));
             $this->edit($id);
         }else{
+            $cekCabang = $this->db->get_where('cabang', ['kode' => $cek->kode_cabang])->row();
+            if($this->input->post('cabang_id', TRUE) == TRUE && $cekCabang->id != $this->input->post('cabang_id', TRUE)){
+                $mutasi = $this->db->order_by('id', "DESC")->get_where('mutasi_pegawai', ['pegawai_id' => $cek->id])->row();
+                $dataUpdateMutasi = [
+                    'cabang_id' => ($this->input->post('cabang_id', TRUE) == TRUE) ? $this->input->post('cabang_id', TRUE) : $cek->cabang_id,
+                ];
+                $this->db->where('id', $mutasi->id)->update('mutasi_pegawai', $dataUpdateMutasi);
+            }
+
             $dataUpdate = [
                 'nama' => ($this->input->post('nama', TRUE) == TRUE) ? $this->input->post('nama', TRUE) : $cek->nama,
                 'ektp' => ($this->input->post('ektp', TRUE) == TRUE) ? $this->input->post('ektp', TRUE) : $cek->ektp,
@@ -324,7 +337,8 @@ class Employee extends CI_Controller{
                 'email' => ($this->input->post('email', TRUE) == TRUE) ? $this->input->post('email', TRUE) : $cek->email,
                 'foto' => $foto,
                 'foto_ktp' => $fotoKtp,
-                'foto_kk' => $fotoKk
+                'foto_kk' => $fotoKk,
+                'cabang_id' => ($this->input->post('cabang_id', TRUE) == TRUE) ? $this->input->post('cabang_id', TRUE) : $cek->cabang_id,
             ];
             $this->db->where('id', $id)->update('pegawai', $dataUpdate);
             if($this->db->affected_rows() > 0){
@@ -352,7 +366,6 @@ class Employee extends CI_Controller{
         }
 
         $dataUpdate = [
-            'kode_cabang' => $kode_cabang,
             'tgl_habis_kontrak' => ($this->input->post('tgl_habis_kontrak', TRUE) == TRUE) ? $this->input->post('tgl_habis_kontrak', TRUE) : $cek->tgl_habis_kontrak,
             'resign_date' => ($this->input->post('resign_date', TRUE) == TRUE) ? $this->input->post('resign_date', TRUE) : $cek->resign_date,
             'company_id' => ($this->input->post('company_id', TRUE) == TRUE) ? $this->input->post('company_id', TRUE) : $cek->company_id,

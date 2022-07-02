@@ -73,8 +73,8 @@
                                 </div>
                                 
                                 <div class="col-lg-3 mb-3">
-                                    <label>Tanggal Lahir</label>
-                                    <input class="form-control <?= (@form_error('tgl_lahir')) ? 'is-invalid' : ((@set_value('tgl_lahir')) ? 'is-valid' : '') ?>" type="date" placeholder="Tanggal Lahir" name="tgl_lahir" value="<?= (@set_value('tgl_lahir')) ? @set_value('tgl_lahir') : '' ?>">
+                                    <label>Tanggal Lahir <small class="text-danger">* <?= strip_tags(@form_error('tgl_lahir')) ?></small></label>
+                                    <input class="form-control <?= (@form_error('tgl_lahir')) ? 'is-invalid' : ((@set_value('tgl_lahir')) ? 'is-valid' : '') ?>" type="date" placeholder="Tanggal Lahir" name="tgl_lahir" value="<?= (@set_value('tgl_lahir')) ? @set_value('tgl_lahir') : '' ?>" required>
                                 </div>
 
                                 <div class="col-lg-3 mb-3">

@@ -23,6 +23,7 @@
                     <tr>
                         <th class="text-center w-5px">No</th>
                         <th>Nama</th>
+                        <th class="text-center">File</th>
                         <th class="text-center w-5px">Total Row Gagal</th>
                         <th class="text-center w-5px">Total Row Berhasil</th>
                         <th class="text-center w-5px">Total Row</th>

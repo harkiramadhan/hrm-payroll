@@ -118,16 +118,17 @@ class Absensi extends CI_Controller{
         $no = 1;
 
         foreach($logAbsensi->result_array() as $row){
+            $error = ($row['error_row'] > 0) ? $row['error_row'] : 0;
             $data[] =[
                 $no++,
                 '<p class="mb-0";><strong>'.$row['nama'].'</strong></p>',
-                '<button type="button" class="btn btn-sm btn-round btn-danger text-white px-3 mb-0 btn-detail-error" onclick="errorLogDetail('.$row['id'].')"><i class="fas fa-arrow-up me-2" aria-hidden="true"></i>Error '.$row['error_row'].' Row</button>',
+                '<a class="btn btn-sm btn-round btn-secondary text-white px-3 mb-0 mx-1" href="'.base_url('uploads/absensi/' . $row['filename']).'" style="width:100%" download><i class="fas fa-download me-2" aria-hidden="true"></i>'.$row['filename'].'</a>',
+                '<button type="button" class="btn btn-sm btn-round btn-danger text-white px-3 mb-0 btn-detail-error" onclick="errorLogDetail('.$row['id'].')" style="width:100%"><i class="fas fa-arrow-up me-2" aria-hidden="true"></i>Error '.$error.' Row</button>',
                 '<p class="text-center mb-0";><strong>'.$row['success_row'].'</strong></p>',
                 '<p class="text-center mb-0";><strong>'.$row['total_row'].'</strong></p>',
                 '<strong>'.longdate_indo(date('Y-m-d', strtotime($row['timestamp']))).' - '.date('H:i:s', strtotime($row['timestamp'])).'</strong>',
                 '<div class="btn-group" role="group" aria-label="Basic example">
                     <a href="'.site_url('trx/absensi/' . $row['id']).'" class="btn btn-sm btn-round btn-primary text-white px-3 mb-0"><i class="fas fa-eye me-2" aria-hidden="true"></i>Detail</a>
-                    <a class="btn btn-sm btn-round btn-secondary text-white px-3 mb-0 mx-1" href="'.base_url('uploads/absensi/' . $row['filename']).'" download><i class="fas fa-download" aria-hidden="true"></i></a>
                     <a class="btn btn-sm btn-round btn-link text-danger px-3 mb-0" href="'.site_url('trx/absensi/delete/' . $row['id']).'"><i class="far fa-trash-alt" aria-hidden="true"></i></a>
                 </div>
                 
@@ -177,14 +178,16 @@ class Absensi extends CI_Controller{
         $no = 1;
 
         foreach($absensi->result_array() as $row){
+            $jam_in = ($row['late'] > 0) ? '<span class="badge badge-sm bg-danger">'.longdate_indo(date('Y-m-d', strtotime($row['jam_in']))).' - '.date('H:i', strtotime($row['jam_in'])).'</span>' : '<span class="badge badge-sm bg-success">'.longdate_indo(date('Y-m-d', strtotime($row['jam_in']))).' - '.date('H:i', strtotime($row['jam_in'])).'</span>';
             $data[] =[
                 $no++,
                 '<p class="mb-0";><strong>'.$row['kode_cabang']."".sprintf("%05s", $row['nik']).'</strong></p>',
                 '<p class="mb-0";><strong>'.$row['nama'].'</strong></p>',
                 '<p class="mb-0";><strong>'.$row['shift'].'</strong></p>',
-                '<strong>'.longdate_indo(date('Y-m-d', strtotime($row['jam_in']))).' - '.date('H:i', strtotime($row['jam_in'])).'</strong>',
+                $jam_in,
                 '<strong>'.longdate_indo(date('Y-m-d', strtotime($row['jam_out']))).' - '.date('H:i', strtotime($row['jam_out'])).'</strong>',
                 '<p class="mb-0 text-center";><strong>'.$row['keterangan'].'</strong></p>',
+                '<p class="mb-0 text-center";><strong>'.$row['late'].' Menit</strong></p>',
             ];
         }
 
@@ -299,7 +302,7 @@ class Absensi extends CI_Controller{
                 $extension                  = end($arr_file);
                 $config['upload_path']      = './uploads/absensi/';
                 $config['allowed_types']    = 'xlsx';
-                $config['file_name']        = "abs_".time().".".$extension;
+                $config['file_name']        = str_replace(' ', '_', $arr_file[0])."_".time().".".$extension;
                 $config['overwrite']        = TRUE;
 
                 $this->load->library('upload', $config);
@@ -340,15 +343,7 @@ class Absensi extends CI_Controller{
                             $cek = $this->db->limit(1)->get_where('pegawai', ['nik' => $nip, 'kode_cabang' => $cabang]);
                             $shift = $this->db->limit(1)->get_where('shift', ['kode' => $sheetData[$row]['F']]);
 
-                            $datas = [
-                                'company_id' => $this->companyid,
-                                'log_id' => $logid,
-                                'nik' => $nip,
-                                'jam_in' => date('Y-m-d H:i:s', strtotime($sheetData[$row]['D'].":00")),
-                                'jam_out' => date('Y-m-d H:i:s', strtotime($sheetData[$row]['E'].":00")),
-                                'shift_id' => $shift->row()->id,
-                                'keterangan' => ucfirst($sheetData[$row]['G'])
-                            ];
+                            $in = date('H:i', strtotime($sheetData[$row]['D']));
 
                             $errorData = [
                                 'company_id' => $this->companyid,
@@ -363,6 +358,30 @@ class Absensi extends CI_Controller{
 
                             if($cek->num_rows() > 0){
                                 if($shift->num_rows() > 0){
+                                    $cekJamKerja = $this->db->get_where('jam_kerja', [
+                                        'company_id' => $this->companyid,
+                                        'status' => 't',
+                                        'shift_id' => $shift->row()->id, 
+                                        'hari_kerja' => date('l', strtotime($in))])->row();
+                                    if($in.":00" > @$cekJamKerja->jam_in.":00"){
+                                        $end = strtotime($in.":00");
+                                        $start = strtotime(@$cekJamKerja->jam_in.":00");
+                                        $late = ($end - $start) / 60;
+                                    }else{
+                                        $late = 0;
+                                    }
+
+                                    $datas = [
+                                        'company_id' => $this->companyid,
+                                        'log_id' => $logid,
+                                        'nik' => $nip,
+                                        'jam_in' => date('Y-m-d H:i:s', strtotime($sheetData[$row]['D'].":00")),
+                                        'jam_out' => date('Y-m-d H:i:s', strtotime($sheetData[$row]['E'].":00")),
+                                        'shift_id' => $shift->row()->id,
+                                        'keterangan' => ucfirst($sheetData[$row]['G']),
+                                        'late' => $late
+                                    ];
+
                                     $this->db->insert('absensi', $datas);
                                     if($this->db->affected_rows() > 0){
                                         $success_row++;
@@ -380,7 +399,7 @@ class Absensi extends CI_Controller{
                                     $log = [
                                         'company_id' => $this->companyid,
                                         'log_id' => $logid,
-                                        'error_log' => 'Kode Shift Tidak Tersedia',
+                                        'error_log' => 'Kode Shift Tidak Cocok',
                                         'data' => json_encode($errorData)
                                     ];
                                     $this->db->insert('absensi_error_log', $log);
@@ -390,7 +409,7 @@ class Absensi extends CI_Controller{
                                 $log = [
                                     'company_id' => $this->companyid,
                                     'log_id' => $logid,
-                                    'error_log' => 'Pegawai Tidak Tersedia',
+                                    'error_log' => 'NIP Tidak Cocok',
                                     'data' => json_encode($errorData)
                                 ];
                                 $this->db->insert('absensi_error_log', $log);

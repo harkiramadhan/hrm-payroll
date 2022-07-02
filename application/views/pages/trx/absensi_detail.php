@@ -19,6 +19,7 @@
                         <th class="w-20p">Tanggal In</th>
                         <th class="w-20p">Tanggal Out</th>
                         <th class="w-10">Keterangan</th>
+                        <th class="w-10">Terlambat</th>
                     </tr>
                 </thead>
                 <tbody>

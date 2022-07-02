@@ -92,13 +92,13 @@ class Working extends CI_Controller{
                                     <label for="exampleFormControlSelect1">Hari Kerja <small class="text-danger">*</small></label>
                                     <select name="hari_kerja" class="form-control" id="exampleFormControlSelect1" required="">
                                         <option value="" selected="" disabled="">- Pilih Hari Kerja</option>
-                                        <option <?= ($working->hari_kerja == "Senin") ? 'selected' : '' ?> value="Senin">Senin</option>
-                                        <option <?= ($working->hari_kerja == "Selasa") ? 'selected' : '' ?> value="Selasa">Selasa</option>
-                                        <option <?= ($working->hari_kerja == "Rabu") ? 'selected' : '' ?> value="Rabu">Rabu</option>
-                                        <option <?= ($working->hari_kerja == "Kamis") ? 'selected' : '' ?> value="Kamis">Kamis</option>
-                                        <option <?= ($working->hari_kerja == "Jum'at") ? 'selected' : '' ?> value="Jum'at">Jum</option>
-                                        <option <?= ($working->hari_kerja == "Sabtu") ? 'selected' : '' ?> value="Sabtu">Sabtu</option>
-                                        <option <?= ($working->hari_kerja == "Minggu") ? 'selected' : '' ?> value="Minggu">Minggu</option>
+                                        <option <?= ($working->hari_kerja == "Monday") ? 'selected' : '' ?> value="Monday">Senin</option>
+                                        <option <?= ($working->hari_kerja == "Tuesday") ? 'selected' : '' ?> value="Tuesday">Selasa</option>
+                                        <option <?= ($working->hari_kerja == "Wednesday") ? 'selected' : '' ?> value="Wednesday">Rabu</option>
+                                        <option <?= ($working->hari_kerja == "Thursday") ? 'selected' : '' ?> value="Thursday">Kamis</option>
+                                        <option <?= ($working->hari_kerja == "Friday") ? 'selected' : '' ?> value="Friday">Jum'at</option>
+                                        <option <?= ($working->hari_kerja == "Saturday") ? 'selected' : '' ?> value="Saturday">Sabtu</option>
+                                        <option <?= ($working->hari_kerja == "Sunday") ? 'selected' : '' ?> value="Sunday">Minggu</option>
                                     </select>
                                 </div>
                             </div>
@@ -187,7 +187,7 @@ class Working extends CI_Controller{
                 $no++,
                 '<p class="text-center mb-0"><strong>'.$row->kode.'</strong></p>',
                 '<p class="text-center mb-0"><strong>'.$row->keterangan.'</strong></p>',
-                '<strong>'.$row->hari_kerja.'</strong>',
+                '<strong>'.hari($row->hari_kerja).'</strong>',
                 '<p class="text-center mb-0"><strong>'.$row->jam_in.'</strong></p>',
                 '<p class="text-center mb-0"><strong>'.$row->jam_out.'</strong></p>',
                 $badge,

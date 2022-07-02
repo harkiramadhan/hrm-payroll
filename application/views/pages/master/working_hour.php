@@ -63,13 +63,13 @@
                                         <label for="exampleFormControlSelect1">Hari Kerja <small class="text-danger">*</small></label>
                                         <select name="hari_kerja" class="form-control" id="exampleFormControlSelect1" required="">
                                             <option value="" selected="" disabled="">- Pilih Hari Kerja</option>
-                                            <option value="Senin">Senin</option>
-                                            <option value="Selasa">Selasa</option>
-                                            <option value="Rabu">Rabu</option>
-                                            <option value="Kamis">Kamis</option>
-                                            <option value="Jum'at">Jum</option>
-                                            <option value="Sabtu">Sabtu</option>
-                                            <option value="Minggu">Minggu</option>
+                                            <option value="Monday">Senin</option>
+                                            <option value="Tuesday">Selasa</option>
+                                            <option value="Wednesday">Rabu</option>
+                                            <option value="Thursday">Kamis</option>
+                                            <option value="Friday">Jum</option>
+                                            <option value="Saturday">Sabtu</option>
+                                            <option value="Sunday">Minggu</option>
                                         </select>
                                     </div>
                                 </div>

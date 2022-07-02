@@ -211,6 +211,26 @@
         }
     }
 
+    function hari($nama){
+        $nama_hari = "";
+        if($nama=="Sunday"){
+            $nama_hari="Minggu";
+        }else if($nama=="Monday"){
+            $nama_hari="Senin";
+        }else if($nama=="Tuesday"){
+            $nama_hari="Selasa";
+        }else if($nama=="Wednesday"){
+            $nama_hari="Rabu";
+        }else if($nama=="Thursday"){
+            $nama_hari="Kamis";
+        }else if($nama=="Friday"){
+            $nama_hari="Jumat";
+        }else if($nama=="Saturday"){
+            $nama_hari="Sabtu";
+        }
+        return $nama_hari;
+    }
+
     if(!function_exists('umur')) {
         function umur($date){
             $age = date_diff(date_create($date), date_create('now'))->y;
