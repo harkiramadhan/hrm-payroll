@@ -40,7 +40,7 @@
                                 <?php if($pegawai->kode_cabang != NULL): ?>
                                 <div class="col-lg-3 mb-3">
                                     <label>NIP</label>
-                                    <input class="form-control" type="text" placeholder="NIP" name="nik" value="<?= $pegawai->kode_cabang."".sprintf("%05s", $pegawai->nik) ?>" disabled>
+                                    <input class="form-control" type="text" placeholder="NIP" name="nik" value="<?= substr(date('Y', strtotime($pegawai->created_at)), -2).".".$pegawai->kode_cabang.".".sprintf("%05s", $pegawai->nik) ?>" disabled>
                                 </div>
                                 <?php endif; ?>
 

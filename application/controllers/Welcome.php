@@ -40,4 +40,12 @@ class Welcome extends CI_Controller {
 		$this->output->enable_profiler(TRUE);
 		
 	}
+
+	function sss(){
+		$test = $this->db->select('nik')->order_by('CAST(nik AS UNSIGNED)', "DESC")->get_where('pegawai', ['company_id' => 2])->row()->nik;
+		echo $test;
+
+		$this->output->enable_profiler(TRUE);
+		
+	}
 }

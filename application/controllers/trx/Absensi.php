@@ -166,7 +166,7 @@ class Absensi extends CI_Controller{
         $start = intval($this->input->get("start"));
         $length = intval($this->input->get("length"));
 
-        $absensi = $this->db->select('a.*, p.nama, p.kode_cabang, s.keterangan shift')
+        $absensi = $this->db->select('a.*, p.nama, p.kode_cabang, p.created_at, s.keterangan shift')
                             ->from('absensi a')
                             ->join('pegawai p', 'a.nik = p.nik')
                             ->join('shift s', 'a.shift_id = s.id')
@@ -178,16 +178,29 @@ class Absensi extends CI_Controller{
         $no = 1;
 
         foreach($absensi->result_array() as $row){
-            $jam_in = ($row['late'] > 0) ? '<span class="badge badge-sm bg-danger">'.longdate_indo(date('Y-m-d', strtotime($row['jam_in']))).' - '.date('H:i', strtotime($row['jam_in'])).'</span>' : '<span class="badge badge-sm bg-success">'.longdate_indo(date('Y-m-d', strtotime($row['jam_in']))).' - '.date('H:i', strtotime($row['jam_in'])).'</span>';
+            if($row['jam_in'] != '0000-00-00 00:00:00'){
+                $jam_in = ($row['late'] > 0) ? '<span class="badge badge-sm bg-danger">'.longdate_indo(date('Y-m-d', strtotime($row['jam_in']))).' - '.date('H:i', strtotime($row['jam_in'])).'</span>' : '<span class="badge badge-sm bg-success">'.longdate_indo(date('Y-m-d', strtotime($row['jam_in']))).' - '.date('H:i', strtotime($row['jam_in'])).'</span>';
+            }else{
+                $jam_in = '-';
+            }
+
+            if($row['jam_out'] != '0000-00-00 00:00:00'){
+                $jam_out = '<strong>'.longdate_indo(date('Y-m-d', strtotime($row['jam_out']))).' - '.date('H:i', strtotime($row['jam_out'])).'</strong>';
+            }else{
+                $jam_out = '-';
+            }
+
+            $late = ($row['late'] > 0) ? '<span class="badge badge-sm bg-danger">'.$row['late'].' Menit </span>' : ' - ';
+
             $data[] =[
                 $no++,
-                '<p class="mb-0";><strong>'.$row['kode_cabang']."".sprintf("%05s", $row['nik']).'</strong></p>',
+                '<p class="mb-0";><strong>'.substr(date('Y', strtotime($row['created_at'])), -2).".".$row['kode_cabang'].".".sprintf("%05s", $row['nik']).'</strong></p>',
                 '<p class="mb-0";><strong>'.$row['nama'].'</strong></p>',
                 '<p class="mb-0";><strong>'.$row['shift'].'</strong></p>',
                 $jam_in,
-                '<strong>'.longdate_indo(date('Y-m-d', strtotime($row['jam_out']))).' - '.date('H:i', strtotime($row['jam_out'])).'</strong>',
+                $jam_out,
                 '<p class="mb-0 text-center";><strong>'.$row['keterangan'].'</strong></p>',
-                '<p class="mb-0 text-center";><strong>'.$row['late'].' Menit</strong></p>',
+                '<p class="mb-0 text-center";><strong>'.$late.'</strong></p>',
             ];
         }
 
@@ -362,7 +375,7 @@ class Absensi extends CI_Controller{
                                         'company_id' => $this->companyid,
                                         'status' => 't',
                                         'shift_id' => $shift->row()->id, 
-                                        'hari_kerja' => date('l', strtotime($in))])->row();
+                                        'hari_kerja' => date('l', strtotime($sheetData[$row]['D']))])->row();
                                     if($in.":00" > @$cekJamKerja->jam_in.":00"){
                                         $end = strtotime($in.":00");
                                         $start = strtotime(@$cekJamKerja->jam_in.":00");
@@ -478,23 +491,15 @@ class Absensi extends CI_Controller{
         }
     }
 
-    function stringSeperator($string){
-        $numbers =array();
-        $alpha = array();
-        $array = str_split($string);
-        for($x = 0; $x< count($array); $x++){
-            if(is_numeric($array[$x]))
-                array_push($numbers,$array[$x]);
-            else
-                array_push($alpha,$array[$x]);
-        }// end for         
-    
-        $alpha = implode($alpha);
-        $numbers = implode($numbers);
-    
+    function stringSeperator($str){
+        $string = explode('.', $str);
+        $created = $string[0];
+        $cabang = $string[1];
+        $nip = (int)$string[2];
+        
         $arr = [
-            'cabang' => $alpha,
-            'nip' => $numbers
+            'cabang' => $cabang,
+            'nip' => $nip
         ];
         return $arr;
     

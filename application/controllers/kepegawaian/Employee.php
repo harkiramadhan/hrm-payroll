@@ -174,7 +174,7 @@ class Employee extends CI_Controller{
             }
             
             $nik = '';
-            @$lastNik = $this->db->select('nik')->order_by('nik', "DESC")->get_where('pegawai', ['company_id' => $this->companyid])->row()->nik;
+            @$lastNik = $this->db->select('nik')->order_by('CAST(nik AS UNSIGNED)', "DESC")->get_where('pegawai', ['company_id' => $this->companyid])->row()->nik;
 
             if(@$lastNik){
                 $nik = @$lastNik + 1;
@@ -374,7 +374,6 @@ class Employee extends CI_Controller{
             'divisi_id' => ($this->input->post('divisi_id', TRUE) == TRUE) ? $this->input->post('divisi_id', TRUE) : $cek->divisi_id,
             'dept_id' => $dept_id,
             'unit_id' => $unit_id,
-            'company_id' => ($this->input->post('company_id', TRUE) == TRUE) ? $this->input->post('company_id', TRUE) : $cek->company_id,
         ];
         $this->db->where('id', $id)->update('pegawai', $dataUpdate);
         if($this->db->affected_rows() > 0){
@@ -649,7 +648,7 @@ class Employee extends CI_Controller{
         $data = array();
         $no = 1;
         foreach($get->result() as $row){
-            $nik = ($row->kode_cabang != NULL) ? $row->kode_cabang."".sprintf("%05s", $row->nik) : ' - ';
+            $nik = ($row->kode_cabang != NULL) ? substr(date('Y', strtotime($row->created_at)), -2).".".$row->kode_cabang.".".sprintf("%05s", $row->nik) : '-';
             $data[] = [
                 $no++,
                 '<p class="mb-0"><strong>'.$nik.'</strong></p>',
