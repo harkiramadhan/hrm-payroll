@@ -43,6 +43,30 @@ class Absensi extends CI_Controller{
         $this->load->view('templates', $var);
     }
 
+    function remove($id){
+        $absensi = $this->db->get_where('log_upload_absensi', ['id' => $id])->row();
+        ?>
+            <div class="card card-plain">
+                <div class="card-body pb-0">
+                    <form action="<?= site_url('trx/absensi/delete/' . $id) ?>" role="form text-left" method="post">
+                        <div class="row">
+                            <div class="col-lg-12 text-center">
+                                <h1 class="mb-3 text-danger"><i class="fas fa-exclamation"></i></h1>
+                                <h5><strong class="mb-0">Hapus Cabang <?= $cabang->cabang." - ".$cabang->alamat ?> </strong></h5>
+                            </div>
+                        </div>
+                        <div class="text-center">
+                            <button type="submit" class="btn btn-sm btn-round bg-danger btn-lg w-100 mt-4 mb-0 text-white">Hapus</button>
+                        </div>
+                    </form>
+                </div>
+                <div class="card-footer text-center pt-0 px-lg-2 px-1">
+                    <button type="button" class="btn btn-sm btn-link btn-block  ml-auto" data-bs-dismiss="modal">Batal</button>
+                </div>
+            </div>
+        <?php
+    }
+
     function modalDetailErrorLog(){
         $logid = $this->input->get('id', TRUE);
         $dataByLogId = $this->db->get_where('absensi_error_log', ['log_id' => $logid])->result();
@@ -129,7 +153,7 @@ class Absensi extends CI_Controller{
                 '<strong>'.longdate_indo(date('Y-m-d', strtotime($row['timestamp']))).' - '.date('H:i:s', strtotime($row['timestamp'])).'</strong>',
                 '<div class="btn-group" role="group" aria-label="Basic example">
                     <a href="'.site_url('trx/absensi/' . $row['id']).'" class="btn btn-sm btn-round btn-primary text-white px-3 mb-0"><i class="fas fa-eye me-2" aria-hidden="true"></i>Detail</a>
-                    <a class="btn btn-sm btn-round btn-link text-danger px-3 mb-0" href="'.site_url('trx/absensi/delete/' . $row['id']).'"><i class="far fa-trash-alt" aria-hidden="true"></i></a>
+                    <button type="button" class="btn btn-sm btn-round btn-link text-danger px-3 mb-0" onclick="remove('.$row['id'].')"><i class="far fa-trash-alt" aria-hidden="true"></i></button>
                 </div>
                 
                 <script>
@@ -144,6 +168,18 @@ class Absensi extends CI_Controller{
                             },
                             success: function(res){
                                 $(".data-edit").html(res)
+                            }
+                        })
+                    }
+
+                    function remove(id){
+                        $.ajax({
+                            url : "'.site_url('trx/absensi/remove/').'" + id,
+                            type : "post",
+                            data : {id : id},
+                            success: function(res){
+                                $(".data-delete").html(res)
+                                $("#modalDelete").modal("show")
                             }
                         })
                     }
