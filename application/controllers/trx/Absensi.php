@@ -437,7 +437,18 @@ class Absensi extends CI_Controller{
                                         'lembur' => $lembur
                                     ];
 
-                                    $this->db->insert('absensi', $datas);
+                                    $cekAbsensi = $this->db->get_where('absensi', [
+                                        'company_id' => $this->companyid,
+                                        'nik' => $sheetData[$row]['B'],
+                                        'DATE(`jam_in`)' =>  date('Y-m-d', strtotime($sheetData[$row]['D'].":00"))
+                                    ]);
+
+                                    if($cekAbsensi->num_rows() > 0){
+                                        $this->db->where('id', $cekAbsensi->row()->id)->update('absensi', $datas);
+                                    }else{
+                                        $this->db->insert('absensi', $datas);
+                                    }
+                                    
                                     if($this->db->affected_rows() > 0){
                                         $success_row++;
                                     }else{

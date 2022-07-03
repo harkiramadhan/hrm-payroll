@@ -43,6 +43,9 @@
                 <div class="col-lg-8">
                     <h5 class="mb-0"><strong>Detail Summary</strong></h5>
                 </div>
+                <div class="col-lg-4 text-end">
+                    <button type="button" class="btn btn-sm btn-round bg-gradient-dark mb-0" data-bs-toggle="modal" data-bs-target="#modalAdd" disabled><i class="fas fa-save me-2"></i> Simpan Ke Cutoff</button>
+                </div>
             </div>
         </div>
         <div class="table-responsive table-summary" style="max-height: 500px!important">
