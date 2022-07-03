@@ -4,7 +4,7 @@
             <div class="row">
                 <div class="col-lg-8">
                     <h5 class="mb-0"><strong>Detail Transaksi Absensi</strong></h5>
-                    <h5 class="mb-0"><strong><?= @$cutoff->periode." : ".date_indo(date('Y-m-d', strtotime(@$cutoff->start_date)))." - ".date_indo(date('Y-m-d', strtotime(@$cutoff->end_date))) ?></strong></h5>
+                    <h5 class="mb-0">File Name : <strong><?= $absensi->filename ?></strong></h5>
                 </div>
             </div>
         </div>
@@ -13,13 +13,14 @@
                 <thead>
                     <tr>
                         <th class="text-center w-5px">No</th>
-                        <th class="w-15p">NIP</th>
+                        <th class="">NIP</th>
                         <th>Nama</th>
                         <th class="w-10">Shift</th>
-                        <th class="w-20p">Tanggal In</th>
-                        <th class="w-20p">Tanggal Out</th>
-                        <th class="w-10">Keterangan</th>
-                        <th class="w-10">Terlambat</th>
+                        <th class="">Tanggal In</th>
+                        <th class="">Tanggal Out</th>
+                        <th class="">Keterangan</th>
+                        <th class="">Terlambat</th>
+                        <th class="">Lembur</th>
                     </tr>
                 </thead>
                 <tbody>

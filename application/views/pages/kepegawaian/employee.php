@@ -21,6 +21,7 @@
                         <th class="text-center w-5px">No</th>
                         <th class="text-center w-5px">NIP</th>
                         <th>Nama</th>
+                        <th class="text-center w-10p">Cabang</th>
                         <th class="text-center w-10p">Divisi/Jabatan</th>
                         <th class="text-center">Departemen/Unit</th>
                         <th class="text-center w-5px">Action</th>

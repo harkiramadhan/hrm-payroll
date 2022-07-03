@@ -30,7 +30,7 @@ class Welcome extends CI_Controller {
 		$count = 0;
 		for($i = $begin; $i <= $end; $i->modify('+1 day')){
 			if($i->format('D') == 'Sun' || $i->format('D') == 'Mon'){
-				echo $i->format("Y-m-d D")."<br>";
+				echo $i->format("l")."<br>";
 				$count ++;
 			}
 		}

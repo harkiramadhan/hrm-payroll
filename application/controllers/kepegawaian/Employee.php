@@ -174,7 +174,7 @@ class Employee extends CI_Controller{
             }
             
             $nik = '';
-            @$lastNik = $this->db->select('nik')->order_by('CAST(nik AS UNSIGNED)', "DESC")->get_where('pegawai', ['company_id' => $this->companyid])->row()->nik;
+            @$lastNik = $this->db->select('SUBSTRING(nik, -4) as last_nik')->order_by('CAST(last_nik AS UNSIGNED)', "DESC")->get_where('pegawai', ['company_id' => $this->companyid])->row()->last_nik;
 
             if(@$lastNik){
                 $nik = @$lastNik + 1;
@@ -182,10 +182,12 @@ class Employee extends CI_Controller{
                 $nik = 1;
             }
 
+            $fixedNik = substr(date('Y'), -2).".".$kode_cabang.".".sprintf("%05s", $nik);
+
             $dataInsert = [
                 'company_id' => $this->companyid,
                 'kode_cabang' => $kode_cabang,
-                'nik' => $nik,
+                'nik' => $fixedNik,
                 'nama' => $this->input->post('nama', TRUE),
                 'ektp' => $this->input->post('ektp', TRUE),
                 'tgl_lahir' => $this->input->post('tgl_lahir', TRUE),
@@ -204,7 +206,8 @@ class Employee extends CI_Controller{
                 'foto' => $foto,
                 'foto_ktp' => $fotoKtp,
                 'foto_kk' => $fotoKk,
-                'created_at' => date('Y-m-d H:i:s')
+                'created_at' => date('Y-m-d H:i:s'),
+                'cabang_id' => $this->input->post('cabang_id', TRUE)
             ];
             $this->db->insert('pegawai', $dataInsert);
             if($this->db->affected_rows() > 0){
@@ -358,18 +361,11 @@ class Employee extends CI_Controller{
         $unit_id = $unitArr[0];
 
         $cek = $this->db->get_where('pegawai', ['id' => $id])->row();
-        if($this->input->post('cabang_id', TRUE) != NULL && $cek->kode_cabang == NULL){
-            $cekCabang = $this->db->get_where('cabang', ['id' => $this->input->post('cabang_id', TRUE)])->row();
-            $kode_cabang = $cekCabang->kode;
-        }else{
-            $kode_cabang = $cek->kode_cabang;
-        }
-
         $dataUpdate = [
             'tgl_habis_kontrak' => ($this->input->post('tgl_habis_kontrak', TRUE) == TRUE) ? $this->input->post('tgl_habis_kontrak', TRUE) : $cek->tgl_habis_kontrak,
             'resign_date' => ($this->input->post('resign_date', TRUE) == TRUE) ? $this->input->post('resign_date', TRUE) : $cek->resign_date,
             'company_id' => ($this->input->post('company_id', TRUE) == TRUE) ? $this->input->post('company_id', TRUE) : $cek->company_id,
-            'cabang_id' => ($this->input->post('cabang_id', TRUE) == TRUE) ? $this->input->post('cabang_id', TRUE) : $cek->cabang_id,
+            'cabang_id' => $cek->cabang_id,
             'jabatan_id' => ($this->input->post('jabatan_id', TRUE) == TRUE) ? $this->input->post('jabatan_id', TRUE) : $cek->jabatan_id,
             'divisi_id' => ($this->input->post('divisi_id', TRUE) == TRUE) ? $this->input->post('divisi_id', TRUE) : $cek->divisi_id,
             'dept_id' => $dept_id,
@@ -381,7 +377,7 @@ class Employee extends CI_Controller{
                 'pegawai_id' => $id,
                 'pendidikan_id' => $cek->pendidikan_id,
                 'company_id' => ($this->input->post('company_id', TRUE) == TRUE) ? $this->input->post('company_id', TRUE) : $cek->company_id,
-                'cabang_id' => ($this->input->post('cabang_id', TRUE) == TRUE) ? $this->input->post('cabang_id', TRUE) : $cek->cabang_id,
+                'cabang_id' => $cek->cabang_id,
                 'jabatan_id' => ($this->input->post('jabatan_id', TRUE) == TRUE) ? $this->input->post('jabatan_id', TRUE) : $cek->jabatan_id,
                 'divisi_id' => ($this->input->post('divisi_id', TRUE) == TRUE) ? $this->input->post('divisi_id', TRUE) : $cek->divisi_id,
                 'dept_id' => $dept_id,
@@ -634,10 +630,11 @@ class Employee extends CI_Controller{
         $start = intval($this->input->get("start"));
         $length = intval($this->input->get("length"));
 
-        $get = $this->db->select('p.*, a.agama, pd.jenjang, c.company, j.jabatan, d.divisi, dp.departement, u.unit')
+        $get = $this->db->select('p.*, a.agama, pd.jenjang, c.company, j.jabatan, d.divisi, dp.departement, u.unit, cb.cabang')
                         ->from('pegawai p')
                         ->join('agama a', 'p.agama_id = a.id', "LEFT")
                         ->join('jenjang_pendidikan pd', 'p.pendidikan_id = pd.id', "LEFT")
+                        ->join('cabang cb', 'p.cabang_id = cb.id', "LEFT")
                         ->join('company c', 'p.company_id = c.id', "LEFT")
                         ->join('jabatan j', 'p.jabatan_id = j.id', "LEFT")
                         ->join('divisi d', 'p.divisi_id = d.id', "LEFT")
@@ -648,11 +645,11 @@ class Employee extends CI_Controller{
         $data = array();
         $no = 1;
         foreach($get->result() as $row){
-            $nik = ($row->kode_cabang != NULL) ? substr(date('Y', strtotime($row->created_at)), -2).".".$row->kode_cabang.".".sprintf("%05s", $row->nik) : '-';
             $data[] = [
                 $no++,
-                '<p class="mb-0"><strong>'.$nik.'</strong></p>',
+                '<p class="mb-0"><strong>'.$row->nik.'</strong></p>',
                 '<strong>'.$row->nama.'</strong>',
+                '<strong>'.@$row->cabang.'</strong>',
                 '<p class="mb-0"><strong>'.$row->divisi.' / '.$row->jabatan.'</strong></p>',
                 '<strong>'.$row->departement.' / '.$row->unit.'</strong>',
                 '<div class="btn-group" role="group" aria-label="Basic example">

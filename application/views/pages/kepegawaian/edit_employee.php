@@ -342,7 +342,7 @@
 
                             <div class="row mt-2">
 
-                                <div class="col-lg-4">
+                                <div class="col-lg-3">
                                     <div class="form-group">
                                         <label>Jabatan</label>
                                         <select name="jabatan_id" class="form-control <?= (@form_error('jabatan_id')) ? 'is-invalid' : ((@set_value('jabatan_id')) ? 'is-valid' : '') ?>">
@@ -353,7 +353,7 @@
                                         </select>
                                     </div>
                                 </div>
-                                <div class="col-lg-4">
+                                <div class="col-lg-3">
                                     <div class="form-group">
                                         <label for="select-div">Divisi</label>
                                         <select name="divisi_id" class="form-control <?= (@form_error('divisi_id')) ? 'is-invalid' : ((@set_value('divisi_id')) ? 'is-valid' : '') ?>" id="select-div">
@@ -364,7 +364,7 @@
                                         </select>
                                     </div>
                                 </div>
-                                <div class="col-lg-4">
+                                <div class="col-lg-3">
                                     <div class="form-group">
                                         <label>Departement</label>
                                         <select name="dept_id" class="form-control <?= (@form_error('dept_id')) ? 'is-invalid' : ((@set_value('dept_id')) ? 'is-valid' : '') ?>" id="select-dept" <?= (@form_error('dept_id')) ? 'disabled' : '' ?>>
@@ -384,7 +384,7 @@
                                         </select>
                                     </div>
                                 </div>
-                                <div class="col-lg-4">
+                                <div class="col-lg-3">
                                     <div class="form-group">
                                         <label>Unit</label>
                                         <select name="unit_id" class="form-control <?= (@form_error('unit_id')) ? 'is-invalid' : ((@set_value('unit_id')) ? 'is-valid' : '') ?>" id="select-unit" <?= (@form_error('unit_id')) ? 'disabled' : '' ?>>

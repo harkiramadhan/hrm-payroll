@@ -38,6 +38,7 @@ class Absensi extends CI_Controller{
             'title' => 'Detail Transaksi Absensi',
             'company' => $this->M_Company->getDefault(),
             'cutoff' => $this->M_Cutoff->getActive(),
+            'absensi' => $this->db->get_where('log_upload_absensi', ['id' => $id, 'company_id' => $this->companyid])->row(),
             'page' => 'trx/absensi_detail'
         ];
         $this->load->view('templates', $var);
@@ -52,7 +53,9 @@ class Absensi extends CI_Controller{
                         <div class="row">
                             <div class="col-lg-12 text-center">
                                 <h1 class="mb-3 text-danger"><i class="fas fa-exclamation"></i></h1>
-                                <h5><strong class="mb-0">Hapus Cabang <?= $cabang->cabang." - ".$cabang->alamat ?> </strong></h5>
+                                <h5><strong class="mb-0">Hapus Absensi <br>
+                                        Filename : <u><?= $absensi->filename ?></u>
+                                </strong></h5>
                             </div>
                         </div>
                         <div class="text-center">
@@ -137,7 +140,7 @@ class Absensi extends CI_Controller{
                             ->where([
                                 'la.cutoff_id' => $cutoffid,
                                 'la.company_id' => $this->companyid
-                            ])->get();
+                            ])->order_by('id', "DESC")->get();
         $data = array();
         $no = 1;
 
@@ -220,23 +223,20 @@ class Absensi extends CI_Controller{
                 $jam_in = '-';
             }
 
-            if($row['jam_out'] != '0000-00-00 00:00:00'){
-                $jam_out = '<strong>'.longdate_indo(date('Y-m-d', strtotime($row['jam_out']))).' - '.date('H:i', strtotime($row['jam_out'])).'</strong>';
-            }else{
-                $jam_out = '-';
-            }
-
+            $jam_out = ($row['jam_out'] != '0000-00-00 00:00:00') ? '<strong>'.longdate_indo(date('Y-m-d', strtotime($row['jam_out']))).' - '.date('H:i', strtotime($row['jam_out'])).'</strong>' : '-';
             $late = ($row['late'] > 0) ? '<span class="badge badge-sm bg-danger">'.$row['late'].' Menit </span>' : ' - ';
+            $lembur = ($row['lembur'] > 0) ? '<span class="badge badge-sm bg-success">'.$row['lembur'].' Menit </span>' : ' - ';
 
             $data[] =[
                 $no++,
-                '<p class="mb-0";><strong>'.substr(date('Y', strtotime($row['created_at'])), -2).".".$row['kode_cabang'].".".sprintf("%05s", $row['nik']).'</strong></p>',
+                '<p class="mb-0";><strong>'.$row['nik'].'</strong></p>',
                 '<p class="mb-0";><strong>'.$row['nama'].'</strong></p>',
                 '<p class="mb-0";><strong>'.$row['shift'].'</strong></p>',
                 $jam_in,
                 $jam_out,
                 '<p class="mb-0 text-center";><strong>'.$row['keterangan'].'</strong></p>',
                 '<p class="mb-0 text-center";><strong>'.$late.'</strong></p>',
+                '<p class="mb-0 text-center";><strong>'.$lembur.'</strong></p>',
             ];
         }
 
@@ -385,11 +385,7 @@ class Absensi extends CI_Controller{
                         $this->db->insert('log_upload_absensi', $dataLog);
                         $logid = $this->db->insert_id();
                         for($row = 4; $row <= count($sheetData); $row++){
-                            $separate = $this->stringSeperator($sheetData[$row]['B']);
-                            $nip = (int)$separate['nip'];
-                            $cabang = $separate['cabang'];
-
-                            $cek = $this->db->limit(1)->get_where('pegawai', ['nik' => $nip, 'kode_cabang' => $cabang]);
+                            $cek = $this->db->limit(1)->get_where('pegawai', ['nik' => $sheetData[$row]['B']]);
                             $shift = $this->db->limit(1)->get_where('shift', ['kode' => $sheetData[$row]['F']]);
 
                             $in = date('H:i', strtotime($sheetData[$row]['D']));
@@ -407,28 +403,38 @@ class Absensi extends CI_Controller{
 
                             if($cek->num_rows() > 0){
                                 if($shift->num_rows() > 0){
+                                    $lembur = 0;
                                     $cekJamKerja = $this->db->get_where('jam_kerja', [
                                         'company_id' => $this->companyid,
                                         'status' => 't',
                                         'shift_id' => $shift->row()->id, 
-                                        'hari_kerja' => date('l', strtotime($sheetData[$row]['D']))])->row();
-                                    if($in.":00" > @$cekJamKerja->jam_in.":00"){
-                                        $end = strtotime($in.":00");
-                                        $start = strtotime(@$cekJamKerja->jam_in.":00");
-                                        $late = ($end - $start) / 60;
+                                        'hari_kerja' => date('l', strtotime($sheetData[$row]['D']))]);
+                                    if($cekJamKerja->num_rows() > 0){
+                                        $jamkerja = $cekJamKerja->row();
+                                        if($in.":00" > @$jamkerja->jam_in.":00"){
+                                            $end = strtotime($in.":00");
+                                            $start = strtotime(@$jamkerja->jam_in.":00");
+                                            $late = ($end - $start) / 60;
+                                        }else{
+                                            $late = 0;
+                                        }
                                     }else{
+                                        $end = strtotime(date('Y-m-d H:i:s', strtotime($sheetData[$row]['E'].":00")));
+                                        $start = strtotime(date('Y-m-d H:i:s', strtotime($sheetData[$row]['D'].":00")));
+                                        $lembur = ($end - $start) / 60;
                                         $late = 0;
                                     }
 
                                     $datas = [
                                         'company_id' => $this->companyid,
                                         'log_id' => $logid,
-                                        'nik' => $nip,
+                                        'nik' => $sheetData[$row]['B'],
                                         'jam_in' => date('Y-m-d H:i:s', strtotime($sheetData[$row]['D'].":00")),
                                         'jam_out' => date('Y-m-d H:i:s', strtotime($sheetData[$row]['E'].":00")),
                                         'shift_id' => $shift->row()->id,
                                         'keterangan' => ucfirst($sheetData[$row]['G']),
-                                        'late' => $late
+                                        'late' => $late,
+                                        'lembur' => $lembur
                                     ];
 
                                     $this->db->insert('absensi', $datas);
