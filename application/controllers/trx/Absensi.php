@@ -411,7 +411,7 @@ class Absensi extends CI_Controller{
                                         'hari_kerja' => date('l', strtotime($sheetData[$row]['D']))]);
                                     if($cekJamKerja->num_rows() > 0){
                                         $jamkerja = $cekJamKerja->row();
-                                        if($in.":00" > @$jamkerja->jam_in.":00"){
+                                        if(($in.":00" > @$jamkerja->jam_in.":00") && $sheetData[$row]['G'] == ""){
                                             $end = strtotime($in.":00");
                                             $start = strtotime(@$jamkerja->jam_in.":00");
                                             $late = ($end - $start) / 60;

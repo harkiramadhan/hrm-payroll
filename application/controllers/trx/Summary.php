@@ -88,7 +88,7 @@ class Summary extends CI_Controller{
                         $no = 1; 
                         foreach($pegawai->result() as $row){ 
                             $getLatestShiftEmployee = $this->db->select('shift_id')->order_by('jam_in', "DESC")->limit(1)->get_where('absensi', ['nik' => $row->nik]);
-                            $nik = ($row->kode_cabang != NULL) ? substr(date('Y', strtotime($row->created_at)), -2).".".$row->kode_cabang.".".sprintf("%05s", $row->nik) : '-';
+                            $nik = ($row->kode_cabang != NULL) ? $row->nik : '-';
                             $shift = $this->db->get_where('shift', ['id' => $getLatestShiftEmployee->row()->shift_id])->row();
 
                             $hariEfektifPegawai = 0;
@@ -101,6 +101,12 @@ class Summary extends CI_Controller{
                                 $detailAbsensi = [];
                                 $terlambat = [];
                                 $detailTerlambat = [];
+                                $sakit = [];
+                                $detailSakit = [];
+                                $izin = [];
+                                $detailIzin = [];
+                                $alpa = [];
+                                $detailAlpa = [];
 
                                 foreach($datas[$shiftid]['detail_hari_efektif'] as $he){
                                     $cekAbsensi = $this->db->get_where('absensi', [
@@ -108,22 +114,56 @@ class Summary extends CI_Controller{
                                                                 'DATE(`jam_in`)' => date('Y-m-d', strtotime($he)),
                                                                 'keterangan' => ''
                                                             ]);
+                                    if($cekAbsensi->num_rows() > 0){
+                                        array_push($absensi, 1);
+                                        array_push($detailAbsensi, $cekAbsensi->result());
+                                    }
+
                                     $cekTerlambat = $this->db->get_where('absensi', [
                                                                 'nik' => $row->nik,
                                                                 'DATE(`jam_in`)' => date('Y-m-d', strtotime($he)),
                                                                 'keterangan' => '',
                                                                 'late >' => 0
                                                             ]);
-
                                     if($cekTerlambat->num_rows() > 0){
                                         array_push($terlambat, 1);
                                         array_push($detailTerlambat, $cekTerlambat->row()->late);
                                     }
 
-                                    if($cekAbsensi->num_rows() > 0){
-                                        array_push($absensi, 1);
-                                        array_push($detailAbsensi, $cekAbsensi->result());
+                                    $cekSakit = $this->db->get_where('absensi', [
+                                                                'nik' => $row->nik,
+                                                                'DATE(`jam_in`)' => date('Y-m-d', strtotime($he)),
+                                                                'keterangan' => 'S'
+                                                            ]);
+
+                                    if($cekSakit->num_rows() > 0){
+                                        array_push($sakit, 1);
+                                        array_push($detailSakit, $cekSakit->row()->keterangan);
                                     }
+
+                                    $cekIzin = $this->db->get_where('absensi', [
+                                                                'nik' => $row->nik,
+                                                                'DATE(`jam_in`)' => date('Y-m-d', strtotime($he)),
+                                                                'keterangan' => 'I'
+                                                            ]);
+
+                                    if($cekIzin->num_rows() > 0){
+                                        array_push($izin, 1);
+                                        array_push($detailIzin, $cekIzin->row()->keterangan);
+                                    }
+
+                                    $cekAlpa = $this->db->get_where('absensi', [
+                                                                'nik' => $row->nik,
+                                                                'DATE(`jam_in`)' => date('Y-m-d', strtotime($he)),
+                                                                'keterangan' => 'A'
+                                                            ]);
+
+                                    if($cekAlpa->num_rows() > 0){
+                                        array_push($alpa, 1);
+                                        array_push($detailAlpa, $cekAlpa->row()->keterangan);
+                                    }
+                                    
+                                    
                                 }
                             }
                     ?>
@@ -133,9 +173,9 @@ class Summary extends CI_Controller{
                         <td><strong><?= $row->nama ?></strong></td>
                         <td class="text-left"><strong><?= $hariEfektifPegawai ?></strong></td>
                         <td class="text-left"><strong><?= array_sum($absensi)." Hari" ?></strong></td>
-                        <td class="text-center">S</td>
-                        <td class="text-center">I</td>
-                        <td class="text-center">A</td>
+                        <td class="text-center"><strong><?= array_sum($sakit) ?></strong></td>
+                        <td class="text-center"><strong><?= array_sum($izin) ?></strong></td>
+                        <td class="text-center"><strong><?= array_sum($alpa) ?></strong></td>
                         <td class="text-center"><strong><?= array_sum($terlambat)." Hari" ?></strong></td>
                         <td class="text-center"><strong><?= array_sum($detailTerlambat) ?> Menit</strong></td>
                         <td><strong><?= $shiftName ?></strong></td>
