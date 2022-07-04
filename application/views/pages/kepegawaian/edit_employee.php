@@ -274,7 +274,7 @@
                                             <td class="text-center"><?= $nos++ ?></td>
                                             <td><?= $rows->status ?></td>
                                             <td><?= longdate_indo($rows->tgl_join) ?></td>
-                                            <td><?= ($rows->tgl_finish) ? longdate_indo($rows->tgl_finish) : '-' ?></td>
+                                            <td><?= ($rows->tgl_finish) ? (($rows->tgl_finish == '0000-00-00') ? '-' : longdate_indo($rows->tgl_finish)): '-' ?></td>
                                             <td class="text-center btn-group">
                                                 <button type="button" class="btn btn-sm btn-round btn-info text-white px-3 mb-0 btn-edit-kepegawaian" id="<?= $rows->id ?>"><i class="fas fa-pencil-alt" aria-hidden="true"></i></button>
                                                 <a class="btn btn-sm btn-round btn-link text-danger px-3 mb-0" href="<?= site_url('kepegawaian/employee/deleteSK/' . $rows->id) ?>"><i class="far fa-trash-alt" aria-hidden="true"></i></a>
