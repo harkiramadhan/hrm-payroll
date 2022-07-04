@@ -56,6 +56,7 @@ class Status extends CI_Controller{
 
             $data[] = [
                 $no++,
+                '<strong>'.$row->nik.'</strong>',
                 '<strong>'.$row->nama.'</strong>',
                 '<p class="mb-0"><strong>'.$status.'</strong></p>',
                 (@$detail->tgl_finish == '0000-00-00' || @$detail->tgl_finish == NULL) ? '-' : @$warningStatus,

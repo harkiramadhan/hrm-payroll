@@ -4,7 +4,10 @@
         <div class="card-header">
             <div class="row">
                 <div class="col-lg-8">
-                    <h5 class="mb-0"><strong>Status Kepegawaian</strong></h5>
+                    <h5 class="mb-0"><strong>Pendidikan</strong></h5>
+                </div>
+                <div class="col-lg-4 text-end">
+                    <button type="button" class="btn btn-sm btn-round bg-gradient-dark mb-0" data-bs-toggle="modal" data-bs-target="#modalAdd"><i class="fas fa-plus me-2"></i> Pendidikan</button>
                 </div>
             </div>
             <!-- <p class="text-sm mb-0">
@@ -15,14 +18,9 @@
             <table id="example" class="table table-striped" style="width:100%">
                 <thead>
                     <tr>
-                        <th class="text-center w-5px">No</th>
-                        <th class="text-center">NIP</th>
-                        <th>Nama</th>
-                        <th class="w-5p">Status Kepegawaian</th>
-                        <th class="w-5p">Status</th>
-                        <th class="text-center w-15p">Join</th>
-                        <th class="text-center w-15p">Finish</th>
-                        <th class="text-center w-15p">Masa Kerja</th>
+                        <th class="text-center w-5px">Id</th>
+                        <th>Jenjang Pendidikan</th>
+                        <th class="text-center w-5px">Status</th>
                         <th class="text-center w-5px">Action</th>
                     </tr>
                 </thead>
@@ -35,26 +33,33 @@
 
 <!-- Modals -->
 <div class="modal fade" id="modalAdd" tabindex="-1" role="dialog" aria-labelledby="modal-form" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered modal-md" role="document">
+    <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
         <div class="modal-content">
             <div class="modal-body p-0">
                 <div class="card card-plain">
                     <div class="card-header pb-0 text-left">
-                        <h5 class="font-weight-bolder">Tambah Shift</h5>
+                        <h5 class="font-weight-bolder">Tambah Pendidikan</h5>
                     </div>
                     <div class="card-body pb-0">
-                        <form action="<?= site_url('kepegawaian/shift/create') ?>" role="form text-left" method="post">
+                        <form action="<?= site_url('master/pendidikan/create') ?>" role="form text-left" method="post">
                             <div class="row">
                                 <div class="col-lg-12">
-                                    <label>Kode <small class="text-danger">*</small></label>
+                                    <label>Jenjang Pendidikan <small class="text-danger">*</small></label>
                                     <div class="input-group mb-3">
-                                        <input type="text" class="form-control" placeholder="Kode" aria-label="Kode" name="kode" required>
+                                        <input type="text" class="form-control" placeholder="Jenjang Pendidikan" aria-label="Jenjang Pendidikan" name="jenjang" required>
                                     </div>
                                 </div>
-                                <div class="col-lg-12">
-                                    <label>Keterangan <small class="text-danger">*</small></label>
+                                <div class="col-lg-4">
+                                    <label>Status<small class="text-danger">*</small></label>
                                     <div class="input-group mb-3">
-                                        <input type="text" class="form-control" placeholder="Keterangan" aria-label="Keterangan" name="keterangan" required>
+                                        <div class="form-check form-check-inline">
+                                            <input class="form-check-input" type="radio" name="status" id="inlineRadio1" value="t" required="">
+                                            <label class="form-check-label" for="inlineRadio1">Active</label>
+                                        </div>
+                                        <div class="form-check form-check-inline">
+                                            <input class="form-check-input" type="radio" name="status" id="inlineRadio2" value="f" required="">
+                                            <label class="form-check-label" for="inlineRadio2">Non Active</label>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -67,16 +72,6 @@
                         <button type="button" class="btn btn-sm btn-link btn-block  ml-auto" data-bs-dismiss="modal">Batal</button>
                     </div>
                 </div>
-            </div>
-        </div>
-    </div>
-</div>
-
-<div class="modal fade" id="modalEdit" tabindex="-1" role="dialog" aria-labelledby="modal-form" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered modal-md" role="document">
-        <div class="modal-content">
-            <div class="modal-body p-0 data-edit">
-              
             </div>
         </div>
     </div>
