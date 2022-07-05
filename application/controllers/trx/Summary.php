@@ -80,6 +80,7 @@ class Summary extends CI_Controller{
                         <th class="text-center">A</th>
                         <th class="text-center">Jum. Hari Terlambat</th>
                         <th class="text-center">Terlambat (Menit)</th>
+                        <th class="text-center">Jum. Hari Lembur</th>
                         <th class="text-center">Lembur (Menit)</th>
                         <th class="">Shift</th>
                     </tr>
@@ -109,6 +110,7 @@ class Summary extends CI_Controller{
                                 $alpa = [];
                                 $detailAlpa = [];
                                 $lembur = [];
+                                $hariLembur = [];
 
                                 foreach($datas[$shiftid]['detail_hari_efektif'] as $he){
                                     $cekAbsensi = $this->db->get_where('absensi', [
@@ -166,14 +168,17 @@ class Summary extends CI_Controller{
                                     }
                                 }
 
-                                $cekLembur =$this->db->get_where('absensi', [
-                                                                    'nik' => $row->nik,
-                                                                    'DATE(`jam_in`) >=' => date('Y-m-d', strtotime($startDate)),
-                                                                    'DATE(`jam_in`) <=' => date('Y-m-d', strtotime($endDate)),
-                                                                    'lembur >' => 0
-                                                                ]);
+                                $cekLembur =$this->db->select('*')
+                                                    ->from('absensi')
+                                                    ->where([
+                                                        'nik' => $row->nik,
+                                                        'DATE(`jam_in`) >=' => date('Y-m-d', strtotime($startDate)),
+                                                        'DATE(`jam_in`) <=' => date('Y-m-d', strtotime($endDate)),
+                                                        'lembur >' => 0
+                                                    ])->group_by('DATE(`jam_in`)')->get();
                                 foreach($cekLembur->result() as $cl){
                                     array_push($lembur, $cl->lembur);
+                                    array_push($hariLembur, 1);
                                 }
                             }
                     ?>
@@ -188,6 +193,7 @@ class Summary extends CI_Controller{
                         <td class="text-center"><strong><?= array_sum($alpa) ?></strong></td>
                         <td class="text-center"><strong><?= array_sum($terlambat)." Hari" ?></strong></td>
                         <td class="text-center"><strong><?= array_sum($detailTerlambat) ?> Menit</strong></td>
+                        <td class="text-center"><strong><?= array_sum($hariLembur) ?> Hari</strong></td>
                         <td class="text-center"><strong><?= array_sum($lembur) ?> Menit</strong></td>
                         <td><strong><?= $shiftName ?></strong></td>
                     </tr>
