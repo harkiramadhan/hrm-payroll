@@ -54,12 +54,25 @@ class Status extends CI_Controller{
                 }
             }
 
+            if(@$detail->tgl_finish == '0000-00-00' || @$detail->tgl_finish == NULL){
+                if(@$detail->tgl_join){
+                    $statusNow = '<span class="badge badge-sm bg-success">Active</span>';
+                }elseif(@$detail->tgl_join == NULL || @$detail->tgl_join == '0000-00-00'){
+                    $statusNow = '-';
+                }else{
+                    $statusNow = @$warningStatus;
+                }
+            }else{
+                $statusNow = @$warningStatus;
+            }
+            
+
             $data[] = [
                 $no++,
                 '<strong>'.$row->nik.'</strong>',
                 '<strong>'.$row->nama.'</strong>',
                 '<p class="mb-0"><strong>'.$status.'</strong></p>',
-                (@$detail->tgl_finish == '0000-00-00' || @$detail->tgl_finish == NULL) ? '-' : @$warningStatus,
+                $statusNow,
                 '<p class="text-left mb-0"><strong>'.$join.'</strong></p>',
                 '<p class="text-left mb-0"><strong>'.$finish.'</strong></p>',
                 '<p class="text-left mb-0"><strong>'.masaKerja(@$detail->tgl_join, @$detail->tgl_finish).'</strong></p>',
