@@ -80,6 +80,7 @@ class Summary extends CI_Controller{
                         <th class="text-center">A</th>
                         <th class="text-center">Jum. Hari Terlambat</th>
                         <th class="text-center">Terlambat (Menit)</th>
+                        <th class="text-center">Lembur (Menit)</th>
                         <th class="">Shift</th>
                     </tr>
                 </thead>
@@ -89,7 +90,7 @@ class Summary extends CI_Controller{
                         foreach($pegawai->result() as $row){ 
                             $getLatestShiftEmployee = $this->db->select('shift_id')->order_by('jam_in', "DESC")->limit(1)->get_where('absensi', ['nik' => $row->nik]);
                             $nik = ($row->kode_cabang != NULL) ? $row->nik : '-';
-                            $shift = $this->db->get_where('shift', ['id' => $getLatestShiftEmployee->row()->shift_id])->row();
+                            $shift = $this->db->get_where('shift', ['id' => @$getLatestShiftEmployee->row()->shift_id])->row();
 
                             $hariEfektifPegawai = 0;
                             if($getLatestShiftEmployee->num_rows() > 0){
@@ -107,6 +108,7 @@ class Summary extends CI_Controller{
                                 $detailIzin = [];
                                 $alpa = [];
                                 $detailAlpa = [];
+                                $lembur = [];
 
                                 foreach($datas[$shiftid]['detail_hari_efektif'] as $he){
                                     $cekAbsensi = $this->db->get_where('absensi', [
@@ -162,8 +164,16 @@ class Summary extends CI_Controller{
                                         array_push($alpa, 1);
                                         array_push($detailAlpa, $cekAlpa->row()->keterangan);
                                     }
-                                    
-                                    
+                                }
+
+                                $cekLembur =$this->db->get_where('absensi', [
+                                                                    'nik' => $row->nik,
+                                                                    'DATE(`jam_in`) >=' => date('Y-m-d', strtotime($startDate)),
+                                                                    'DATE(`jam_in`) <=' => date('Y-m-d', strtotime($endDate)),
+                                                                    'lembur >' => 0
+                                                                ]);
+                                foreach($cekLembur->result() as $cl){
+                                    array_push($lembur, $cl->lembur);
                                 }
                             }
                     ?>
@@ -178,6 +188,7 @@ class Summary extends CI_Controller{
                         <td class="text-center"><strong><?= array_sum($alpa) ?></strong></td>
                         <td class="text-center"><strong><?= array_sum($terlambat)." Hari" ?></strong></td>
                         <td class="text-center"><strong><?= array_sum($detailTerlambat) ?> Menit</strong></td>
+                        <td class="text-center"><strong><?= array_sum($lembur) ?> Menit</strong></td>
                         <td><strong><?= $shiftName ?></strong></td>
                     </tr>
                     <?php } ?>
