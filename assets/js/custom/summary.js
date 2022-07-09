@@ -1,7 +1,7 @@
 $(document).ready(function(){
     $('.btn-search').click(function(){
-        var startDate = $('#start_date').val()
-        var endDate = $('#end_date').val()
+        var startDate = $('#startDate').val()
+        var endDate = $('#endDate').val()
         var cabangid = $('#cabang_id').val()
     
         $.ajax({

@@ -60,3 +60,6 @@ $route['kepegawaian/employee/(:num)'] = 'kepegawaian/employee/edit/$1';
 
 $route['trx/absensi/(:num)'] = 'trx/absensi/detail/$1';
 $route['trx/absensi/(:num)/table'] = 'trx/absensi/tableDetail/$1';
+
+$route['review/cutoff/(:num)'] = 'review/cutoff/detail/$1';
+$route['review/cutoff/(:num)/table'] = 'review/cutoff/tableDetail/$1';

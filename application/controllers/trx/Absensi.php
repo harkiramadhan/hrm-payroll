@@ -24,7 +24,7 @@ class Absensi extends CI_Controller{
         $var = [
             'title' => 'Transaksi Absensi',
             'company' => $this->M_Company->getDefault(),
-            'cutoff' => $this->M_Cutoff->getActive(),
+            'cutoff' => $this->M_Cutoff->getActive($this->companyid),
             'page' => 'trx/absensi',
             'ajax' => [
                 'trx_absensi'
@@ -37,7 +37,7 @@ class Absensi extends CI_Controller{
         $var = [
             'title' => 'Detail Transaksi Absensi',
             'company' => $this->M_Company->getDefault(),
-            'cutoff' => $this->M_Cutoff->getActive(),
+            'cutoff' => $this->M_Cutoff->getActive($this->companyid),
             'absensi' => $this->db->get_where('log_upload_absensi', ['id' => $id, 'company_id' => $this->companyid])->row(),
             'page' => 'trx/absensi_detail'
         ];
@@ -129,7 +129,6 @@ class Absensi extends CI_Controller{
     }
 
     function table(){
-        $cutoffid = $this->M_Cutoff->getActive()->id;
         $draw = intval($this->input->get("draw"));
         $start = intval($this->input->get("start"));
         $length = intval($this->input->get("length"));
@@ -138,7 +137,6 @@ class Absensi extends CI_Controller{
                             ->from('log_upload_absensi la')
                             ->join('pegawai p', 'la.pegawai_id = p.id')
                             ->where([
-                                'la.cutoff_id' => $cutoffid,
                                 'la.company_id' => $this->companyid
                             ])->order_by('id', "DESC")->get();
         $data = array();
@@ -339,7 +337,7 @@ class Absensi extends CI_Controller{
     }
 
     function import(){
-        $cutoffid = $this->M_Cutoff->getActive()->id;
+        $cutoffid = $this->M_Cutoff->getActive($this->companyid)->id;
         $this->load->library('form_validation');
          $this->form_validation->set_rules('file', 'Upload File', 'callback_checkFileValidation');
          if($this->form_validation->run() == false) {
@@ -436,18 +434,8 @@ class Absensi extends CI_Controller{
                                         'late' => $late,
                                         'lembur' => $lembur
                                     ];
-
-                                    $cekAbsensi = $this->db->get_where('absensi', [
-                                        'company_id' => $this->companyid,
-                                        'nik' => $sheetData[$row]['B'],
-                                        'DATE(`jam_in`)' =>  date('Y-m-d', strtotime($sheetData[$row]['D'].":00"))
-                                    ]);
-
-                                    if($cekAbsensi->num_rows() > 0){
-                                        $this->db->where('id', $cekAbsensi->row()->id)->update('absensi', $datas);
-                                    }else{
-                                        $this->db->insert('absensi', $datas);
-                                    }
+                                    
+                                    $this->db->insert('absensi', $datas);
                                     
                                     if($this->db->affected_rows() > 0){
                                         $success_row++;
