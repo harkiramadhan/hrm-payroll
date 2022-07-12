@@ -408,12 +408,13 @@ class Employee extends CI_Controller{
     }
 
     function updateKeuangan($id){
+        $cek = $this->db->get_where('pegawai', ['company_id' => $this->companyid, 'id' => $id])->row();
         $dataUpdate = [
-            'nama_bank' => ($this->input->post('nama_bank', TRUE) == TRUE) ? $this->input->post('nama_bank', TRUE) : $cek->nama_bank,
-            'nama_rekening' => ($this->input->post('nama_rekening', TRUE) == TRUE) ? $this->input->post('nama_rekening', TRUE) : $cek->nama_rekening,
-            'no_rekening' => ($this->input->post('no_rekening', TRUE) == TRUE) ? $this->input->post('no_rekening', TRUE) : $cek->no_rekening,
-            'nominal_gapok' => ($this->input->post('nominal_gapok', TRUE) == TRUE) ? $this->input->post('nominal_gapok', TRUE) : $cek->nominal_gapok,
-            'nominal_gaji_dilaporkan' => ($this->input->post('nominal_gaji_dilaporkan', TRUE) == TRUE) ? $this->input->post('nominal_gaji_dilaporkan', TRUE) : $cek->nominal_gaji_dilaporkan,
+            'nama_bank' => ($this->input->post('nama_bank', TRUE) == TRUE) ? $this->input->post('nama_bank', TRUE) : @$cek->nama_bank,
+            'nama_rekening' => ($this->input->post('nama_rekening', TRUE) == TRUE) ? $this->input->post('nama_rekening', TRUE) : @$cek->nama_rekening,
+            'no_rekening' => ($this->input->post('no_rekening', TRUE) == TRUE) ? $this->input->post('no_rekening', TRUE) : @$cek->no_rekening,
+            'nominal_gapok' => ($this->input->post('nominal_gapok', TRUE) == TRUE) ? $this->input->post('nominal_gapok', TRUE) : @$cek->nominal_gapok,
+            'nominal_gaji_dilaporkan' => ($this->input->post('nominal_gaji_dilaporkan', TRUE) == TRUE) ? $this->input->post('nominal_gaji_dilaporkan', TRUE) : @$cek->nominal_gaji_dilaporkan,
         ];
         $this->db->where('id', $id)->update('pegawai', $dataUpdate);
         if($this->db->affected_rows() > 0){
