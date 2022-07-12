@@ -201,28 +201,28 @@ class Summary extends CI_Controller{
                         ?>
                         <input type="hidden" name="nip[]" value="<?= $nik ?>">
                         <input type="hidden" name="hari_efektif[]" value="<?= $hariEfektifPegawai ?>">
-                        <input type="hidden" name="total_hadir[]" value="<?= array_sum($absensi) ?>">
-                        <input type="hidden" name="sakit[]" value="<?= array_sum($sakit) ?>">
-                        <input type="hidden" name="alpa[]" value="<?= array_sum($alpa) ?>">
-                        <input type="hidden" name="izin[]" value="<?= array_sum($izin) ?>">
-                        <input type="hidden" name="hari_terlambat[]" value="<?= array_sum($terlambat) ?>">
-                        <input type="hidden" name="menit_terlambat[]" value="<?= array_sum($detailTerlambat) ?>">
-                        <input type="hidden" name="hari_lembur[]" value="<?= array_sum($hariLembur) ?>">
-                        <input type="hidden" name="menit_lembur[]" value="<?= array_sum($lembur) ?>">
+                        <input type="hidden" name="total_hadir[]" value="<?= array_sum(@$absensi) ?>">
+                        <input type="hidden" name="sakit[]" value="<?= array_sum(@$sakit) ?>">
+                        <input type="hidden" name="alpa[]" value="<?= array_sum(@$alpa) ?>">
+                        <input type="hidden" name="izin[]" value="<?= array_sum(@$izin) ?>">
+                        <input type="hidden" name="hari_terlambat[]" value="<?= array_sum(@$terlambat) ?>">
+                        <input type="hidden" name="menit_terlambat[]" value="<?= array_sum(@$detailTerlambat) ?>">
+                        <input type="hidden" name="hari_lembur[]" value="<?= array_sum(@$hariLembur) ?>">
+                        <input type="hidden" name="menit_lembur[]" value="<?= array_sum(@$lembur) ?>">
                         <input type="hidden" name="shift[]" value="<?= $shiftName ?>">
                         <tr>
                             <td class="text-center" width="5px"><?= $no++ ?></td>
                             <td><strong><?= $nik ?></strong></td>
                             <td><strong><?= $row->nama ?></strong></td>
-                            <td class="text-left"><strong><?= $hariEfektifPegawai ?></strong></td>
-                            <td class="text-left"><strong><?= array_sum($absensi)." Hari" ?></strong></td>
-                            <td class="text-center"><strong><?= array_sum($sakit) ?></strong></td>
-                            <td class="text-center"><strong><?= array_sum($izin) ?></strong></td>
-                            <td class="text-center"><strong><?= array_sum($alpa) ?></strong></td>
-                            <td class="text-center"><strong><?= array_sum($terlambat)." Hari" ?></strong></td>
-                            <td class="text-center"><strong><?= array_sum($detailTerlambat) ?> Menit</strong></td>
-                            <td class="text-center"><strong><?= array_sum($hariLembur) ?> Hari</strong></td>
-                            <td class="text-center"><strong><?= array_sum($lembur) ?> Menit</strong></td>
+                            <td class="text-left"><strong><?= @$hariEfektifPegawai ?></strong></td>
+                            <td class="text-left"><strong><?= array_sum(@$absensi)." Hari" ?></strong></td>
+                            <td class="text-center"><strong><?= array_sum(@$sakit) ?></strong></td>
+                            <td class="text-center"><strong><?= array_sum(@$izin) ?></strong></td>
+                            <td class="text-center"><strong><?= array_sum(@$alpa) ?></strong></td>
+                            <td class="text-center"><strong><?= array_sum(@$terlambat)." Hari" ?></strong></td>
+                            <td class="text-center"><strong><?= array_sum(@$detailTerlambat) ?> Menit</strong></td>
+                            <td class="text-center"><strong><?= array_sum(@$hariLembur) ?> Hari</strong></td>
+                            <td class="text-center"><strong><?= array_sum(@$lembur) ?> Menit</strong></td>
                             <td><strong><?= $shiftName ?></strong></td>
                         </tr>
                         <?php } ?>

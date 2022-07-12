@@ -314,12 +314,25 @@ class Employee extends CI_Controller{
             $this->edit($id);
         }else{
             $cekCabang = $this->db->get_where('cabang', ['kode' => $cek->kode_cabang])->row();
-            if($this->input->post('cabang_id', TRUE) == TRUE && $cekCabang->id != $this->input->post('cabang_id', TRUE)){
-                $mutasi = $this->db->order_by('id', "DESC")->get_where('mutasi_pegawai', ['pegawai_id' => $cek->id])->row();
+            if($this->input->post('cabang_id', TRUE) == TRUE && @$cekCabang->id != $this->input->post('cabang_id', TRUE)){
+                $mutasi = $this->db->order_by('id', "DESC")->get_where('mutasi_pegawai', ['pegawai_id' => $cek->id]);
                 $dataUpdateMutasi = [
                     'cabang_id' => ($this->input->post('cabang_id', TRUE) == TRUE) ? $this->input->post('cabang_id', TRUE) : $cek->cabang_id,
                 ];
-                $this->db->where('id', $mutasi->id)->update('mutasi_pegawai', $dataUpdateMutasi);
+                if($mutasi->num_rows() > 0){
+                    $this->db->where('id', $mutasi->row()->id)->update('mutasi_pegawai', $dataUpdateMutasi);
+                }else{
+                    $this->db->insert('mutasi_pegawai', [
+                        'pegawai_id' => $id,
+                        'pendidikan_id' => $this->input->post('pendidikan_id'),
+                        'company_id' => $this->companyid,
+                        'cabang_id' => $this->input->post('cabang_id', TRUE),
+                        'jabatan_id' => NULL,
+                        'divisi_id' => NULL,
+                        'dept_id' => NULL,
+                        'unit_id' => NULL
+                    ]);
+                }
             }
 
             $dataUpdate = [
