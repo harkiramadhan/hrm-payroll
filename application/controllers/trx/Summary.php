@@ -40,6 +40,7 @@ class Summary extends CI_Controller{
 
         $shift = $this->db->get_where('shift', ['company_id' => $this->companyid, 'status' => 't'])->result();
         $datas = [];
+        $tunjangan = $this->db->order_by('urut', "ASC")->get_where('tunjangan', ['company_id' => $this->companyid, 'status' => 't'])->result();
         foreach($shift as $s){
             $begin = new DateTime($startDate);
             $end   = new DateTime($endDate);
@@ -68,41 +69,79 @@ class Summary extends CI_Controller{
         }
 
         ?>
+            <style>
+                .sticky-col {
+                    position: -webkit-sticky;
+                    position: sticky;
+                    background-color: white !important;
+                }
+
+                .first-col {
+                    width: 100px;
+                    min-width: 100px;
+                    max-width: 100px;
+                    left: 0px;
+                }
+
+                .second-col {
+                    width: 150px;
+                    min-width: 150px;
+                    max-width: 150px;
+                    left: 100px;
+                }
+
+                .third-col {
+                    width: 200px;
+                    min-width: 200px;
+                    max-width: 200px;
+                    left: 250px;
+                }
+            </style>
             <div class="card-header">
                 <div class="row">
                     <div class="col-lg-8">
                         <h5 class="mb-0"><strong>Detail Summary</strong></h5>
                     </div>
-                    <div class="col-lg-4 text-end">
+                    <div class="col-lg-2 text-end pe-0">
+                        <input type="text" name="" id="myInput" class="form-control form-control-sm" placeholder="Cari ...">
+                    </div>
+                    <div class="col-lg-2">
                         <button type="button" class="btn btn-sm btn-round bg-gradient-dark mb-0 btn-save"><i class="fas fa-save me-2"></i> Simpan Ke Cutoff</button>
                     </div>
                 </div>
             </div>
             <form action="<?= site_url('trx/summary/save') ?>" method="POST" id="form-summary">
             <div class="table-responsive" style="max-height: 500px!important">
-                <table id="example" class="table table-striped" style="width:100%">
+                <table id="example" class="table table-bordered table-hover" style="width:100%">
                     <thead>
                         <tr>
-                            <th class="text-center w-5px">No</th>
-                            <th class="">NIP</th>
-                            <th>Nama</th>
-                            <th class="text-left">Hari Efektif</th>
-                            <th class="text-left">Hadir</th>
-                            <th class="text-center">S</th>
-                            <th class="text-center">I</th>
-                            <th class="text-center">A</th>
-                            <th class="text-center">Jum. Hari Terlambat</th>
-                            <th class="text-center">Terlambat (Menit)</th>
-                            <th class="text-center">Jum. Hari Lembur</th>
-                            <th class="text-center">Lembur (Menit)</th>
-                            <th class="">Shift</th>
+                            <th rowspan="2" style="vertical-align : middle;text-align:center;position:sticky;top: 0;background-color:white; z-index: 3;" class="text-center w-5px sticky-col first-col">No</th>
+                            <th rowspan="2" style="vertical-align : middle;text-align:center;position:sticky;top: 0;background-color:white; z-index: 3;" class=" sticky-col second-col">NIP</th>
+                            <th rowspan="2" style="vertical-align : middle;text-align:center;position:sticky;top: 0;background-color:white; z-index: 3;" class=" sticky-col third-col">Nama</th>
+                            <th rowspan="2" style="vertical-align : middle;text-align:center;position:sticky;top: 0;background-color:white" class="text-left">Hari Efektif</th>
+                            <th rowspan="2" style="vertical-align : middle;text-align:center;position:sticky;top: 0;background-color:white" class="text-left">Hadir <br> Hari</th>
+                            <th rowspan="2" style="vertical-align : middle;text-align:center;position:sticky;top: 0;background-color:white" class="text-center">S</th>
+                            <th rowspan="2" style="vertical-align : middle;text-align:center;position:sticky;top: 0;background-color:white" class="text-center">I</th>
+                            <th rowspan="2" style="vertical-align : middle;text-align:center;position:sticky;top: 0;background-color:white" class="text-center">A</th>
+                            <th colspan="2" style="vertical-align : middle;text-align:center;position:sticky;top: 0;background-color:white" class="text-center">Terlambat</th>
+                            <th colspan="2" style="vertical-align : middle;text-align:center;position:sticky;top: 0;background-color:white" class="text-center">Lembur</th>
+                            <th rowspan="2" style="vertical-align : middle;text-align:center;position:sticky;top: 0;background-color:white" class="">Shift</th>
+                            <?php foreach($tunjangan as $th){ ?>
+                                <th rowspan="2" style="vertical-align : middle;text-align:center;position:sticky;top: 0;background-color:white" class=""><?= $th->tunjangan ?></th>
+                            <?php } ?>
+                        </tr>
+                        <tr>
+                            <th class="text-center" style="vertical-align : middle;text-align:center;position:sticky;top:50px;background-color:white">Hari</th>
+                            <th class="text-center" style="vertical-align : middle;text-align:center;position:sticky;top:50px;background-color:white">Menit</th>
+                            <th class="text-center" style="vertical-align : middle;text-align:center;position:sticky;top:50px;background-color:white">Hari</th>
+                            <th class="text-center" style="vertical-align : middle;text-align:center;position:sticky;top:50px;background-color:white">Menit</th>
                         </tr>
                     </thead>
                     <input type="hidden" name="cabangid" value="<?= $cabangid ?>">
                     <input type="hidden" name="startDate" value="<?= $startDate ?>">
                     <input type="hidden" name="endDate" value="<?= $endDate ?>">
                     <input type="hidden" name="cutoffid" value="<?= $cutoff->id ?>">
-                    <tbody>
+                    <tbody id="myTable">
                         <?php
                             $no = 1; 
                             foreach($pegawai->result() as $row){ 
@@ -114,7 +153,7 @@ class Summary extends CI_Controller{
                                 if($getLatestShiftEmployee->num_rows() > 0){
                                     $shiftid = $getLatestShiftEmployee->row()->shift_id;
                                     $shiftName = $shift->keterangan;
-                                    $hariEfektifPegawai = $datas[$shiftid]['total_hari_efektif']." Hari";
+                                    $hariEfektifPegawai = $datas[$shiftid]['total_hari_efektif'];
 
                                     $absensi = [];
                                     $detailAbsensi = [];
@@ -211,19 +250,22 @@ class Summary extends CI_Controller{
                         <input type="hidden" name="menit_lembur[]" value="<?= array_sum(@$lembur) ?>">
                         <input type="hidden" name="shift[]" value="<?= $shiftName ?>">
                         <tr>
-                            <td class="text-center" width="5px"><?= $no++ ?></td>
-                            <td><strong><?= $nik ?></strong></td>
-                            <td><strong><?= $row->nama ?></strong></td>
-                            <td class="text-left"><strong><?= @$hariEfektifPegawai ?></strong></td>
-                            <td class="text-left"><strong><?= array_sum(@$absensi)." Hari" ?></strong></td>
+                            <td style="z-index: 2;" class="text-center sticky-col first-col" width="5px"><?= $no++ ?></td>
+                            <td style="z-index: 2;" class="sticky-col second-col"><strong><?= $nik ?></strong></td>
+                            <td style="z-index: 2;" class="sticky-col third-col"><strong><?= $row->nama ?></strong></td>
+                            <td class="text-center"><strong><?= @$hariEfektifPegawai ?></strong></td>
+                            <td class="text-center"><strong><?= array_sum(@$absensi) ?></strong></td>
                             <td class="text-center"><strong><?= array_sum(@$sakit) ?></strong></td>
                             <td class="text-center"><strong><?= array_sum(@$izin) ?></strong></td>
                             <td class="text-center"><strong><?= array_sum(@$alpa) ?></strong></td>
-                            <td class="text-center"><strong><?= array_sum(@$terlambat)." Hari" ?></strong></td>
-                            <td class="text-center"><strong><?= array_sum(@$detailTerlambat) ?> Menit</strong></td>
-                            <td class="text-center"><strong><?= array_sum(@$hariLembur) ?> Hari</strong></td>
-                            <td class="text-center"><strong><?= array_sum(@$lembur) ?> Menit</strong></td>
+                            <td class="text-center"><strong><?= array_sum(@$terlambat) ?></strong></td>
+                            <td class="text-center"><strong><?= array_sum(@$detailTerlambat) ?></strong></td>
+                            <td class="text-center"><strong><?= array_sum(@$hariLembur) ?></strong></td>
+                            <td class="text-center"><strong><?= array_sum(@$lembur) ?></strong></td>
                             <td><strong><?= $shiftName ?></strong></td>
+                            <?php foreach($tunjangan as $td){ ?>
+                                <td class=""><?= $td->tunjangan ?></td>
+                            <?php } ?>
                         </tr>
                         <?php } ?>
                     </tbody>
@@ -235,6 +277,14 @@ class Summary extends CI_Controller{
                 $('.btn-save').click(function(){
                     $("#btn-submit").click()
                 })
+
+                $("#myInput").on("keyup", function() {
+                    var value = $(this).val().toLowerCase()
+                    $("#myTable tr").filter(function() {
+                        $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+                    })
+                })
+
             </script>
         <?php
     }
