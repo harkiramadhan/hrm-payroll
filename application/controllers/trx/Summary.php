@@ -91,9 +91,9 @@ class Summary extends CI_Controller{
                 }
 
                 .third-col {
-                    width: 200px;
-                    min-width: 200px;
-                    max-width: 200px;
+                    width: 250px;
+                    min-width: 250px;
+                    max-width: 250px;
                     left: 250px;
                 }
             </style>
@@ -150,23 +150,23 @@ class Summary extends CI_Controller{
                                 $shift = $this->db->get_where('shift', ['id' => @$getLatestShiftEmployee->row()->shift_id])->row();
 
                                 $hariEfektifPegawai = 0;
+                                $absensi = [];
+                                $detailAbsensi = [];
+                                $terlambat = [];
+                                $detailTerlambat = [];
+                                $sakit = [];
+                                $detailSakit = [];
+                                $izin = [];
+                                $detailIzin = [];
+                                $alpa = [];
+                                $detailAlpa = [];
+                                $lembur = [];
+                                $hariLembur = [];
+                                
                                 if($getLatestShiftEmployee->num_rows() > 0){
                                     $shiftid = $getLatestShiftEmployee->row()->shift_id;
                                     $shiftName = $shift->keterangan;
                                     $hariEfektifPegawai = $datas[$shiftid]['total_hari_efektif'];
-
-                                    $absensi = [];
-                                    $detailAbsensi = [];
-                                    $terlambat = [];
-                                    $detailTerlambat = [];
-                                    $sakit = [];
-                                    $detailSakit = [];
-                                    $izin = [];
-                                    $detailIzin = [];
-                                    $alpa = [];
-                                    $detailAlpa = [];
-                                    $lembur = [];
-                                    $hariLembur = [];
 
                                     foreach($datas[$shiftid]['detail_hari_efektif'] as $he){
                                         $cekAbsensi = $this->db->get_where('absensi', [
@@ -248,7 +248,7 @@ class Summary extends CI_Controller{
                         <input type="hidden" name="menit_terlambat[]" value="<?= array_sum(@$detailTerlambat) ?>">
                         <input type="hidden" name="hari_lembur[]" value="<?= array_sum(@$hariLembur) ?>">
                         <input type="hidden" name="menit_lembur[]" value="<?= array_sum(@$lembur) ?>">
-                        <input type="hidden" name="shift[]" value="<?= $shiftName ?>">
+                        <input type="hidden" name="shift[]" value="<?= @$shiftName ?>">
                         <tr>
                             <td style="z-index: 2;" class="text-center sticky-col first-col" width="5px"><?= $no++ ?></td>
                             <td style="z-index: 2;" class="sticky-col second-col"><strong><?= $nik ?></strong></td>
@@ -262,7 +262,7 @@ class Summary extends CI_Controller{
                             <td class="text-center"><strong><?= array_sum(@$detailTerlambat) ?></strong></td>
                             <td class="text-center"><strong><?= array_sum(@$hariLembur) ?></strong></td>
                             <td class="text-center"><strong><?= array_sum(@$lembur) ?></strong></td>
-                            <td><strong><?= $shiftName ?></strong></td>
+                            <td><strong><?= @$shiftName ?></strong></td>
                             <?php foreach($tunjangan as $td){ ?>
                                 <td class=""><?= $td->tunjangan ?></td>
                             <?php } ?>
