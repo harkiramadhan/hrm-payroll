@@ -209,15 +209,47 @@ class Cutoff extends CI_Controller{
                             ->join('pegawai p', 's.nip = p.nik')
                             ->where('cutoff_id', $cutoffid)->get();
 
+        $tunjangan = $this->db->order_by('urut', "ASC")->get_where('tunjangan', ['company_id' => $this->companyid, 'status' => 't']);
         ?>
+            <style>
+                .sticky-col {
+                    position: -webkit-sticky;
+                    position: sticky;
+                    background-color: white !important;
+                }
+
+                .first-col {
+                    width: 100px;
+                    min-width: 100px;
+                    max-width: 100px;
+                    left: 0px;
+                }
+
+                .second-col {
+                    width: 150px;
+                    min-width: 150px;
+                    max-width: 150px;
+                    left: 100px;
+                }
+
+                .third-col {
+                    width: 250px;
+                    min-width: 250px;
+                    max-width: 250px;
+                    left: 250px;
+                }
+            </style>
             <div class="card-header">
                 <div class="row">
                     <div class="col-lg-8">
                         <h5 class="mb-0"><strong>Summary</strong></h5>
                     </div>
-                    <div class="col-lg-4 text-end">
+                    <div class="col-lg-2 text-end pe-0">
+                        <input type="text" name="" id="myInput" class="form-control form-control-sm" placeholder="Cari ...">
+                    </div>
+                    <div class="col-lg-2">
                         <div class="form-group">
-                            <select id="cabang_id" class="form-control">
+                            <select id="cabang_id" class="form-control form-control-sm">
                                 <option value="all" <?= (!is_numeric($cabangid)) ? 'selected' : '' ?>>- Semua Cabang</option>
                                 <?php 
                                     $cabang = $this->db->get_where('cabang', ['company_id' => $this->companyid, 'status' => 't']);
@@ -231,44 +263,55 @@ class Cutoff extends CI_Controller{
             </div>
 
             <div class="table-responsive" style="max-height: 500px!important">
-                <table id="example" class="table table-striped" style="width:100%">
+                <table id="example" class="table table-bordered table-hover" style="width:100%">
                     <thead>
                         <tr>
-                            <th class="text-center w-5px">No</th>
-                            <th class="">NIP</th>
-                            <th>Nama</th>
-                            <th class="text-left">Hari Efektif</th>
-                            <th class="text-left">Hadir</th>
-                            <th class="text-center">S</th>
-                            <th class="text-center">I</th>
-                            <th class="text-center">A</th>
-                            <th class="text-center">Jum. Hari Terlambat</th>
-                            <th class="text-center">Terlambat (Menit)</th>
-                            <th class="text-center">Jum. Hari Lembur</th>
-                            <th class="text-center">Lembur (Menit)</th>
-                            <th class="">Shift</th>
-                            <th class="" width="5px">Action</th>
+                            <th rowspan="2" style="vertical-align : middle;text-align:center;position:sticky;top: 0;background-color:white; z-index: 3;" class="text-center w-5px sticky-col first-col">No</th>
+                            <th rowspan="2" style="vertical-align : middle;text-align:center;position:sticky;top: 0;background-color:white; z-index: 3;" class=" sticky-col second-col">NIP</th>
+                            <th rowspan="2" style="vertical-align : middle;text-align:center;position:sticky;top: 0;background-color:white; z-index: 3;" class=" sticky-col third-col">Nama</th>
+                            <th rowspan="2" style="vertical-align : middle;text-align:center;position:sticky;top: 0;background-color:white" class="text-left">Hari <br> Efektif</th>
+                            <th rowspan="2" style="vertical-align : middle;text-align:center;position:sticky;top: 0;background-color:white" class="text-left">Hadir <br> Hari</th>
+                            <th rowspan="2" style="vertical-align : middle;text-align:center;position:sticky;top: 0;background-color:white" class="text-center">S</th>
+                            <th rowspan="2" style="vertical-align : middle;text-align:center;position:sticky;top: 0;background-color:white" class="text-center">I</th>
+                            <th rowspan="2" style="vertical-align : middle;text-align:center;position:sticky;top: 0;background-color:white" class="text-center">A</th>
+                            <th colspan="2" style="vertical-align : middle;text-align:center;position:sticky;top: 0;background-color:white" class="text-center">Terlambat</th>
+                            <th colspan="2" style="vertical-align : middle;text-align:center;position:sticky;top: 0;background-color:white" class="text-center">Lembur</th>
+                            <th rowspan="2" style="vertical-align : middle;text-align:center;position:sticky;top: 0;background-color:white" class="">Shift</th>
+                            <th colspan="<?= $tunjangan->num_rows() ?>" style="vertical-align : middle;text-align:center;position:sticky;top: 0;background-color:white" class="text-center">Tunjangan</th>
+                            <th rowspan="2" style="vertical-align : middle;text-align:center;position:sticky;top: 0;background-color:white" class="text-center">Action</th>
+                        </tr>
+                        <tr>
+                            <th class="text-center" style="vertical-align : middle;text-align:center;position:sticky;top:50px;background-color:white">Hari</th>
+                            <th class="text-center" style="vertical-align : middle;text-align:center;position:sticky;top:50px;background-color:white">Menit</th>
+                            <th class="text-center" style="vertical-align : middle;text-align:center;position:sticky;top:50px;background-color:white">Hari</th>
+                            <th class="text-center" style="vertical-align : middle;text-align:center;position:sticky;top:50px;background-color:white">Menit</th>
+                            <?php foreach($tunjangan->result() as $th){ ?>
+                                <th class="text-center" style="vertical-align : middle;text-align:center;position:sticky;top:50px;background-color:white"><?= $th->tunjangan ?></th>
+                            <?php } ?>
                         </tr>
                     </thead>
-                    <tbody>
+                    <tbody id="myTable">
                         <?php
                             $no = 1; 
                             foreach($getData->result() as $row){ 
                         ?>
                         <tr>
-                            <td class="text-center" width="5px"><?= $no++ ?></td>
-                            <td><strong><?= $row->nip ?></strong></td>
-                            <td><strong><?= $row->nama ?></strong></td>
-                            <td class="text-left"><strong><?= $row->hari_efektif." Hari" ?></strong></td>
-                            <td class="text-left"><strong><?= $row->total_hadir." Hari" ?></strong></td>
+                            <td style="z-index: 2;" class="text-center sticky-col first-col" width="5px"><?= $no++ ?></td>
+                            <td style="z-index: 2;" class="sticky-col second-col"><strong><?= $row->nip ?></strong></td>
+                            <td style="z-index: 2;" class="sticky-col third-col"><strong><?= $row->nama ?></strong></td>
+                            <td class="text-left"><strong><?= $row->hari_efektif ?></strong></td>
+                            <td class="text-left"><strong><?= $row->total_hadir ?></strong></td>
                             <td class="text-center"><strong><?= $row->sakit ?></strong></td>
                             <td class="text-center"><strong><?= $row->izin ?></strong></td>
                             <td class="text-center"><strong><?= $row->alpa ?></strong></td>
-                            <td class="text-center"><strong><?= $row->hari_terlambat." Hari" ?></strong></td>
-                            <td class="text-center"><strong><?= $row->menit_terlambat." Menit"?></strong></td>
-                            <td class="text-center"><strong><?= $row->hari_lembur." Hari" ?></strong></td>
-                            <td class="text-center"><strong><?= $row->menit_lembur." Menit" ?></strong></td>
+                            <td class="text-center"><strong><?= $row->hari_terlambat ?></strong></td>
+                            <td class="text-center"><strong><?= $row->menit_terlambat?></strong></td>
+                            <td class="text-center"><strong><?= $row->hari_lembur ?></strong></td>
+                            <td class="text-center"><strong><?= $row->menit_lembur ?></strong></td>
                             <td><strong><?= $row->shift ?></strong></td>
+                            <?php foreach($tunjangan->result() as $tr){ ?>
+                                <td class="text-center"><strong><?= $tr->tunjangan ?></strong></td>
+                            <?php } ?>
                             <td>
                                 <button type="button" class="btn btn-sm btn-round btn-info text-white px-3 mb-0" onclick="edit(<?= $row->id ?>)"><i class="fas fa-pencil-alt me-2" aria-hidden="true"></i>Edit</button>
                             </td>
@@ -279,6 +322,13 @@ class Cutoff extends CI_Controller{
             </div>
 
             <script>
+                $("#myInput").on("keyup", function() {
+                    var value = $(this).val().toLowerCase()
+                    $("#myTable tr").filter(function() {
+                        $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+                    })
+                })
+
                 function edit(id){
                     $.ajax({
                         url: '<?= site_url('review/cutoff/edit/') ?>' + id,

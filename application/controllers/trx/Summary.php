@@ -40,7 +40,6 @@ class Summary extends CI_Controller{
 
         $shift = $this->db->get_where('shift', ['company_id' => $this->companyid, 'status' => 't'])->result();
         $datas = [];
-        $tunjangan = $this->db->order_by('urut', "ASC")->get_where('tunjangan', ['company_id' => $this->companyid, 'status' => 't'])->result();
         foreach($shift as $s){
             $begin = new DateTime($startDate);
             $end   = new DateTime($endDate);
@@ -118,7 +117,7 @@ class Summary extends CI_Controller{
                             <th rowspan="2" style="vertical-align : middle;text-align:center;position:sticky;top: 0;background-color:white; z-index: 3;" class="text-center w-5px sticky-col first-col">No</th>
                             <th rowspan="2" style="vertical-align : middle;text-align:center;position:sticky;top: 0;background-color:white; z-index: 3;" class=" sticky-col second-col">NIP</th>
                             <th rowspan="2" style="vertical-align : middle;text-align:center;position:sticky;top: 0;background-color:white; z-index: 3;" class=" sticky-col third-col">Nama</th>
-                            <th rowspan="2" style="vertical-align : middle;text-align:center;position:sticky;top: 0;background-color:white" class="text-left">Hari Efektif</th>
+                            <th rowspan="2" style="vertical-align : middle;text-align:center;position:sticky;top: 0;background-color:white" class="text-left">Hari <br> Efektif</th>
                             <th rowspan="2" style="vertical-align : middle;text-align:center;position:sticky;top: 0;background-color:white" class="text-left">Hadir <br> Hari</th>
                             <th rowspan="2" style="vertical-align : middle;text-align:center;position:sticky;top: 0;background-color:white" class="text-center">S</th>
                             <th rowspan="2" style="vertical-align : middle;text-align:center;position:sticky;top: 0;background-color:white" class="text-center">I</th>
@@ -126,9 +125,6 @@ class Summary extends CI_Controller{
                             <th colspan="2" style="vertical-align : middle;text-align:center;position:sticky;top: 0;background-color:white" class="text-center">Terlambat</th>
                             <th colspan="2" style="vertical-align : middle;text-align:center;position:sticky;top: 0;background-color:white" class="text-center">Lembur</th>
                             <th rowspan="2" style="vertical-align : middle;text-align:center;position:sticky;top: 0;background-color:white" class="">Shift</th>
-                            <?php foreach($tunjangan as $th){ ?>
-                                <th rowspan="2" style="vertical-align : middle;text-align:center;position:sticky;top: 0;background-color:white" class=""><?= $th->tunjangan ?></th>
-                            <?php } ?>
                         </tr>
                         <tr>
                             <th class="text-center" style="vertical-align : middle;text-align:center;position:sticky;top:50px;background-color:white">Hari</th>
@@ -162,7 +158,7 @@ class Summary extends CI_Controller{
                                 $detailAlpa = [];
                                 $lembur = [];
                                 $hariLembur = [];
-                                
+
                                 if($getLatestShiftEmployee->num_rows() > 0){
                                     $shiftid = $getLatestShiftEmployee->row()->shift_id;
                                     $shiftName = $shift->keterangan;
@@ -263,9 +259,6 @@ class Summary extends CI_Controller{
                             <td class="text-center"><strong><?= array_sum(@$hariLembur) ?></strong></td>
                             <td class="text-center"><strong><?= array_sum(@$lembur) ?></strong></td>
                             <td><strong><?= @$shiftName ?></strong></td>
-                            <?php foreach($tunjangan as $td){ ?>
-                                <td class=""><?= $td->tunjangan ?></td>
-                            <?php } ?>
                         </tr>
                         <?php } ?>
                     </tbody>
