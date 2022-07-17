@@ -245,6 +245,8 @@ class Summary extends CI_Controller{
                         <input type="hidden" name="hari_lembur[]" value="<?= array_sum(@$hariLembur) ?>">
                         <input type="hidden" name="menit_lembur[]" value="<?= array_sum(@$lembur) ?>">
                         <input type="hidden" name="shift[]" value="<?= @$shiftName ?>">
+                        <input type="hidden" name="nominal_gapok[]" value="<?= $row->nominal_gapok ?>">
+                        <input type="hidden" name="nominal_gaji_dilaporkan[]" value="<?= $row->nominal_gaji_dilaporkan ?>">
                         <tr>
                             <td style="z-index: 2;" class="text-center sticky-col first-col" width="5px"><?= $no++ ?></td>
                             <td style="z-index: 2;" class="sticky-col second-col"><strong><?= $nik ?></strong></td>
@@ -294,6 +296,8 @@ class Summary extends CI_Controller{
         $shift = $this->input->post('shift[]', TRUE);
         $hari_lembur = $this->input->post('hari_lembur[]', TRUE);
         $menit_lembur = $this->input->post('menit_lembur[]', TRUE);
+        $nominal_gapok = $this->input->post('nominal_gapok[]', TRUE);
+        $nominal_gaji_dilaporkan = $this->input->post('nominal_gaji_dilaporkan[]', TRUE);
         $cutoffid = $this->input->post('cutoffid', TRUE);
         
         $dataInsert = [];
@@ -317,6 +321,8 @@ class Summary extends CI_Controller{
                 'hari_lembur' => $hari_lembur[$key],
                 'menit_lembur' => $menit_lembur[$key],
                 'shift' => $shift[$key],
+                'nominal_gapok' => $nominal_gapok[$key],
+                'nominal_gaji_dilaporkan' => $nominal_gaji_dilaporkan[$key]
             ];
             $cek = $this->db->get_where('summary', ['nip' => $val, 'cutoff_id' => $cutoffid]);
             if($cek->num_rows() > 0){
