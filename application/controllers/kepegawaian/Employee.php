@@ -188,6 +188,7 @@ class Employee extends CI_Controller{
                 'company_id' => $this->companyid,
                 'kode_cabang' => $kode_cabang,
                 'nik' => $fixedNik,
+                'nohp' => $this->input->post('nohp', TRUE),
                 'nama' => $this->input->post('nama', TRUE),
                 'ektp' => $this->input->post('ektp', TRUE),
                 'tgl_lahir' => $this->input->post('tgl_lahir', TRUE),
@@ -336,6 +337,7 @@ class Employee extends CI_Controller{
             }
 
             $dataUpdate = [
+                'nohp' => ($this->input->post('nohp', TRUE) == TRUE) ? $this->input->post('nohp', TRUE) : $cek->nohp,
                 'nama' => ($this->input->post('nama', TRUE) == TRUE) ? $this->input->post('nama', TRUE) : $cek->nama,
                 'ektp' => ($this->input->post('ektp', TRUE) == TRUE) ? $this->input->post('ektp', TRUE) : $cek->ektp,
                 'tgl_lahir' => ($this->input->post('tgl_lahir', TRUE) == TRUE) ? $this->input->post('tgl_lahir', TRUE) : $cek->tgl_lahir,
@@ -654,7 +656,7 @@ class Employee extends CI_Controller{
                         ->join('divisi d', 'p.divisi_id = d.id', "LEFT")
                         ->join('departement dp', 'p.dept_id = dp.id', "LEFT")
                         ->join('unit u', 'p.unit_id = u.id', "LEFT")
-                        ->where('p.company_id', $this->companyid)->order_by('id', "DESC")->get();
+                        ->where('p.company_id', $this->companyid)->order_by('nik', "ASC")->get();
 
         $data = array();
         $no = 1;

@@ -59,9 +59,14 @@
                                     <input class="form-control <?= (@form_error('no_npwp')) ? 'is-invalid' : ((@set_value('no_npwp')) ? 'is-valid' : '') ?>" type="number" placeholder="No NPWP" name="no_npwp" value="<?= (@set_value('no_npwp')) ? @set_value('no_npwp') : $pegawai->no_npwp ?>">
                                 </div>
                                 
-                                <div class="col-lg-6 mb-3">
+                                <div class="col-lg-3 mb-3">
                                     <label>Nama Lengkap <small class="text-danger">* <?= strip_tags(@form_error('nama')) ?></small></label>
                                     <input class="form-control <?= (@form_error('nama')) ? 'is-invalid' : ((@set_value('nama')) ? 'is-valid' : '') ?>" type="text" placeholder="Nama Lengkap" name="nama" value="<?= (@set_value('nama')) ? @set_value('nama') : $pegawai->nama ?>">
+                                </div>
+
+                                <div class="col-lg-3 mb-3">
+                                    <label>Nomor Handphone</label>
+                                    <input class="form-control <?= (@form_error('nohp')) ? 'is-invalid' : ((@set_value('nohp')) ? 'is-valid' : '') ?>" type="number" placeholder="Nomor Handphone" name="nohp" value="<?= (@set_value('nohp')) ? @set_value('nohp') : $pegawai->nohp ?>">
                                 </div>
 
                                 <div class="col-lg-3 mb-3">
