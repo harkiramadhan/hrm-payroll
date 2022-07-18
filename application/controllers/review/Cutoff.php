@@ -62,6 +62,22 @@ class Cutoff extends CI_Controller{
         redirect($_SERVER['HTTP_REFERER']);
     }
 
+    function summaryLock(){
+        $ids = $this->input->post('id[]', TRUE);
+        if($ids > 0){
+            $this->output->set_content_type('application/json')->set_output(json_encode($this->input->post()));
+            foreach($ids as $id){
+                $this->db->where('id', $id)->update('summary', [
+                    'lock' => 't'
+                ]);
+            }
+
+            $this->session->set_flashdata('success', "Data Berhasil Di Simpan");
+        }else{
+            $this->session->set_flashdata('error', "Data Tidak Ada Perubahan!");
+        }
+    }
+
     function update($id){
         $datas = [
             'hari_efektif' => $this->input->post('hari_efektif', TRUE),
@@ -88,15 +104,36 @@ class Cutoff extends CI_Controller{
     function updateTunjagan(){
         $nip = $this->input->post('nip', TRUE);
         $cutoffid = $this->input->post('cutoff_id', TRUE);
+        $review_cutoff_id = $this->input->post('review_cutoff_id', TRUE);
+        $pegawai_id = $this->input->post('pegawai_id', TRUE);
         $tunjanganid = $this->input->post('tunjangan_id[]', TRUE);
+
         if($tunjanganid > 0){
             foreach($tunjanganid as $key => $val){
-                $datas = [
-                    'nominal' => $val
-                ];
-                $this->db->where([
-                    'id' => $key,
-                ])->update('summary_tunjangan', $datas);
+                $cekTunjangan = $this->db->get_where('summary_tunjangan', ['pegawai_id' => $pegawai_id, 'review_cutoff_id' => $review_cutoff_id, 'tunjangan_id' => $key]);
+                if($cekTunjangan->num_rows() > 0){
+                    $this->db->where('id', $cekTunjangan->row()->id)->update('summary_tunjangan', ['nominal' => $val]);
+                }else{
+                    $this->db->insert('summary_tunjangan', [
+                        'pegawai_id' => $pegawai_id,
+                        'nip' => $nip,
+                        'review_cutoff_id' => $review_cutoff_id,
+                        'tunjangan_id' => $key,
+                        'nominal' => str_replace('.', "", $val)
+                    ]);
+                }
+
+                if($this->db->affected_rows() > 0){
+                    $this->db->where([
+                        'cutoff_id' => $cutoffid,
+                        'nip' => $nip,
+                    ])->update('summary', [
+                        'nominal_tunjangan' => str_replace('.', "", $this->input->post('total_tunjangan', TRUE)),
+                        'total_tunjangan_non_tunai' => str_replace('.', "", $this->input->post('total_tunjangan_non_tunai', TRUE)),
+                        'total_tunjangan_pengurangan' => str_replace('.', "", $this->input->post('total_tunjangan_pengurangan', TRUE)),
+                    ]);
+                }
+
             }
             
             $this->session->set_flashdata('success', "Data Berhasil Di Simpan");
@@ -262,8 +299,10 @@ class Cutoff extends CI_Controller{
                                 </div>
                             </div>
                             <form action="<?= site_url('review/cutoff/updateTunjagan/' . $id) ?>" role="form text-left" method="post">
+                                <input type="hidden" name="review_cutoff_id" value="<?= $reviewId ?>">
                                 <input type="hidden" name="cutoff_id" value="<?= $summary->cutoff_id ?>">
                                 <input type="hidden" name="nip" value="<?= $summary->nip ?>">
+                                <input type="hidden" name="pegawai_id" value="<?= $summary->pegawai_id ?>">
                                 <div class="table-responsive p-0 mt-4">
                                     <table class="table table-hover" style="width:100%">
                                         <thead>
@@ -324,11 +363,18 @@ class Cutoff extends CI_Controller{
                                                         }else{
                                                             array_push($totalTunjanganPengurangan, $nominalHasil);
                                                         }
+
+                                                        $cekTunjangan = $this->db->get_where('summary_tunjangan', ['pegawai_id' => $summary->pegawai_id, 'review_cutoff_id' => $reviewId, 'tunjangan_id' => $tem->tunjangan_id]);
+                                                        if($cekTunjangan->num_rows() > 0){
+                                                            $nomTunjangan = $cekTunjangan->row()->nominal;
+                                                        }else{
+                                                            $nomTunjangan = $nominalHasil;
+                                                        }
                                                     ?>
                                                     <strong><?= $nominalString ?></strong>
                                                 </td>
                                                 <td>
-                                                    <input type="number" class="form-control form-control-sm nominal-tunjangan" data-type="<?= $tem->tunjangan_type ?>" data-nom="<?= $tem->type ?>" data-id="<?= $tem->id ?>" value="<?= $nominalHasil ?>">
+                                                    <input type="number" class="form-control form-control-sm nominal-tunjangan" name="tunjangan_id[<?= $tem->tunjangan_id ?>]" data-type="<?= $tem->tunjangan_type ?>" data-nom="<?= $tem->type ?>" data-id="<?= $tem->id ?>" value="<?= rupiah($nomTunjangan) ?>">
                                                 </td>
                                             </tr>
                                             <?php } ?>
@@ -339,19 +385,19 @@ class Cutoff extends CI_Controller{
                                     <div class="col-lg-4">
                                         <label>Total Tunjangan</label>
                                         <div class="input-group mb-3">
-                                            <input type="text" class="form-control" placeholder="Total Tunjangan" id="total_tunjangan" name="total_tunjangan" value="<?= rupiah(array_sum($totalTunjangan)) ?>">
+                                            <input type="text" class="form-control" placeholder="Total Tunjangan" id="total_tunjangan" name="total_tunjangan" value="<?= ($summary->nominal_tunjangan) ? rupiah($summary->nominal_tunjangan) : rupiah(array_sum($totalTunjangan)) ?>">
                                         </div>
                                     </div>
                                     <div class="col-lg-4">
                                         <label>Total Tunjangan Non Tunai</label>
                                         <div class="input-group mb-3">
-                                            <input type="text" class="form-control" placeholder="Total Tunjangan" id="total_tunjangan_non_tunai" name="total_tunjangan_non_tunai" value="<?= rupiah(array_sum($totalTunjanganNonTunai)) ?>">
+                                            <input type="text" class="form-control" placeholder="Total Tunjangan" id="total_tunjangan_non_tunai" name="total_tunjangan_non_tunai" value="<?= ($summary->total_tunjangan_non_tunai) ? rupiah($summary->total_tunjangan_non_tunai) : rupiah(array_sum($totalTunjanganNonTunai)) ?>">
                                         </div>
                                     </div>
                                     <div class="col-lg-4">
                                         <label>Total Tunjangan Pengurangan</label>
                                         <div class="input-group mb-3">
-                                            <input type="text" class="form-control" placeholder="Total Tunjangan" id="total_tunjangan_pengurangan" name="total_tunjangan_pengurangan" value="<?= rupiah(array_sum($totalTunjanganPengurangan)) ?>">
+                                            <input type="text" class="form-control" placeholder="Total Tunjangan" id="total_tunjangan_pengurangan" name="total_tunjangan_pengurangan" value="<?= ($summary->total_tunjangan_pengurangan) ? rupiah($summary->total_tunjangan_pengurangan) : rupiah(array_sum($totalTunjanganPengurangan)) ?>">
                                         </div>
                                     </div>
                                 </div>
@@ -373,27 +419,30 @@ class Cutoff extends CI_Controller{
                     var sumNonTunai = 0;
                     var sumPengurangan = 0;
 
+                    var formatted = formatRupiah($(this).val())
+                    $(this).val(formatted)
+
                     $(".nominal-tunjangan[data-type=1]" ).each(function(){
-                        var amountPenambahan = parseInt($(this).val())
+                        var amountPenambahan = parseInt($(this).val().replace(/[^0-9]+/g, ""))
                         sumPenambahan +=amountPenambahan
                     })
                     $('#total_tunjangan').val(formatRupiah(sumPenambahan))
 
                     $(".nominal-tunjangan[data-type=2]" ).each(function(){
-                        var amountNonTunai = parseInt($(this).val())
+                        var amountNonTunai = parseInt($(this).val().replace(/[^0-9]+/g, ""))
                         sumNonTunai +=amountNonTunai
                     })
                     $('#total_tunjangan_non_tunai').val(formatRupiah(sumNonTunai))
 
                     $(".nominal-tunjangan[data-type=3]" ).each(function(){
-                        var amountPengurangan = parseInt($(this).val())
+                        var amountPengurangan = parseInt($(this).val().replace(/[^0-9]+/g, ""))
                         sumPengurangan +=amountPengurangan
                     })
                     $('#total_tunjangan_pengurangan').val(formatRupiah(sumPengurangan))
                 })
 
                 function formatRupiah(angka, prefix){
-                    var number_string = angka.toString(),
+                    var number_string = angka.toString().replace(/[^0-9]+/g, ""),
                     split   		= number_string.split(','),
                     sisa     		= split[0].length % 3,
                     rupiah     		= split[0].substr(0, sisa),
@@ -458,13 +507,14 @@ class Cutoff extends CI_Controller{
         $cutoffid = $this->input->get('cutoffid', TRUE);
         
         $reviewCutoff = $this->db->get_where('review_cutoff', ['id' => $cutoffid])->row();
-        $getData = $this->db->select('s.*, p.nama, tt.nama nama_template_tunjangan, tp.template_id')
+        $getData = $this->db->select('s.*, p.nama, tt.nama nama_template_tunjangan, tp.template_id, p.id pegawai_id')
                             ->from('summary s')
                             ->join('pegawai p', 's.nip = p.nik')
                             ->join('tunjangan_pegawai tp', 'p.id = tp.id', "LEFT")
                             ->join('template_tunjangan tt', 'tp.template_id = tt.id', "LEFT")
                             ->where([
                                 's.cutoff_id' => $reviewCutoff->cutoff_id,
+                                's.lock' => 'f',
                                 'p.cabang_id' => $reviewCutoff->cabang_id,
                                 'p.divisi_id' => $reviewCutoff->divisi_id
                             ])->get();
@@ -498,13 +548,23 @@ class Cutoff extends CI_Controller{
                     max-width: 250px;
                     left: 250px;
                 }
+
+                .four-col {
+                    width: 100px;
+                    min-width: 100px;
+                    max-width: 100px;
+                    left: 500px;
+                }
             </style>
             <div class="card-header">
                 <div class="row">
-                    <div class="col-lg-8">
+                    <div class="col-lg-6">
                         <h5 class="mb-0"><strong>Summary</strong></h5>
                     </div>
-                    <div class="col-lg-4 text-end pe-0">
+                    <div class="col-lg-3 text-end pe-0">
+                        <button type="button" class="btn btn-sm btn-warning" id="btn-lock"><i class="fas fa-lock me-2"></i> Lock</button>
+                    </div>
+                    <div class="col-lg-3 text-end">
                         <input type="text" name="" id="myInput" class="form-control form-control-sm" placeholder="Cari ...">
                     </div>
                 </div>
@@ -517,6 +577,12 @@ class Cutoff extends CI_Controller{
                             <th rowspan="2" style="vertical-align : middle;text-align:center;position:sticky;top: 0;background-color:white; z-index: 3;" class="text-center w-5px sticky-col first-col">No</th>
                             <th rowspan="2" style="vertical-align : middle;text-align:center;position:sticky;top: 0;background-color:white; z-index: 3;" class=" sticky-col second-col">NIP</th>
                             <th rowspan="2" style="vertical-align : middle;text-align:center;position:sticky;top: 0;background-color:white; z-index: 3;" class=" sticky-col third-col">Nama</th>
+                            <th rowspan="2" style="vertical-align : middle;text-align:center;position:sticky;top: 0;background-color:white; z-index: 3;" class=" sticky-col four-col">
+                                <div class="form-check">
+                                    <input type="checkbox" class="form-check-input mt-1 check-all" id="customCheckAll" style="margin-left: auto!important; margin-right: auto !important; left: -15px!important">
+                                </div>
+                                <small><strong>Check All</strong></small>
+                            </th>
                             <th rowspan="2" style="vertical-align : middle;text-align:center;position:sticky;top: 0;background-color:white" class="text-left">Hari <br> Efektif</th>
                             <th rowspan="2" style="vertical-align : middle;text-align:center;position:sticky;top: 0;background-color:white" class="text-left">Hadir <br> Hari</th>
                             <th rowspan="2" style="vertical-align : middle;text-align:center;position:sticky;top: 0;background-color:white" class="text-center">S</th>
@@ -546,12 +612,16 @@ class Cutoff extends CI_Controller{
                         <?php
                             $no = 1; 
                             foreach($getData->result() as $row){ 
-                                $cekTemplateTunjangan = $this->db->get_where('tunjangan_pegawai', ['pegawai_id' => $row->id]);
                         ?>
                         <tr>
                             <td style="z-index: 2;" class="text-center sticky-col first-col" width="5px"><?= $no++ ?></td>
                             <td style="z-index: 2;" class="sticky-col second-col"><strong><?= $row->nip ?></strong></td>
                             <td style="z-index: 2;" class="sticky-col third-col"><strong><?= $row->nama ?></strong></td>
+                            <td style="z-index: 2;" class="sticky-col four-col">
+                                <div class="form-check">
+                                    <input type="checkbox" class="form-check-input mt-1 check-data" name="pegawai_id" id="checkPegawai<?= $row->id ?>" value="<?= $row->id ?>" style="margin-left: auto!important; margin-right: auto !important;">
+                                </div>
+                            </td>
                             <td class="text-center"><strong><?= $row->hari_efektif ?></strong></td>
                             <td class="text-center"><strong><?= $row->total_hadir ?></strong></td>
                             <td class="text-center"><strong><?= $row->sakit ?></strong></td>
@@ -566,9 +636,8 @@ class Cutoff extends CI_Controller{
                             <td class="text-center"><strong><?= ($row->nominal_gapok) ? rupiah($row->nominal_gapok) : '-' ?></strong></td>
                             <td class="text-center"><strong><?= ($row->nominal_gaji_dilaporkan) ? rupiah($row->nominal_gaji_dilaporkan) : '-' ?></strong></td>
                             <?php 
-                                $totalTunjangan = [];
                                 foreach($tunjangan->result() as $tr){    
-                                    $cekSummaryTunjangan = $this->db->get_where('summary_tunjangan', ['pegawai_id' => $row->id, 'review_cutoff_id' => $reviewCutoff->id, 'tunjangan_id' => $tr->id])->row();
+                                    $cekSummaryTunjangan = $this->db->get_where('summary_tunjangan', ['pegawai_id' => $row->pegawai_id, 'review_cutoff_id' => $cutoffid, 'tunjangan_id' => $tr->id])->row();
                                     if(@$cekSummaryTunjangan->nominal){
                                         $nominalTunjangan = rupiah($cekSummaryTunjangan->nominal);
                                     }else{
@@ -587,11 +656,84 @@ class Cutoff extends CI_Controller{
                 </table>
             </div>
 
+            <form action="" method="post" id="form-lock">
+                <div class="hasil">
+
+                </div>
+            </form>
+
             <script>
+                $('#btn-lock').prop('disabled', true)
+                function btnLock(){
+                    if($('input[name="id[]"]').length === 0){
+                        $('#btn-lock').prop('disabled', true)
+                    }else{
+                        $('#btn-lock').prop('disabled', false)
+                    }
+                }
+
+                $('.check-all').click(function(){
+                    if($(this).is(':checked')){
+                        $('.check-data').prop('checked', true)
+                        $(".check-data").each(function(){
+                            var val = $(this).val()
+                            if($("#hasil_" + val).length == 0) {
+                                $('.hasil').append(
+                                    $("<input>", {
+                                        type: "hidden",
+                                        val: val,
+                                        name: "id[]",
+                                        id: "hasil_" + val
+                                    })
+                                )
+                            }
+                        })
+                    }else{
+                        $('.check-data').prop('checked', false)
+                        $(".check-data").each(function(){
+                            var val = $(this).val()
+                            $('#hasil_' + val).remove()
+                        })
+                    }
+
+                    btnLock()
+                })
+                
+                $('.check-data').click(function(){
+                    var val = $(this).val()
+                    
+                    if($(this).is(':checked')){
+                        $('.hasil').append(
+                            $("<input>", {
+                                type: "hidden",
+                                val: val,
+                                name: "id[]",
+                                id: "hasil_" + val
+                            })
+                        )
+                    }else{
+                        $('#hasil_' + val).remove()
+                    }
+
+                    btnLock()
+                })
+                
                 $("#myInput").on("keyup", function() {
                     var value = $(this).val().toLowerCase()
                     $("#myTable tr").filter(function() {
                         $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+                    })
+                })
+
+                $('#btn-lock').click(function(){
+                    var form = $('#form-lock').serialize()
+                    $.ajax({
+                        url: '<?= site_url('review/cutoff/summaryLock') ?>',
+                        type: 'post',
+                        data: form,
+                        success: function(res){
+                            location.reload()
+                        }
                     })
                 })
 
