@@ -22,6 +22,7 @@
                         <th class="">Log</th>
                         <th class="w-15p">Cabang</th>
                         <th class="w-15p">Divisi</th>
+                        <th class="w-15p">Locked</th>
                         <th>Created At</th>
                         <th class="text-center w-5px">Action</th>
                     </tr>

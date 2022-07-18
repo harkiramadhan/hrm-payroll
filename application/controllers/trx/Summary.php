@@ -322,7 +322,8 @@ class Summary extends CI_Controller{
                 'menit_lembur' => $menit_lembur[$key],
                 'shift' => $shift[$key],
                 'nominal_gapok' => $nominal_gapok[$key],
-                'nominal_gaji_dilaporkan' => $nominal_gaji_dilaporkan[$key]
+                'nominal_gaji_dilaporkan' => $nominal_gaji_dilaporkan[$key],
+                'lock' => 'f'
             ];
             $cek = $this->db->get_where('summary', ['nip' => $val, 'cutoff_id' => $cutoffid]);
             if($cek->num_rows() > 0){

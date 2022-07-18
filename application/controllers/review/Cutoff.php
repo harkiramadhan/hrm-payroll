@@ -68,6 +68,7 @@ class Cutoff extends CI_Controller{
             $this->output->set_content_type('application/json')->set_output(json_encode($this->input->post()));
             foreach($ids as $id){
                 $this->db->where('id', $id)->update('summary', [
+                    'review_cutoff_id' => $this->input->post('review_cutoff_id', TRUE),
                     'lock' => 't'
                 ]);
             }
@@ -480,12 +481,14 @@ class Cutoff extends CI_Controller{
         $data = array();
         $no = 1;
         foreach($get->result() as $row){
+            $getLocked = $this->db->select('id')->get_where('summary', ['review_cutoff_id' => $row->id, 'lock' => 't'])->num_rows();
             $periode = date('Y-m-d', strtotime($row->timestamp))."/".$row->cabang."/".$row->divisi;
             $data[] = [
                 $no++,
                 '<strong>'.$periode.'</strong>',
                 '<strong>'.$row->cabang.'</strong>',
                 '<strong>'.$row->divisi.'</strong>',
+                '<strong>'.$getLocked.' Pegawai</strong>',
                 '<strong>'.longdate_indo(date('Y-m-d', strtotime($row->timestamp)))." ".date('H:i:s', strtotime($row->timestamp)).'</strong>',
                 '<div class="btn-group" role="group" aria-label="Basic example">
                     <a href="'.site_url('review/cutoff/' . $row->id).'" class="btn btn-sm btn-round btn-primary text-white px-3 mb-0" onclick="edit('.$row->id.')"><i class="fas fa-eye me-2" aria-hidden="true"></i>Detail</a>
@@ -657,6 +660,7 @@ class Cutoff extends CI_Controller{
             </div>
 
             <form action="" method="post" id="form-lock">
+                <input type="hidden" name="review_cutoff_id" value="<?= $cutoffid ?>">
                 <div class="hasil">
 
                 </div>
