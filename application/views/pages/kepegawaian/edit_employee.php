@@ -65,8 +65,8 @@
                                 </div>
 
                                 <div class="col-lg-3 mb-3">
-                                    <label>Nomor Handphone</label>
-                                    <input class="form-control <?= (@form_error('nohp')) ? 'is-invalid' : ((@set_value('nohp')) ? 'is-valid' : '') ?>" type="number" placeholder="Nomor Handphone" name="nohp" value="<?= (@set_value('nohp')) ? @set_value('nohp') : $pegawai->nohp ?>">
+                                    <label>Nomor Telepon</label>
+                                    <input class="form-control <?= (@form_error('nohp')) ? 'is-invalid' : ((@set_value('nohp')) ? 'is-valid' : '') ?>" type="number" placeholder="Nomor Telepon" name="nohp" value="<?= (@set_value('nohp')) ? @set_value('nohp') : $pegawai->nohp ?>">
                                 </div>
 
                                 <div class="col-lg-3 mb-3">
