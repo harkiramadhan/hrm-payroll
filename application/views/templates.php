@@ -25,7 +25,7 @@
 * The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
 -->
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" style="zoom:65% !important">
 
 <head>
     <meta charset="utf-8" />
@@ -367,6 +367,7 @@
 
             var table = $('#example').DataTable( {
                 ajax: nowUrl + '/table',
+                stateSave: true,
                 autoWidth: false,
                 lengthChange: false,
                 scrollX: true,
