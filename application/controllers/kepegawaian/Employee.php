@@ -243,7 +243,8 @@ class Employee extends CI_Controller{
             $this->session->set_flashdata('error', "Data Gagal Di Simpan");
         }
 
-        redirect($_SERVER['HTTP_REFERER'],'refresh');
+        // redirect($_SERVER['HTTP_REFERER'],'refresh');
+        redirect('kepegawaian/employee');
     }
 
     function createFamily(){
@@ -365,7 +366,8 @@ class Employee extends CI_Controller{
                 $this->session->set_flashdata('error', "Data Gagal Di Simpan");
             }
 
-            redirect($_SERVER['HTTP_REFERER'], 'refresh');
+            // redirect($_SERVER['HTTP_REFERER'], 'refresh');
+            redirect('kepegawaian/employee');
         }
     }
 
@@ -424,7 +426,8 @@ class Employee extends CI_Controller{
         }else{
             $this->session->set_flashdata('error', "Data Gagal Di Simpan");
         }
-        redirect($_SERVER['HTTP_REFERER'], 'refresh');
+        // redirect($_SERVER['HTTP_REFERER'], 'refresh');
+        redirect('kepegawaian/employee');
     }
 
     function updateFamily($id){
