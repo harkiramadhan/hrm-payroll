@@ -14,7 +14,8 @@ class Users extends CI_Controller{
         $var = [
             'title' => 'Users',
             'company' => $this->M_Company->getById($this->companyid),
-            'page' => 'users'
+            'page' => 'users',
+            'role' => $this->db->get('role')
         ];
         $this->load->view('templates', $var);
     }
@@ -26,6 +27,7 @@ class Users extends CI_Controller{
         }else{
             $dataInsert = [
                 'company_id' => $this->companyid,
+                'role_id' => $this->input->post('role_id', TRUE),
                 'username' => $this->input->post('username', TRUE),
                 'status' => ($this->input->post('status', TRUE) == 1) ? 't' : 'f',
                 'password' => md5($this->input->post('password', TRUE))
@@ -44,6 +46,7 @@ class Users extends CI_Controller{
     function update($id){
         $cekUser = $this->db->get_where('user', ['id' => $id])->row();
         $dataUpdate = [
+            'role_id' => $this->input->post('role_id', TRUE),
             'username' => $this->input->post('username', TRUE),
             'status' => ($this->input->post('status', TRUE) == 1) ? 't' : 'f',
             'password' => ($this->input->post('password', TRUE) == TRUE) ? md5($this->input->post('password', TRUE)) : $cekUser->password
@@ -72,6 +75,7 @@ class Users extends CI_Controller{
     }
 
     function edit($id){
+        $role = $this->db->get('role');
         $user = $this->db->get_where('user', ['id' => $id, 'company_id' => $this->companyid])->row();
         ?>
             <div class="card card-plain">
@@ -93,6 +97,17 @@ class Users extends CI_Controller{
                                     <input type="password" class="form-control" placeholder="Password" aria-label="Password" name="password">
                                 </div>
                             </div>
+                            <div class="col-lg-12">
+                                    <div class="form-group">
+                                        <label for="exampleFormControlSelect1">Role <small class="text-danger">*</small></label>
+                                        <select name="role_id" class="form-control" id="exampleFormControlSelect1" required="">
+                                            <option value="" selected="" disabled="">- Pilih Role</option>
+                                            <?php foreach($role->result() as $row){ ?>
+                                                <option value="<?= $row->id ?>" <?= ($row->id == $user->role_id) ? 'selected' : '' ?>><?= $row->role ?></option>
+                                            <?php } ?>
+                                        </select>
+                                    </div>
+                                </div>
                             <div class="col-lg-12">
                                 <label>Status<small class="text-danger">*</small></label>
                                 <div class="input-group mb-3">
@@ -124,7 +139,10 @@ class Users extends CI_Controller{
         $start = intval($this->input->get("start"));
         $length = intval($this->input->get("length"));
 
-        $get = $this->db->get_where('user', ['company_id' => $this->companyid]);
+        $get = $this->db->select('u.*, r.role')
+                        ->from('user u')
+                        ->join('role r', 'u.role_id = r.id')
+                        ->where(['u.company_id' => $this->companyid])->get();
 
         $data = array();
         $no = 1;
@@ -133,7 +151,8 @@ class Users extends CI_Controller{
             $data[] = [
                 $no++,
                 '<strong>'.$row->username.'</strong>',
-                $badge,
+                '<p class="mb-0 text-center"><strong>'.$row->role.'</strong></p>',
+                '<p class="mb-0 text-center">' . $badge . '</p>',
                 '<div class="btn-group" role="group" aria-label="Basic example">
                     <button type="button" class="btn btn-sm btn-round btn-info text-white px-3 mb-0" onclick="edit('.$row->id.')"><i class="fas fa-pencil-alt me-2" aria-hidden="true"></i>Edit</button>
                     <a class="btn btn-sm btn-round btn-link text-danger px-3 mb-0" href="'.site_url('users/delete/' . $row->id).'"><i class="far fa-trash-alt" aria-hidden="true"></i></a>

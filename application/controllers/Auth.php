@@ -26,6 +26,7 @@ class Auth extends CI_Controller{
                 if($user->status == 't'){
                     $this->session->set_userdata('masuk', TRUE);
                     $this->session->set_userdata('userid', $user->id);
+                    $this->session->set_userdata('roleid', $user->role_id);
                     $this->session->set_userdata('username', $user->username);
                     $this->session->set_userdata('company_id', $user->company_id);
                     $this->session->set_userdata('pegawai_id', $user->pegawai_id);

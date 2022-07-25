@@ -20,8 +20,9 @@
                     <tr>
                         <th class="text-center w-5px">No</th>
                         <th class="">Username</th>
-                        <th class="text-center w-5px">Status</th>
-                        <th class="text-center w-5px">Action</th>
+                        <th class="text-center w-10p">Role</th>
+                        <th class="text-center w-10p">Status</th>
+                        <th class="text-center w-10p">Action</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -33,7 +34,7 @@
 
 <!-- Modals -->
 <div class="modal fade" id="modalAdd" tabindex="-1" role="dialog" aria-labelledby="modal-form" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered modal-md" role="document">
+    <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
         <div class="modal-content">
             <div class="modal-body p-0">
                 <div class="card card-plain">
@@ -53,6 +54,17 @@
                                     <label>Password <small class="text-danger">*</small></label>
                                     <div class="input-group mb-3">
                                         <input type="password" class="form-control" placeholder="Password" aria-label="Password" name="password" required>
+                                    </div>
+                                </div>
+                                <div class="col-lg-12">
+                                    <div class="form-group">
+                                        <label for="exampleFormControlSelect1">Role <small class="text-danger">*</small></label>
+                                        <select name="role_id" class="form-control" id="exampleFormControlSelect1" required="">
+                                            <option value="" selected="" disabled="">- Pilih Role</option>
+                                            <?php foreach($role->result() as $row){ ?>
+                                                <option value="<?= $row->id ?>"><?= $row->role ?></option>
+                                            <?php } ?>
+                                        </select>
                                     </div>
                                 </div>
                                 <div class="col-lg-12">
@@ -84,7 +96,7 @@
 </div>
 
 <div class="modal fade" id="modalEdit" tabindex="-1" role="dialog" aria-labelledby="modal-form" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered modal-md" role="document">
+    <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
         <div class="modal-content">
             <div class="modal-body p-0 data-edit">
               

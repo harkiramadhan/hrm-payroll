@@ -384,8 +384,13 @@
 
 
     function rupiah($angka){
+        $CI =& get_instance();
         $hasil_rupiah = number_format($angka,0,',','.');
-        return $hasil_rupiah;
+        if($CI->session->userdata('roleid') == 1 || $CI->session->userdata('roleid') == 2){
+            return $hasil_rupiah;
+        }else{
+            return '******';
+        }
     }
 
     function masaKerja($firstDate, $lastDate){
