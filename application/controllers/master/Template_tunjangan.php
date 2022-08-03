@@ -8,6 +8,12 @@ class Template_tunjangan extends CI_Controller{
         $this->companyid = $this->session->userdata('company_id');
         if($this->session->userdata('masuk') != TRUE)
             redirect('', 'refresh');
+
+        if($this->session->userdata('roleid') == 1 || $this->session->userdata('roleid') == 2){}else{
+            $this->session->set_flashdata('error', "Pengguna Tidak Memiliki Akses Untuk Menu");
+            redirect($_SERVER['HTTP_REFERER'],'refresh');
+        }
+            
     }
 
     function index(){
