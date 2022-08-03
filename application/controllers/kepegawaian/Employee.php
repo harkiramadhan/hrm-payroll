@@ -649,8 +649,10 @@ class Employee extends CI_Controller{
         $start = intval($this->input->get("start"));
         $length = intval($this->input->get("length"));
 
-        $get = $this->db->select('p.*, a.agama, pd.jenjang, c.company, j.jabatan, d.divisi, dp.departement, u.unit, cb.cabang')
+        $get = $this->db->select('p.*, a.agama, pd.jenjang, c.company, j.jabatan, d.divisi, dp.departement, u.unit, cb.cabang, tt.nama nama_template')
                         ->from('pegawai p')
+                        ->join('tunjangan_pegawai tp', 'tp.pegawai_id = p.id', "LEFT")
+                        ->join('template_tunjangan tt', 'tp.template_id = tt.id', "LEFT")
                         ->join('agama a', 'p.agama_id = a.id', "LEFT")
                         ->join('jenjang_pendidikan pd', 'p.pendidikan_id = pd.id', "LEFT")
                         ->join('cabang cb', 'p.cabang_id = cb.id', "LEFT")
@@ -671,6 +673,7 @@ class Employee extends CI_Controller{
                 '<strong>'.@$row->cabang.'</strong>',
                 '<p class="mb-0"><strong>'.$row->divisi.' / '.$row->jabatan.'</strong></p>',
                 '<strong>'.$row->departement.' / '.$row->unit.'</strong>',
+                '<strong>'.$row->nama_template.'</strong>',
                 '<div class="btn-group" role="group" aria-label="Basic example">
                     <a class="btn btn-sm btn-round btn-info text-white px-3 mb-0" href="'.site_url('kepegawaian/employee/' . $row->id).'"><i class="fas fa-pencil-alt me-2" aria-hidden="true"></i>Edit</a>
                     <a class="btn btn-sm btn-round btn-link text-danger px-3 mb-0" href="'.site_url('kepegawaian/employee/delete/' . $row->id).'"><i class="far fa-trash-alt" aria-hidden="true"></i></a>
