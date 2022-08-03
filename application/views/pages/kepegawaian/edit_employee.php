@@ -18,11 +18,13 @@
                             <i class="fas fa-users text-sm me-2"></i> Kepegawaian
                         </a>
                     </li>
+                    <?php if($this->session->userdata('roleid') == 1 || $this->session->userdata('roleid') == 2): ?>
                     <li class="nav-item">
                         <a class="nav-link mb-0 px-0 py-1" data-bs-toggle="tab" href="#keuangan-tabs" role="tab" aria-controls="code" aria-selected="false" tabindex="-1">
                             <i class="fas fa-money-bill text-sm me-2"></i> Keuangan
                         </a>
                     </li>
+                    <?php endif; ?>
                 </ul>
             </div>
             <div class="tab-content" id="pills-tabContent">
@@ -417,6 +419,7 @@
                     </form>
                 </div>
 
+                <?php if($this->session->userdata('roleid') == 1 || $this->session->userdata('roleid') == 2): ?>
                 <div class="tab-pane fade " id="keuangan-tabs" role="tabpanel">
                     <!-- Keuangan -->
                     <form action="<?= site_url('kepegawaian/employee/updateKeuangan/' . $pegawai->id) ?>" enctype="multipart/form-data" method="POST">
@@ -460,6 +463,7 @@
                         </div>
                     </form>
                 </div>
+                <?php endif; ?>
             </div>
         </div>
     </div>
