@@ -133,9 +133,9 @@ class Absensi extends CI_Controller{
         $start = intval($this->input->get("start"));
         $length = intval($this->input->get("length"));
 
-        $logAbsensi = $this->db->select('p.nama, la.*')
+        $logAbsensi = $this->db->select('u.username, la.*')
                             ->from('log_upload_absensi la')
-                            ->join('pegawai p', 'la.pegawai_id = p.id')
+                            ->join('user u', 'la.user_id = u.id')
                             ->where([
                                 'la.company_id' => $this->companyid
                             ])->order_by('id', "DESC")->get();
@@ -146,7 +146,7 @@ class Absensi extends CI_Controller{
             $error = ($row['error_row'] > 0) ? $row['error_row'] : 0;
             $data[] =[
                 $no++,
-                '<p class="mb-0";><strong>'.$row['nama'].'</strong></p>',
+                '<p class="mb-0";><strong>'.$row['username'].'</strong></p>',
                 '<a class="btn btn-sm btn-round btn-secondary text-white px-3 mb-0 mx-1" href="'.base_url('uploads/absensi/' . $row['filename']).'" style="width:100%" download><i class="fas fa-download me-2" aria-hidden="true"></i>'.$row['filename'].'</a>',
                 '<button type="button" class="btn btn-sm btn-round btn-danger text-white px-3 mb-0 btn-detail-error" onclick="errorLogDetail('.$row['id'].')" style="width:100%"><i class="fas fa-arrow-up me-2" aria-hidden="true"></i>Error '.$error.' Row</button>',
                 '<p class="text-center mb-0";><strong>'.$row['success_row'].'</strong></p>',
@@ -376,7 +376,7 @@ class Absensi extends CI_Controller{
                         $error_row = 0;
                         $dataLog = [
                             'company_id' => $this->companyid,
-                            'pegawai_id' => $this->session->userdata('pegawai_id'),
+                            'user_id' => $this->session->userdata('userid'),
                             'cutoff_id' => $cutoffid,
                             'filename' => $fileImport
                         ];
