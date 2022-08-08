@@ -129,6 +129,7 @@ class Cutoff extends CI_Controller{
                         'cutoff_id' => $cutoffid,
                         'nip' => $nip,
                     ])->update('summary', [
+                        'nominal_insentif' => str_replace('.', "", $this->input->post('nominal_insentif', TRUE)),
                         'nominal_tunjangan' => str_replace('.', "", $this->input->post('total_tunjangan', TRUE)),
                         'total_tunjangan_non_tunai' => str_replace('.', "", $this->input->post('total_tunjangan_non_tunai', TRUE)),
                         'total_tunjangan_pengurangan' => str_replace('.', "", $this->input->post('total_tunjangan_pengurangan', TRUE)),
@@ -383,19 +384,25 @@ class Cutoff extends CI_Controller{
                                     </table>
                                 </div>
                                 <div class="row">
-                                    <div class="col-lg-4">
+                                    <div class="col-lg-3">
+                                        <label>Total Insentif</label>
+                                        <div class="input-group mb-3">
+                                            <input type="text" class="form-control nominal-insentif" placeholder="Total Insentif" id="nominal_insentif" name="nominal_insentif" value="<?= ($summary->nominal_insentif) ? rupiah($summary->nominal_insentif) : 0 ?>">
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-3">
                                         <label>Total Tunjangan</label>
                                         <div class="input-group mb-3">
                                             <input type="text" class="form-control" placeholder="Total Tunjangan" id="total_tunjangan" name="total_tunjangan" value="<?= ($summary->nominal_tunjangan) ? rupiah($summary->nominal_tunjangan) : rupiah(array_sum($totalTunjangan)) ?>">
                                         </div>
                                     </div>
-                                    <div class="col-lg-4">
+                                    <div class="col-lg-3">
                                         <label>Total Tunjangan Non Tunai</label>
                                         <div class="input-group mb-3">
                                             <input type="text" class="form-control" placeholder="Total Tunjangan" id="total_tunjangan_non_tunai" name="total_tunjangan_non_tunai" value="<?= ($summary->total_tunjangan_non_tunai) ? rupiah($summary->total_tunjangan_non_tunai) : rupiah(array_sum($totalTunjanganNonTunai)) ?>">
                                         </div>
                                     </div>
-                                    <div class="col-lg-4">
+                                    <div class="col-lg-3">
                                         <label>Total Tunjangan Pengurangan</label>
                                         <div class="input-group mb-3">
                                             <input type="text" class="form-control" placeholder="Total Tunjangan" id="total_tunjangan_pengurangan" name="total_tunjangan_pengurangan" value="<?= ($summary->total_tunjangan_pengurangan) ? rupiah($summary->total_tunjangan_pengurangan) : rupiah(array_sum($totalTunjanganPengurangan)) ?>">
@@ -415,7 +422,7 @@ class Cutoff extends CI_Controller{
             </div>
 
             <script>
-                $('.nominal-tunjangan').keyup(function(){
+                $('.nominal-tunjangan, .nominal-insentif').keyup(function(){
                     var sumPenambahan = 0;
                     var sumNonTunai = 0;
                     var sumPengurangan = 0;
@@ -427,18 +434,24 @@ class Cutoff extends CI_Controller{
                         var amountPenambahan = parseInt($(this).val().replace(/[^0-9]+/g, ""))
                         sumPenambahan +=amountPenambahan
                     })
+
+                    var sumInsentif = parseInt($('#nominal_insentif').val().replace(/[^0-9]+/g, ""))
+                    sumPenambahan += sumInsentif
+
                     $('#total_tunjangan').val(formatRupiah(sumPenambahan))
 
                     $(".nominal-tunjangan[data-type=2]" ).each(function(){
                         var amountNonTunai = parseInt($(this).val().replace(/[^0-9]+/g, ""))
                         sumNonTunai +=amountNonTunai
                     })
+
                     $('#total_tunjangan_non_tunai').val(formatRupiah(sumNonTunai))
 
                     $(".nominal-tunjangan[data-type=3]" ).each(function(){
                         var amountPengurangan = parseInt($(this).val().replace(/[^0-9]+/g, ""))
                         sumPengurangan +=amountPengurangan
                     })
+
                     $('#total_tunjangan_pengurangan').val(formatRupiah(sumPengurangan))
                 })
 
@@ -598,6 +611,7 @@ class Cutoff extends CI_Controller{
                             <th rowspan="2" style="vertical-align : middle;text-align:center;position:sticky;top: 0;background-color:white" class="text-center">Nominal Gaji <br> Pokok</th>
                             <th rowspan="2" style="vertical-align : middle;text-align:center;position:sticky;top: 0;background-color:white" class="text-center">Nominal Gaji <br> Dilaporkan</th>
                             <th colspan="<?= $tunjangan->num_rows() ?>" style="vertical-align : middle;text-align:center;position:sticky;top: 0;background-color:white" class="text-center">Tunjangan</th>
+                            <th rowspan="2" style="vertical-align : middle;text-align:center;position:sticky;top: 0;background-color:white" class="text-center">Nominal <br> Insentif</th>
                             <th rowspan="2" style="vertical-align : middle;text-align:center;position:sticky;top: 0;background-color:white" class="text-center">Nominal <br> Tunjangan</th>
                             <th rowspan="2" style="vertical-align : middle;text-align:center;position:sticky;top: 0;background-color:white" class="text-center">Action</th>
                         </tr>
@@ -649,6 +663,7 @@ class Cutoff extends CI_Controller{
                             ?>
                                 <td class="text-center"><strong><?= $nominalTunjangan ?></strong></td>
                             <?php } ?>
+                            <td class="text-center"><strong><?= ($row->nominal_insentif) ? rupiah($row->nominal_insentif) : '-' ?></strong></td>
                             <td class="text-center"><strong><?= ($row->nominal_tunjangan) ? rupiah($row->nominal_tunjangan) : '-' ?></strong></td>
                             <td>
                                 <button type="button" class="btn btn-sm btn-round btn-info text-white px-3 mb-0" onclick="edit(<?= $row->id ?>)"><i class="fas fa-pencil-alt me-2" aria-hidden="true"></i>Edit</button>
