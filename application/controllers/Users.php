@@ -139,10 +139,20 @@ class Users extends CI_Controller{
         $start = intval($this->input->get("start"));
         $length = intval($this->input->get("length"));
 
-        $get = $this->db->select('u.*, r.role')
+        if($this->session->userdata('roleid') == 1){
+            $get = $this->db->select('u.*, r.role')
                         ->from('user u')
                         ->join('role r', 'u.role_id = r.id')
                         ->where(['u.company_id' => $this->companyid])->get();
+        }else{
+            $get = $this->db->select('u.*, r.role')
+                            ->from('user u')
+                            ->join('role r', 'u.role_id = r.id')
+                            ->where([
+                                'u.company_id' => $this->companyid,
+                                'u.id' => $this->session->userdata('userid')    
+                            ])->get();
+        }
 
         $data = array();
         $no = 1;
