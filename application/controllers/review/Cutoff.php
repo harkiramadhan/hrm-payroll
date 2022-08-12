@@ -133,6 +133,7 @@ class Cutoff extends CI_Controller{
                         'nominal_tunjangan' => str_replace('.', "", $this->input->post('total_tunjangan', TRUE)),
                         'total_tunjangan_non_tunai' => str_replace('.', "", $this->input->post('total_tunjangan_non_tunai', TRUE)),
                         'total_tunjangan_pengurangan' => str_replace('.', "", $this->input->post('total_tunjangan_pengurangan', TRUE)),
+                        'thp' => str_replace('.', "", $this->input->post('total_tunjangan', TRUE)) - str_replace('.', "", $this->input->post('total_tunjangan_pengurangan', TRUE)) + str_replace('.', "", $this->input->post('nominal_gapok', TRUE))
                     ]);
                 }
 
@@ -305,6 +306,7 @@ class Cutoff extends CI_Controller{
                                 <input type="hidden" name="cutoff_id" value="<?= $summary->cutoff_id ?>">
                                 <input type="hidden" name="nip" value="<?= $summary->nip ?>">
                                 <input type="hidden" name="pegawai_id" value="<?= $summary->pegawai_id ?>">
+                                <input type="hidden" name="nominal_gapok" value="<?= $summary->nominal_gapok ?>">
                                 <div class="table-responsive p-0 mt-4">
                                     <table class="table table-hover" style="width:100%">
                                         <thead>
@@ -666,7 +668,7 @@ class Cutoff extends CI_Controller{
                             <?php } ?>
                             <td class="text-center"><strong><?= ($row->nominal_insentif) ? rupiah($row->nominal_insentif) : '-' ?></strong></td>
                             <td class="text-center"><strong><?= ($row->nominal_tunjangan) ? rupiah($row->nominal_tunjangan) : '-' ?></strong></td>
-                            <td class="text-center"><strong><?= ($row->nominal_tunjangan) ? rupiah($row->nominal_tunjangan) : '-' ?></strong></td>
+                            <td class="text-center"><strong><?= ($row->thp) ? rupiah($row->thp) : '-' ?></strong></td>
                             <td>
                                 <button type="button" class="btn btn-sm btn-round btn-info text-white px-3 mb-0" onclick="edit(<?= $row->id ?>)"><i class="fas fa-pencil-alt me-2" aria-hidden="true"></i>Edit</button>
                             </td>
