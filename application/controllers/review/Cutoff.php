@@ -341,20 +341,20 @@ class Cutoff extends CI_Controller{
                                                     <?php 
                                                         if($tem->kode == "HRI"):
                                                             $nominalString = rupiah($tem->nominal). " * " . $summary->total_hadir;
-                                                            $nominalHasil = $tem->nominal * $summary->total_hadir;
+                                                            $nominalHasil = (int)str_replace('.', '', $tem->nominal) * $summary->total_hadir;
                                                         elseif($tem->kode == "JAM"):
                                                             $nominalString = rupiah($tem->nominal). " * " . $summary->total_hadir;
-                                                            $nominalHasil = $tem->nominal * $summary->total_hadir;
+                                                            $nominalHasil = (int)str_replace('.', '', $tem->nominal) * $summary->total_hadir;
                                                         elseif($tem->kode == "BLN"): 
                                                             $nominalString = rupiah($tem->nominal). " * 1";
-                                                            $nominalHasil = $tem->nominal * 1;
+                                                            $nominalHasil = (int)str_replace('.', '', $tem->nominal) * 1;
                                                         elseif($tem->kode == "TT" || $tem->kode == "TGG"): 
                                                             if($tem->type == "N"):
                                                                 $nominalString = rupiah($tem->nominal). " * 1";
-                                                                $nominalHasil = $tem->nominal * 1;
+                                                                $nominalHasil = (int)str_replace('.', '', $tem->nominal) * 1;
                                                             else:
                                                                 $nominalString = "(".rupiah($summary->nominal_gapok)." * 100) / " . $tem->nominal ."%";
-                                                                $nominalHasil = ($summary->nominal_gapok / 100) * $tem->nominal;
+                                                                $nominalHasil = ($summary->nominal_gapok / 100) * (int)str_replace('.', '', $tem->nominal);
                                                             endif;
                                                         endif; 
 
@@ -368,7 +368,7 @@ class Cutoff extends CI_Controller{
 
                                                         $cekTunjangan = $this->db->get_where('summary_tunjangan', ['pegawai_id' => $summary->pegawai_id, 'review_cutoff_id' => $reviewId, 'tunjangan_id' => $tem->tunjangan_id]);
                                                         if($cekTunjangan->num_rows() > 0){
-                                                            $nomTunjangan = $cekTunjangan->row()->nominal;
+                                                            $nomTunjangan = (int)str_replace('.', '', $cekTunjangan->row()->nominal);
                                                         }else{
                                                             $nomTunjangan = $nominalHasil;
                                                         }
@@ -613,6 +613,7 @@ class Cutoff extends CI_Controller{
                             <th colspan="<?= $tunjangan->num_rows() ?>" style="vertical-align : middle;text-align:center;position:sticky;top: 0;background-color:white" class="text-center">Tunjangan</th>
                             <th rowspan="2" style="vertical-align : middle;text-align:center;position:sticky;top: 0;background-color:white" class="text-center">Nominal <br> Insentif</th>
                             <th rowspan="2" style="vertical-align : middle;text-align:center;position:sticky;top: 0;background-color:white" class="text-center">Nominal <br> Tunjangan</th>
+                            <th rowspan="2" style="vertical-align : middle;text-align:center;position:sticky;top: 0;background-color:white" class="text-center">THP</th>
                             <th rowspan="2" style="vertical-align : middle;text-align:center;position:sticky;top: 0;background-color:white" class="text-center">Action</th>
                         </tr>
                         <tr>
@@ -656,7 +657,7 @@ class Cutoff extends CI_Controller{
                                 foreach($tunjangan->result() as $tr){    
                                     $cekSummaryTunjangan = $this->db->get_where('summary_tunjangan', ['pegawai_id' => $row->pegawai_id, 'review_cutoff_id' => $cutoffid, 'tunjangan_id' => $tr->id])->row();
                                     if(@$cekSummaryTunjangan->nominal){
-                                        $nominalTunjangan = rupiah($cekSummaryTunjangan->nominal);
+                                        $nominalTunjangan = rupiah((int)str_replace('.', '', $cekSummaryTunjangan->nominal));
                                     }else{
                                         $nominalTunjangan = '-';
                                     }
@@ -664,6 +665,7 @@ class Cutoff extends CI_Controller{
                                 <td class="text-center"><strong><?= $nominalTunjangan ?></strong></td>
                             <?php } ?>
                             <td class="text-center"><strong><?= ($row->nominal_insentif) ? rupiah($row->nominal_insentif) : '-' ?></strong></td>
+                            <td class="text-center"><strong><?= ($row->nominal_tunjangan) ? rupiah($row->nominal_tunjangan) : '-' ?></strong></td>
                             <td class="text-center"><strong><?= ($row->nominal_tunjangan) ? rupiah($row->nominal_tunjangan) : '-' ?></strong></td>
                             <td>
                                 <button type="button" class="btn btn-sm btn-round btn-info text-white px-3 mb-0" onclick="edit(<?= $row->id ?>)"><i class="fas fa-pencil-alt me-2" aria-hidden="true"></i>Edit</button>
