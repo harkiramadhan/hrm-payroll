@@ -46,7 +46,10 @@ class Cutoff extends CI_Controller{
     }
     
     function create(){
-        $cutoffid = $this->db->get_where('cutoff', ['is_active' => 't'])->row()->id;
+        $cutoffid = $this->db->get_where('cutoff', [
+            'is_active' => 't',
+            'company_id' => $this->companyid,
+        ])->row()->id;
         $datas = [
             'company_id' => $this->companyid,
             'cutoff_id' => $cutoffid,
