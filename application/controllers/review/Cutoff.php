@@ -485,12 +485,12 @@ class Cutoff extends CI_Controller{
         $draw = intval($this->input->get("draw"));
         $start = intval($this->input->get("start"));
         $length = intval($this->input->get("length"));
-        $cutoffid = $this->db->get_where('cutoff', ['is_active' => 't'])->row()->id;
+        $cutoffid = $this->db->get_where('cutoff', ['is_active' => 't', 'company_id' => $this->companyid])->row()->id;
 
         $get = $this->db->select('rc.*, c.cabang, d.divisi')
                         ->from('review_cutoff rc')
-                        ->join('cabang c', 'rc.cabang_id = c.id')
-                        ->join('divisi d', 'rc.divisi_id = d.id')
+                        ->join('cabang c', 'rc.cabang_id = c.id', 'left')
+                        ->join('divisi d', 'rc.divisi_id = d.id', 'left')
                         ->where([
                             'rc.company_id' => $this->companyid,
                             'rc.cutoff_id' => $cutoffid
