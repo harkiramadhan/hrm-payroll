@@ -31,6 +31,9 @@
                         <?php foreach($pkp->result() as $row){ ?>
                         <th><?= $row->persentase ?>% <br> PKP Setahun <?= $row->text ?></th>
                         <?php } ?>
+                        <th>PKP<br> Setahun</th>
+                        <th>PKP<br> Sebulan</th>
+                        <th>THP<br> Setelah PPH21</th>
                     </tr>
                 </thead>
                 <tbody>

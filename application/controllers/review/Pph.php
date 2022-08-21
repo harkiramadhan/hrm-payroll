@@ -83,6 +83,10 @@ class Pph extends CI_Controller{
                 $fiftyPercent = ($pengurangan * 30) / 100;
             }
 
+            $totalPkpSetahun = $fivePercent + $fifteenPercent + $twentyFivePercent + $fifteenPercent;
+            $totalPkpSebulan = ($totalPkpSetahun * 12) / 100;
+            $thpAkhir = $thp + $totalPkpSebulan;
+
             $data[] = [
                 $no++,
                 '<p class="mb-0"><strong>'.$row->nik.'</strong></p>',
@@ -101,6 +105,9 @@ class Pph extends CI_Controller{
                 '<strong>'.rupiah($fifteenPercent).'</strong>',
                 '<strong>'.rupiah($twentyFivePercent).'</strong>',
                 '<strong>'.rupiah($fiftyPercent).'</strong>',
+                '<strong>'.rupiah($totalPkpSetahun).'</strong>',
+                '<strong>'.rupiah($totalPkpSebulan).'</strong>',
+                '<strong>'.rupiah($thpAkhir).'</strong>',
             ];
         }
                         
