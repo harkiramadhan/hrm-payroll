@@ -15,12 +15,13 @@
             <table id="example" class="table table-striped" style="width:100%">
                 <thead>
                     <tr>
-                        <th class="text-center w-5px">No</th>
+                        <th >No</th>
                         <th>NIP</th>
                         <th>Nama</th>
                         <th>Cabang</th>
                         <th>Jabatan</th>
                         <th>Status</th>
+                        <th>PTKP</th>
                         <th>Total Pendapatan <br> Take Home Pay Sebelum PPH</th>
                         <th>Potongan Tunjangan Jabatan <br> 5% Dari Total Pendapatan, Max. 500rb</th>
                         <th>Penghasilan Neto Sebulan <br> Tot. Pendapatan - Pot. Tunj. Jabatan</th>
@@ -30,8 +31,6 @@
                         <?php foreach($pkp->result() as $row){ ?>
                         <th><?= $row->persentase ?>% <br> PKP Setahun <?= $row->text ?></th>
                         <?php } ?>
-
-                        <th class="text-center w-5px">Action</th>
                     </tr>
                 </thead>
                 <tbody>

@@ -34,7 +34,7 @@ class Pph extends CI_Controller{
         $start = intval($this->input->get("start"));
         $length = intval($this->input->get("length"));
 
-        $get = $this->db->select('p.nama, p.nik, j.jabatan, d.divisi, dp.departement, u.unit, cb.cabang, p.id, s.thp, pt.nominal tarif_ptkp')
+        $get = $this->db->select('p.nama, p.nik, j.jabatan, d.divisi, dp.departement, u.unit, cb.cabang, p.id, s.thp, pt.nominal tarif_ptkp, pt.text text_ptkp')
                         ->from('pegawai p')
                         ->join('cabang cb', 'p.cabang_id = cb.id', "LEFT")
                         ->join('jabatan j', 'p.jabatan_id = j.id', "LEFT")
@@ -49,13 +49,40 @@ class Pph extends CI_Controller{
 
         $data = array();
         $no = 1;
+        $persetasePkp = $this->db->get('persentase_pkp');
         foreach($get->result() as $row){
             $thp = $row->thp;
-            $potJabatan = ($row->thp / 100) * 5;
+            $jbt = ($row->thp * 5) / 100;
+            $potJabatan = ($jbt > 500000) ? 500000 : $jbt;
             $netoSebulan = $thp - $potJabatan; 
             $netoSetahun = $netoSebulan * 12;
             $ptkp = $row->tarif_ptkp;
             $pkpSetahun = $netoSetahun - $ptkp;
+            
+            $fivePercent = 0;
+            $fifteenPercent = 0;
+            $fivePercent = 0;
+            $twentyFivePercent = 0;
+            $fiftyPercent = 0;
+
+            if($pkpSetahun < 60000000){
+                $fivePercent = ($pkpSetahun * 5) / 100;
+            }elseif($pkpSetahun < 250000000){
+                $fivePercent = (60000000 * 5) / 100;
+                $pengurangan = $pkpSetahun - 60000000;
+                $fifteenPercent = ($pengurangan * 15) / 100;
+            }elseif($pkpSetahun < 500000000){
+                $fivePercent = ($pkpSetahun - 60000000 * 5) / 100;
+                $fifteenPercent = ($pkpSetahun - 250000000 * 15) / 100;
+                $pengurangan = $pkpSetahun - 250000000;
+                $twentyFivePercent = ($pengurangan * 25) / 100;
+            }elseif($pkpSetahun > 500000000){
+                $fivePercent = (60000000 * 5) / 100;
+                $fifteenPercent = (250000000 * 15) / 100;
+                $pengurangan = $pkpSetahun - 500000000;
+                $fiftyPercent = ($pengurangan * 30) / 100;
+            }
+
             $data[] = [
                 $no++,
                 '<p class="mb-0"><strong>'.$row->nik.'</strong></p>',
@@ -63,20 +90,17 @@ class Pph extends CI_Controller{
                 '<strong>'.@$row->cabang.'</strong>',
                 '<p class="mb-0"><strong>'.$row->divisi.' / '.$row->jabatan.'</strong></p>',
                 '<strong>'.$row->departement.' / '.$row->unit.'</strong>',
+                '<strong>'.$row->text_ptkp.'</strong>',
                 '<strong>'.rupiah($thp).'</strong>',
                 '<strong>'.rupiah($potJabatan).'</strong>',
                 '<strong>'.rupiah($netoSebulan).'</strong>',
                 '<strong>'.rupiah($netoSetahun).'</strong>',
                 '<strong>'.rupiah($ptkp).'</strong>',
                 '<strong>'.rupiah($pkpSetahun).'</strong>',
-                '',
-                '',
-                '',
-                '',
-                '<div class="btn-group" role="group" aria-label="Basic example">
-                    <a class="btn btn-sm btn-round btn-info text-white px-3 mb-0" href="'.site_url('kepegawaian/employee/' . $row->id).'"><i class="fas fa-pencil-alt me-2" aria-hidden="true"></i>Edit</a>
-                    <a class="btn btn-sm btn-round btn-link text-danger px-3 mb-0" href="'.site_url('kepegawaian/employee/delete/' . $row->id).'"><i class="far fa-trash-alt" aria-hidden="true"></i></a>
-                </div>'
+                '<strong>'.rupiah($fivePercent).'</strong>',
+                '<strong>'.rupiah($fifteenPercent).'</strong>',
+                '<strong>'.rupiah($twentyFivePercent).'</strong>',
+                '<strong>'.rupiah($fiftyPercent).'</strong>',
             ];
         }
                         
