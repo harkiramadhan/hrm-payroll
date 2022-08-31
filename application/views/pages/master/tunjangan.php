@@ -64,7 +64,7 @@
                                         <select name="role_id" class="form-control" id="exampleFormControlSelect1" required>
                                             <option value="" selected="" disabled="">- Pilih Role Tunjangan</option>
                                             <?php foreach($role as $r){ ?>
-                                                <option value="<?= $r->id ?>" ><?= $r->kode." - ".$r->satuan ?></option>
+                                                <option value="<?= $r->id ?>" ><?= $r->jenis." - ".$r->kode." - ".$r->satuan ?></option>
                                             <?php } ?>
                                         </select>
                                     </div>

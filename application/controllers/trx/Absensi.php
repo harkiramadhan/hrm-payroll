@@ -7,7 +7,6 @@ use PhpOffice\PhpSpreadsheet\Writer\Csv;
 use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 use PhpOffice\PhpSpreadsheet\Writer\IWriter;
 
-
 class Absensi extends CI_Controller{
     function __construct(){
         parent::__construct();

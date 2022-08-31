@@ -98,7 +98,7 @@ class Tunjangan extends CI_Controller{
                                         <select name="role_id" class="form-control" id="exampleFormControlSelect1" required>
                                             <option value="" selected="" disabled="">- Pilih Role Tunjangan</option>
                                             <?php foreach($role as $r){ ?>
-                                                <option value="<?= $r->id ?>" <?= ($tunjangan->role_id == $r->id) ? 'selected' : '' ?>><?= $r->kode." - ".$r->satuan ?></option>
+                                                <option value="<?= $r->id ?>" <?= ($tunjangan->role_id == $r->id) ? 'selected' : '' ?>><?= $r->jenis." - ".$r->kode." - ".$r->satuan ?></option>
                                             <?php } ?>
                                         </select>
                                     </div>
@@ -176,7 +176,7 @@ class Tunjangan extends CI_Controller{
         $start = intval($this->input->get("start"));
         $length = intval($this->input->get("length"));
 
-        $get = $this->db->select('r.kode, r.satuan, t.*')
+        $get = $this->db->select('r.kode, r.satuan, r.jenis, t.*')
                         ->from('tunjangan t')
                         ->join('role_tunjangan r', 't.role_id = r.id', "LEFT")
                         ->where('t.company_id', $this->companyid)
@@ -193,7 +193,7 @@ class Tunjangan extends CI_Controller{
                 '<p class="mb-0 text-center"><strong>'.$row->urut.'</strong></p>',
                 '<strong>'.$row->tunjangan.'</strong>',
                 '<strong>'.$row->keterangan.'</strong>',
-                '<strong>'.$row->kode.' - '.$row->satuan.'</strong>',
+                '<strong>'.$row->jenis.' - '.$row->kode.' - '.$row->satuan.'</strong>',
                 $badge,
                 '<div class="btn-group" role="group" aria-label="Basic example">
                     <button type="button" class="btn btn-sm btn-round btn-info text-white px-3 mb-0" onclick="edit('.$row->id.')"><i class="fas fa-pencil-alt me-2" aria-hidden="true"></i>Edit</button>
