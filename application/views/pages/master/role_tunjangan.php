@@ -21,6 +21,7 @@
                         <th class="text-center w-5px">No</th>
                         <th class="text-left w-5px">Kode</th>
                         <th>Satuan</th>
+                        <th class="text-left">Jenis</th>
                         <th class="text-left w-5px">Status</th>
                         <th class="text-center w-5px">Action</th>
                     </tr>
@@ -56,7 +57,20 @@
                                         <input type="text" class="form-control" placeholder="Satuan" aria-label="Satuan" name="satuan" required>
                                     </div>
                                 </div>
-                                <div class="col-lg-12">
+                                <div class="col-lg-4">
+                                    <label>Jenis<small class="text-danger">*</small></label>
+                                    <div class="input-group mb-3">
+                                        <div class="form-check form-check-inline">
+                                            <input class="form-check-input" type="radio" name="jenis" id="inlineRadio12" value="Karyawan" required="">
+                                            <label class="form-check-label" for="inlineRadio12">Karyawan</label>
+                                        </div>
+                                        <div class="form-check form-check-inline">
+                                            <input class="form-check-input" type="radio" name="jenis" id="inlineRadio22" value="Mitra" required="">
+                                            <label class="form-check-label" for="inlineRadio22">Mitra</label>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-lg-8">
                                     <label>Status<small class="text-danger">*</small></label>
                                     <div class="input-group mb-3">
                                         <div class="form-check form-check-inline">

@@ -24,6 +24,7 @@ class Role_tunjangan extends CI_Controller{
             'company_id' => $this->companyid,
             'kode' => $this->input->post('kode', TRUE),
             'satuan' => $this->input->post('satuan', TRUE),
+            'jenis' => $this->input->post('jenis', TRUE),
             'status' => $this->input->post('status', TRUE)
         ];
         $this->db->insert('role_tunjangan', $dataInsert);
@@ -39,6 +40,7 @@ class Role_tunjangan extends CI_Controller{
         $dataUpdate = [
             'kode' => $this->input->post('kode', TRUE),
             'satuan' => $this->input->post('satuan', TRUE),
+            'jenis' => $this->input->post('jenis', TRUE),
             'status' => $this->input->post('status', TRUE)
         ];
         $this->db->where('id', $id)->update('role_tunjangan', $dataUpdate);
@@ -82,7 +84,20 @@ class Role_tunjangan extends CI_Controller{
                                     <input type="text" class="form-control" placeholder="Keterangan" aria-label="Keterangan" name="satuan" value="<?= $role->satuan ?>" required>
                                 </div>
                             </div>
-                            <div class="col-lg-12">
+                            <div class="col-lg-4">
+                                <label>Jenis<small class="text-danger">*</small></label>
+                                <div class="input-group mb-3">
+                                    <div class="form-check form-check-inline">
+                                        <input class="form-check-input" type="radio" name="jenis" id="inlineRadio12" value="Karyawan" <?= ($role->jenis == 'Karyawan') ? 'checked' : '' ?> required="">
+                                        <label class="form-check-label" for="inlineRadio12">Karyawan</label>
+                                    </div>
+                                    <div class="form-check form-check-inline">
+                                        <input class="form-check-input" type="radio" name="jenis" id="inlineRadio22" value="Mitra" <?= ($role->jenis == 'Mitra') ? 'checked' : '' ?> required="">
+                                        <label class="form-check-label" for="inlineRadio22">Mitra</label>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-8">
                                 <label>Status<small class="text-danger">*</small></label>
                                 <div class="input-group mb-3">
                                     <div class="form-check form-check-inline">
@@ -145,8 +160,9 @@ class Role_tunjangan extends CI_Controller{
             $badge = ($row->status == 't') ? '<span class="badge badge-sm bg-gradient-success">Active</span>' : '<span class="badge badge-sm bg-gradient-danger">Non Active</span>';
             $data[] = [
                 $no++,
-                '<p class="text-center mb-0"><strong>'.$row->kode.'</strong></p>',
+                '<p class="text-left mb-0"><strong>'.$row->kode.'</strong></p>',
                 '<strong>'.$row->satuan.'</strong>',
+                '<strong>'.$row->jenis.'</strong>',
                 $badge,
                 '<div class="btn-group" role="group" aria-label="Basic example">
                     <button type="button" class="btn btn-sm btn-round btn-info text-white px-3 mb-0" onclick="edit('.$row->id.')"><i class="fas fa-pencil-alt me-2" aria-hidden="true"></i>Edit</button>
