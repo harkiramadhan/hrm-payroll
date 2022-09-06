@@ -288,7 +288,7 @@ class Cutoff extends CI_Controller{
                                 <div class="col-lg-2">
                                     <label>Template Tunjangan</label>
                                     <div class="input-group mb-3">
-                                        <input type="text" class="form-control" value="<?= $tunjanganPegawai->nama_template ?>" disabled>
+                                        <input type="text" class="form-control" value="<?= @$tunjanganPegawai->nama_template ?>" disabled>
                                     </div>
                                 </div>
                                 <div class="col-lg-3">
@@ -337,6 +337,11 @@ class Cutoff extends CI_Controller{
                                                 foreach($getTunjangan->result() as $tem){
                                                     $badgeTunjangan = jenisTunjangan($tem->tunjangan_type);
                                                     $nominal = ($tem->type == 'N') ? rupiah($tem->nominal) : $tem->nominal."%";
+                                                    if(strtolower($tem->tunjangan) == 'piket'){
+                                                        if($summary->total_hadir >= $summary->hari_efektif){}else{
+                                                            continue;
+                                                        }
+                                                    }
                                             ?>
                                             <tr>
                                                 <td class="text-center"><?= $not++ ?></td>
