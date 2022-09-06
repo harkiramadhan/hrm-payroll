@@ -531,7 +531,7 @@ class Cutoff extends CI_Controller{
         $getData = $this->db->select('s.*, p.nama, tt.nama nama_template_tunjangan, tp.template_id, p.id pegawai_id')
                             ->from('summary s')
                             ->join('pegawai p', 's.nip = p.nik')
-                            ->join('tunjangan_pegawai tp', 'p.id = tp.id', "LEFT")
+                            ->join('tunjangan_pegawai tp', 'p.id = tp.pegawai_id', "LEFT")
                             ->join('template_tunjangan tt', 'tp.template_id = tt.id', "LEFT")
                             ->where([
                                 's.cutoff_id' => $reviewCutoff->cutoff_id,
