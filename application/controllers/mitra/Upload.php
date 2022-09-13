@@ -132,7 +132,7 @@ class Upload extends CI_Controller{
             $data[] =[
                 $no++,
                 '<p class="mb-0";><strong>'.$row['username'].'</strong></p>',
-                '<a class="btn btn-sm btn-round btn-secondary text-white px-3 mb-0 mx-1" href="'.base_url('uploads/absensi/' . $row['filename']).'" style="width:100%" download><i class="fas fa-download me-2" aria-hidden="true"></i>'.$row['filename'].'</a>',
+                '<a class="btn btn-sm btn-round btn-secondary text-white px-3 mb-0 mx-1" href="'.base_url('uploads/mitra/' . $row['filename']).'" style="width:100%" download><i class="fas fa-download me-2" aria-hidden="true"></i>'.$row['filename'].'</a>',
                 '<button type="button" class="btn btn-sm btn-round btn-danger text-white px-3 mb-0 btn-detail-error" onclick="errorLogDetail('.$row['id'].')" style="width:100%"><i class="fas fa-arrow-up me-2" aria-hidden="true"></i>Error '.$error.' Row</button>',
                 '<p class="text-center mb-0";><strong>'.$row['success_row'].'</strong></p>',
                 '<p class="text-center mb-0";><strong>'.$row['total_row'].'</strong></p>',
@@ -384,7 +384,7 @@ class Upload extends CI_Controller{
                                             'error_log' => 'Gagal Di Tambahkan Ke Database',
                                             'data' => json_encode($errorData)
                                         ];
-                                        $this->db->insert('absensi_error_log', $log);
+                                        $this->db->insert('mitra_error_log', $log);
                                         $error_row = $error_row + 1;
                                     }
                                 }else{
@@ -394,7 +394,7 @@ class Upload extends CI_Controller{
                                         'error_log' => 'Kode Shift Tidak Cocok',
                                         'data' => json_encode($errorData)
                                     ];
-                                    $this->db->insert('absensi_error_log', $log);
+                                    $this->db->insert('mitra_error_log', $log);
                                     $error_row = $error_row + 1;
                                 }
                             }else{
@@ -404,7 +404,7 @@ class Upload extends CI_Controller{
                                     'error_log' => 'NIP Tidak Cocok',
                                     'data' => json_encode($errorData)
                                 ];
-                                $this->db->insert('absensi_error_log', $log);
+                                $this->db->insert('mitra_error_log', $log);
                                 $error_row = $error_row + 1;
                             }
                         }
