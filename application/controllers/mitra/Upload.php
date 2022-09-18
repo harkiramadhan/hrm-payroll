@@ -23,6 +23,7 @@ class Upload extends CI_Controller{
         $var = [
             'title' => 'Upload Data Cutoff Mitra',
             'company' => $this->M_Company->getById($this->companyid),
+            'cabang' => $this->db->get_where('cabang', ['company_id' => $this->companyid, 'status' => 't']),
             'page' => 'mitra/mitra_upload_data'
         ];
         $this->load->view('templates', $var);
@@ -183,7 +184,7 @@ class Upload extends CI_Controller{
         $this->output->set_content_type('application/json')->set_output(json_encode($output));
     }
 
-    function download(){
+    function download($cabang_id){
         $cutoff = $this->M_Cutoff->getActive($this->companyid);
         $stringCutoff = "Periode " . $cutoff->tahun."".sprintf("%02d", $cutoff->bulan);
         $tunjangan = $this->db->select('t.*')
@@ -192,12 +193,23 @@ class Upload extends CI_Controller{
                                 ->where([
                                     'rt.jenis' => 'Mitra',
                                     't.status' => 't'
-                                ])->get();
+                                ])->order_by('t.urut', "ASC")->get();
 
+        $pegawai = $this->db->select('p.nama, p.nik')
+                            ->from('pegawai p')
+                            ->join('jabatan j', 'p.jabatan_id = j.id')
+                            ->where([
+                                'p.company_id' => $this->companyid,
+                                'p.cabang_id' => $cabang_id,
+                                'j.jabatan' => 'Mitra'
+                            ])->order_by('nik', "ASC")->get();
+
+        $cabang = $this->db->get_where('cabang', ['id' => $cabang_id])->row();
+                            
         $spreadsheet = new Spreadsheet();  
         $Excel_writer = new Xlsx($spreadsheet);
 
-        $lastColumn = $this->toAlpha($tunjangan->num_rows() + 3);
+        $lastColumn = $this->toAlpha($tunjangan->num_rows() + 2);
 
         $spreadsheet->setActiveSheetIndex(0);
         $sheet = $spreadsheet->getActiveSheet();
@@ -206,6 +218,8 @@ class Upload extends CI_Controller{
                 'bold' => true,
             ],
         ];
+
+        $sheet->freezePane('D4'); 
 
         $sheet->getColumnDimension('A')->setAutoSize(true);
         $sheet->getColumnDimension('D')->setAutoSize(true);
@@ -237,15 +251,13 @@ class Upload extends CI_Controller{
         
 
         $sheetStyle = $spreadsheet->getActiveSheet();
-
         $sheetStyle->mergeCells('B1:' .$lastColumn. '1');
         $sheetStyle->mergeCells('B2:' .$lastColumn. '2');
-        $sheetStyle->setCellValue('B1','Format Import Mitra');
+        $sheetStyle->setCellValue('B1','Format Import Mitra - ' . $cabang->cabang);
         $sheetStyle->setCellValue('B2', $stringCutoff);
         $sheetStyle->setCellValue('A3','No');
         $sheetStyle->setCellValue('B3','NIP');
         $sheetStyle->setCellValue('C3','Nama');
-        $sheetStyle->setCellValue($lastColumn . '3','Kehadiran');
         $sheet->getStyle('A3:' . $lastColumn . '3')->getFill()
                 ->setFillType(\PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID)->getStartColor()->setRGB('f5b642');
 
@@ -261,9 +273,18 @@ class Upload extends CI_Controller{
             $number++;
         }
 
+        $no = 1;
+        $excel_row = 4;
+        foreach($pegawai->result() as $p){
+            $spreadsheet->getActiveSheet()->setCellValueByColumnAndRow(1, $excel_row, $no++);
+            $spreadsheet->getActiveSheet()->setCellValueByColumnAndRow(2, $excel_row, $p->nik);
+            $spreadsheet->getActiveSheet()->setCellValueByColumnAndRow(3, $excel_row, $p->nama);
+            $excel_row++;
+        }
+
         header('Content-Type: application/vnd.ms-excel');
         header('Last-Modified: ' . gmdate('D, d M Y H:i:s') . ' GMT');
-        header('Content-Disposition: attachment;filename=Format Import Absensi.Xlsx'); 
+        header('Content-Disposition: attachment;filename=Format Import Mitra - '. $cabang->cabang .'.Xlsx'); 
         header('Cache-Control: max-age=0');
         ob_end_clean();
         $Excel_writer->save('php://output');

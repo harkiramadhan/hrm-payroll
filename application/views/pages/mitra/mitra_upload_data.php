@@ -6,11 +6,17 @@
                 <div class="col-lg-8">
                     <h5 class="mb-0"><strong>Upload Data Mitra</strong></h5>
                 </div>
-                <div class="col-lg-4 text-end">
-                    <div class="btn-group" role="group" aria-label="Basic example">
-                        <button type="button" class="btn btn-sm btn-round bg-gradient-dark mb-0" data-bs-toggle="modal" data-bs-target="#modalAdd"><i class="fas fa-upload me-2"></i> Absensi</button>
-                        <a href="<?= site_url('mitra/upload/download') ?>" class="btn btn-sm btn-round text-white bg-secondary mb-0 mx-1"><i class="fas fa-download me-2"></i><i class="fas fa-file-excel me-2"></i> Format</a>
-                    </div>
+                <div class="col-lg-4 text-end dropdown">
+                    <button type="button" class="btn btn-sm btn-round bg-gradient-dark mb-0" data-bs-toggle="modal" data-bs-target="#modalAdd"><i class="fas fa-upload me-2"></i> Absensi</button>
+                    <!-- <a href="<?= site_url('mitra/upload/download') ?>" class="btn btn-sm btn-round text-white bg-secondary mb-0 mx-1"></a> -->
+                    <button class="btn btn-sm btn-round text-white bg-secondary mb-0 dropdown-toggle" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false"><i class="fas fa-download me-2"></i><i class="fas fa-file-excel me-2"></i> Format</button>
+                    <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                        <?php foreach($cabang->result() as $c){ ?>
+                            <li>
+                                <a class="dropdown-item" href="<?= site_url('mitra/upload/download/' . $c->id) ?>"> <strong><?= $c->cabang ?></strong></a>
+                            </li>
+                        <?php } ?>
+                    </ul>
                 </div>
             </div>
             <!-- <p class="text-sm mb-0">
