@@ -328,9 +328,39 @@ class Upload extends CI_Controller{
                     $reader->setReadEmptyCells(false);
                     $spreadsheet = $reader->load($inputFileName);
                     $sheetData = $spreadsheet->getActiveSheet()->toArray(null,true,true,true);
+                    $sheet = $spreadsheet->getActiveSheet();
                     $stringCutoff = "Periode " . $cutoff->tahun."".sprintf("%02d", $cutoff->bulan);
 
-                    if($sheetData[1]['B'] == 'Format Import Mitra' && $sheetData[2]['B'] == $stringCutoff){
+                    foreach ($sheet->getRowIterator(3) as $index => $row) {
+                        $cellIterator = $row->getCellIterator();
+                        $cellIterator->setIterateOnlyExistingCells(TRUE); // This loops through all cells, even if a cell value is not set.
+                        $tunjangan_content = [];
+                        $stringColumn = 4;
+                        foreach ($cellIterator as $cell) {
+                            $val = $cell->getValue();
+                            if($val != 'No' && $val != 'NIP' && $val != 'Nama'){
+                                $cekTunjangan = $this->db->get_where('tunjangan', ['tunjangan' => $cell->getValue()]);
+                                if($cekTunjangan->num_rows() > 0){
+                                    $dataTunjangan = [
+                                        'id' => $cekTunjangan->row()->id,
+                                        'column' => $this->toAlpha($stringColumn),
+                                        'tunjangan' => $cekTunjangan->row()->tunjangan
+                                    ];
+                                    array_push($tunjangan_content, $dataTunjangan);
+                                }
+                            }
+
+                            $stringColumn++;
+                        }
+                        
+                        $tunjangan[] = $tunjangan_content;
+                        break;
+                    }
+                    
+                    // $this->output->set_content_type('application/json')->set_output(json_encode($tunjangan[0]));
+                    
+                    
+                    if($sheetData[2]['B'] == $stringCutoff){
                         $success_row = 0;
                         $error_row = 0;
                         $dataLog = [
@@ -339,112 +369,32 @@ class Upload extends CI_Controller{
                             'cutoff_id' => $cutoffid,
                             'filename' => $fileImport
                         ];
-                        $this->db->insert('log_upload_mitra', $dataLog);
-                        $logid = $this->db->insert_id();
+                    //     // $this->db->insert('log_upload_mitra', $dataLog);
+                    //     // $logid = $this->db->insert_id();
                         for($row = 4; $row <= count($sheetData); $row++){
-                            $cek = $this->db->limit(1)->get_where('pegawai', ['nik' => $sheetData[$row]['B']]);
-                            $shift = $this->db->limit(1)->get_where('shift', ['kode' => $sheetData[$row]['F']]);
+                            $cekPegawai = $this->db->limit(1)->get_where('pegawai', ['nik' => $sheetData[$row]['B']]);
+                            if($cekPegawai->num_rows() > 0){
 
-                            $in = date('H:i', strtotime($sheetData[$row]['D']));
-
-                            $errorData = [
-                                'company_id' => $this->companyid,
-                                'log_id' => $logid,
-                                'nik' => $sheetData[$row]['B'],
-                                'nama' => $sheetData[$row]['C'],
-                                'jam_in' => $sheetData[$row]['D'],
-                                'jam_out' => $sheetData[$row]['E'],
-                                'shift_id' => $sheetData[$row]['F'],
-                                'keterangan' => $sheetData[$row]['G']
-                            ];
-
-                            if($cek->num_rows() > 0){
-                                if($shift->num_rows() > 0){
-                                    $lembur = 0;
-                                    $cekJamKerja = $this->db->get_where('jam_kerja', [
-                                        'company_id' => $this->companyid,
-                                        'status' => 't',
-                                        'shift_id' => $shift->row()->id, 
-                                        'hari_kerja' => date('l', strtotime($sheetData[$row]['D']))]);
-                                    if($cekJamKerja->num_rows() > 0){
-                                        $jamkerja = $cekJamKerja->row();
-                                        if(($in.":00" > @$jamkerja->jam_in.":00") && $sheetData[$row]['G'] == ""){
-                                            $end = strtotime($in.":00");
-                                            $start = strtotime(@$jamkerja->jam_in.":00");
-                                            $late = ($end - $start) / 60;
-                                        }else{
-                                            $late = 0;
-                                        }
-                                    }else{
-                                        $end = strtotime(date('Y-m-d H:i:s', strtotime($sheetData[$row]['E'].":00")));
-                                        $start = strtotime(date('Y-m-d H:i:s', strtotime($sheetData[$row]['D'].":00")));
-                                        $lembur = ($end - $start) / 60;
-                                        $late = 0;
-                                    }
-
-                                    $datas = [
-                                        'company_id' => $this->companyid,
-                                        'log_id' => $logid,
-                                        'nik' => $sheetData[$row]['B'],
-                                        'jam_in' => date('Y-m-d H:i:s', strtotime($sheetData[$row]['D'].":00")),
-                                        'jam_out' => date('Y-m-d H:i:s', strtotime($sheetData[$row]['E'].":00")),
-                                        'shift_id' => $shift->row()->id,
-                                        'keterangan' => ucfirst($sheetData[$row]['G']),
-                                        'late' => $late,
-                                        'lembur' => $lembur
-                                    ];
-                                    
-                                    $this->db->insert('absensi', $datas);
-                                    
-                                    if($this->db->affected_rows() > 0){
-                                        $success_row++;
-                                    }else{
-                                        $log = [
-                                            'company_id' => $this->companyid,
-                                            'log_id' => $logid,
-                                            'error_log' => 'Gagal Di Tambahkan Ke Database',
-                                            'data' => json_encode($errorData)
-                                        ];
-                                        $this->db->insert('mitra_error_log', $log);
-                                        $error_row = $error_row + 1;
-                                    }
-                                }else{
-                                    $log = [
-                                        'company_id' => $this->companyid,
-                                        'log_id' => $logid,
-                                        'error_log' => 'Kode Shift Tidak Cocok',
-                                        'data' => json_encode($errorData)
-                                    ];
-                                    $this->db->insert('mitra_error_log', $log);
-                                    $error_row = $error_row + 1;
-                                }
                             }else{
-                                $log = [
-                                    'company_id' => $this->companyid,
-                                    'log_id' => $logid,
-                                    'error_log' => 'NIP Tidak Cocok',
-                                    'data' => json_encode($errorData)
-                                ];
-                                $this->db->insert('mitra_error_log', $log);
-                                $error_row = $error_row + 1;
+
                             }
                         }
 
-                        $dataUpdate = [
-                            'success_row' => $success_row,
-                            'error_row' => $error_row,
-                            'total_row' => $success_row + $error_row
-                        ];
-                        $this->db->where('id', $logid)->update('log_upload_mitra', $dataUpdate);
-                        if($this->db->affected_rows() > 0){
-                            $this->session->set_flashdata('success', "File Berhasil Di Upload");
-                            redirect($_SERVER['HTTP_REFERER']);
-                        }else{
-                            unlink($inputFileName);
-                            $this->db->where('id', $logid)->delete('log_upload_mitra');
-                            $this->session->set_flashdata('error', "File Gagal Di Upload");
-                            redirect($_SERVER['HTTP_REFERER']);
-                        }
+                    //     // $dataUpdate = [
+                    //     //     'success_row' => $success_row,
+                    //     //     'error_row' => $error_row,
+                    //     //     'total_row' => $success_row + $error_row
+                    //     // ];
+                    //     // $this->db->where('id', $logid)->update('log_upload_mitra', $dataUpdate);
+                    //     // if($this->db->affected_rows() > 0){
+                    //     //     $this->session->set_flashdata('success', "File Berhasil Di Upload");
+                    //     //     redirect($_SERVER['HTTP_REFERER']);
+                    //     // }else{
+                    //     //     unlink($inputFileName);
+                    //     //     $this->db->where('id', $logid)->delete('log_upload_mitra');
+                    //     //     $this->session->set_flashdata('error', "File Gagal Di Upload");
+                    //     //     redirect($_SERVER['HTTP_REFERER']);
+                    //     // }
                     }else{
                         unlink($inputFileName);
                         $this->session->set_flashdata('error', "File Tidak Sesuai Dengan Format Yang Tersedia");
@@ -510,7 +460,7 @@ class Upload extends CI_Controller{
     }
 
     function toAlpha($data){
-        $alphabet =   array('a','b','c','d','e','f','g','h','i','j','k','l','m','n','o','p','q','r','s','t','u','v','w','x','y','z');
+        $alphabet =   array('A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z');
         $alpha_flip = array_flip($alphabet);
         if($data <= 25){
           return $alphabet[$data];

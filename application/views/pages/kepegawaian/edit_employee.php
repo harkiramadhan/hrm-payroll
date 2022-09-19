@@ -355,7 +355,7 @@
                                         <select name="jabatan_id" class="form-control <?= (@form_error('jabatan_id')) ? 'is-invalid' : ((@set_value('jabatan_id')) ? 'is-valid' : '') ?>">
                                             <option value="" selected="" disabled="">- Pilih Jabatan</option>
                                             <?php foreach($jabatan->result() as $j){ ?>
-                                                <option value="<?= $j->id ?>" <?= (@set_value('jabatan_id') == $j->id || $pegawai->jabatan_id) ? 'selected' : '' ?> ><?= $j->jabatan ?></option>
+                                                <option value="<?= $j->id ?>" <?= ($pegawai->jabatan_id == $j->id) ? 'selected' : '' ?> ><?= $j->jabatan ?></option>
                                             <?php } ?>
                                         </select>
                                     </div>

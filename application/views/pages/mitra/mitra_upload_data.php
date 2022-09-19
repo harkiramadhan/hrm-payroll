@@ -61,8 +61,15 @@
                                 </div>
                             </div>
                             <div class="col-lg-12 mb-2">
-                                <div class="d-grid">
-                                    <a href="<?= site_url('mitra/upload/download') ?>" class="btn btn-sm btn-round text-white bg-secondary mb-0 mx-1"><i class="fas fa-download me-2"></i><i class="fas fa-file-excel me-2"></i> Format</a>
+                                <div class="d-grid dropdown">
+                                    <button class="btn btn-sm btn-round text-white bg-secondary mb-0 dropdown-toggle" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false"><i class="fas fa-download me-2"></i><i class="fas fa-file-excel me-2"></i> Format</button>
+                                    <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                        <?php foreach($cabang->result() as $cb){ ?>
+                                            <li>
+                                                <a class="dropdown-item" href="<?= site_url('mitra/upload/download/' . $cb->id) ?>"> <strong><?= $cb->cabang ?></strong></a>
+                                            </li>
+                                        <?php } ?>
+                                    </ul>
                                 </div>
                             </div>
                         </div>
