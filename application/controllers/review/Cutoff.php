@@ -545,7 +545,14 @@ class Cutoff extends CI_Controller{
                                 'p.divisi_id' => $reviewCutoff->divisi_id
                             ])->get();
 
-        $tunjangan = $this->db->order_by('urut', "ASC")->get_where('tunjangan', ['company_id' => $this->companyid, 'status' => 't']);
+        $tunjangan = $this->db->select('t.*')
+                                ->from('tunjangan t')
+                                ->join('role_tunjangan rt', 't.role_id = rt.id')
+                                ->where([
+                                    't.company_id' => $this->companyid,
+                                    't.status' => 't',
+                                    'rt.jenis' => 'Karyawan'
+                                ])->order_by('t.urut', "ASC")->get();
         ?>
             <style>
                 .sticky-col {
