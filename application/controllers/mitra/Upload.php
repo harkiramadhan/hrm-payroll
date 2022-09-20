@@ -202,7 +202,7 @@ class Upload extends CI_Controller{
                                 'p.company_id' => $this->companyid,
                                 'p.cabang_id' => $cabang_id,
                                 'j.jabatan' => 'Mitra'
-                            ])->order_by('nik', "ASC")->get();
+                            ])->order_by('p.nama', "ASC")->get();
 
         $cabang = $this->db->get_where('cabang', ['id' => $cabang_id])->row();
                             
@@ -263,13 +263,19 @@ class Upload extends CI_Controller{
 
         $number = 4;
         foreach($tunjangan->result() as $row){
+            if($row->type == 3){
+                $sheet->getStyle($alpha . '3')->getFill()
+                        ->setFillType(\PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID)->getStartColor()->setRGB('fc4503');
+                $sheet->getStyle($alpha . '3')->getFont()
+                        ->getColor()->setARGB(\PhpOffice\PhpSpreadsheet\Style\Color::COLOR_WHITE);
+            }
+            
             $alpha = $this->toAlpha($number);
             $spreadsheet->getActiveSheet()->setCellValueByColumnAndRow($number, 3, $row->tunjangan);
             $sheet->getStyle($alpha . '3')->applyFromArray($styleBold);
             $sheet->getColumnDimension($alpha)->setAutoSize(true);
             $sheet->getStyle($alpha . '3')->getAlignment()->setHorizontal('center');
             $sheet->getStyle($alpha . '3')->getAlignment()->setVertical('center');
-            
             $number++;
         }
 
@@ -348,9 +354,8 @@ class Upload extends CI_Controller{
                                     ];
                                     array_push($tunjangan_content, $dataTunjangan);
                                 }
+                                $stringColumn++;
                             }
-
-                            $stringColumn++;
                         }
                         
                         $tunjangan[] = $tunjangan_content;
@@ -358,7 +363,6 @@ class Upload extends CI_Controller{
                     }
                     
                     // $this->output->set_content_type('application/json')->set_output(json_encode($tunjangan[0]));
-                    
                     
                     if($sheetData[2]['B'] == $stringCutoff){
                         $success_row = 0;
@@ -369,16 +373,37 @@ class Upload extends CI_Controller{
                             'cutoff_id' => $cutoffid,
                             'filename' => $fileImport
                         ];
-                    //     // $this->db->insert('log_upload_mitra', $dataLog);
-                    //     // $logid = $this->db->insert_id();
+                        $this->db->insert('log_upload_mitra', $dataLog);
+                        $logid = $this->db->insert_id();
                         for($row = 4; $row <= count($sheetData); $row++){
                             $cekPegawai = $this->db->limit(1)->get_where('pegawai', ['nik' => $sheetData[$row]['B']]);
+                            $datas = [];
                             if($cekPegawai->num_rows() > 0){
-
+                                foreach($tunjangan[0] as $t){
+                                    $cekTunjangan = $this->db->get_where('tunjangan', ['id' => $t['id']]);
+                                    if($cekTunjangan->num_rows() > 0){
+                                        if($sheetData[$row][$t['column']] != NULL) {
+                                            $datas[] = [
+                                                'log_id' => $logid,
+                                                'nip' => $cekPegawai->id,
+                                                'cutoff_id' => $cutoffid,
+                                                'tunjangan_id' => $cekTunjangan->row()->id,
+                                                'nominal' => $sheetData[$row][$t['column']]
+                                            ];
+                                        }else{
+                                            /* Error Log Here - Tunjangan Tidak Tersedia */    
+                                        }
+                                    }else{
+                                        /* Error Log Here - Tunjangan Tidak Tersedia */
+                                    }
+                                }
                             }else{
-
+                                /* Error Log Here - Pegawai Tidak Tersedia */
                             }
                         }
+
+                        $this->output->set_content_type('application/json')->set_output(json_encode($datas));
+                        
 
                     //     // $dataUpdate = [
                     //     //     'success_row' => $success_row,
