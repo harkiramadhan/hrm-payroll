@@ -42,7 +42,7 @@
                                 <?php if($pegawai->kode_cabang != NULL): ?>
                                 <div class="col-lg-3 mb-3">
                                     <label>NIP</label>
-                                    <input class="form-control" type="text" placeholder="NIP" name="nik" value="<?= substr(date('Y', strtotime($pegawai->created_at)), -2).".".$pegawai->kode_cabang.".".sprintf("%05s", $pegawai->nik) ?>" disabled>
+                                    <input class="form-control" type="text" placeholder="NIP" name="nik" value="<?= $pegawai->nik ?>" disabled>
                                 </div>
                                 <?php endif; ?>
 
@@ -321,7 +321,7 @@
                                     <tbody>
                                         <?php 
                                             $not = 1;
-                                            $getTunjangan = $this->db->select('dt.*, t.tunjangan, t.keterangan, t.type tunjangan_type, rt.kode, rt.satuan')
+                                            $getTunjangan = $this->db->select('dt.*, t.tunjangan, t.keterangan, t.type tunjangan_type, rt.kode, rt.satuan, rt.jenis jenis_role')
                                                                     ->from('detail_template_tunjangan dt')
                                                                     ->join('tunjangan t', 'dt.tunjangan_id = t.id')
                                                                     ->join('role_tunjangan rt', 't.role_id = rt.id')
@@ -335,7 +335,7 @@
                                         ?>
                                         <tr>
                                             <td class="text-center"><?= $not++ ?></td>
-                                            <td><?= $tem->tunjangan.' - '.$tem->keterangan ?></td>
+                                            <td><?= $tem->jenis_role.' - '.$tem->tunjangan.' - '.$tem->keterangan ?></td>
                                             <td><?= $tem->satuan ?></td>
                                             <td><?= $nominal ?></td>
                                             <td><?= $badgeType.' '.$badgeTunjangan ?></td>
@@ -547,7 +547,7 @@
                             <?php 
                                 $no = 1;
                                 foreach($templateTunjangan->result() as $r){ 
-                                    $tunjangan = $this->db->select('dt.*, t.tunjangan, t.keterangan, t.type tunjangan_type, rt.kode, rt.satuan')
+                                    $tunjangan = $this->db->select('dt.*, t.tunjangan, t.keterangan, t.type tunjangan_type, rt.kode, rt.satuan, rt.jenis jenis_role')
                                                             ->from('detail_template_tunjangan dt')
                                                             ->join('tunjangan t', 'dt.tunjangan_id = t.id')
                                                             ->join('role_tunjangan rt', 't.role_id = rt.id')
@@ -580,7 +580,7 @@
                                             ?>
                                                 <hr class="my-1">
                                                 <div class="d-flex justify-content-between">
-                                                    <strong><?= $t->tunjangan." - ".$t->satuan." : ".$nominal ?></strong>
+                                                    <strong><?= $t->jenis_role." - ".$t->tunjangan." - ".$t->satuan." : ".$nominal ?></strong>
                                                     <strong><?= $badgeTunjangan ?></strong>
                                                 </div>
                                             <?php } ?>

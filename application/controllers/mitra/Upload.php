@@ -29,6 +29,22 @@ class Upload extends CI_Controller{
         $this->load->view('templates', $var);
     }
 
+    function detail($id){
+        $var = [
+            'title' => 'Upload Data Cutoff Mitra',
+            'company' => $this->M_Company->getById($this->companyid),
+            'cabang' => $this->db->get_where('cabang', ['company_id' => $this->companyid, 'status' => 't']),
+            'page' => 'mitra/mitra_upload_data'
+        ];
+
+        $datas = $this->db->select('')
+                        ->from('summary_mitra s')
+                        ->where([
+                            's.log_id' => $id
+                        ])->get();  
+        $this->output->set_content_type('application/json')->set_output(json_encode($datas->result()));
+                            
+    }
     
     function remove($id){
         $absensi = $this->db->get_where('log_upload_mitra', ['id' => $id])->row();
@@ -86,20 +102,16 @@ class Upload extends CI_Controller{
                                                     <small>
                                                         NIP<br>
                                                         Nama<br>
-                                                        In<br>
-                                                        Out<br>
-                                                        Shift<br>
-                                                        Ket<br>
+                                                        Tunjangan<br>
+                                                        Angka<br>
                                                     </small>
                                                 </div>
                                                 <div class="col-10">
                                                     <small>
                                                         : <strong><?= $data->nik ?></strong> <br>
                                                         : <strong><?= $data->nama ?></strong> <br>
-                                                        : <strong><?= $data->jam_in ?></strong> <br>
-                                                        : <strong><?= $data->jam_out ?></strong> <br>
-                                                        : <strong><?= $data->shift_id ?></strong> <br>
-                                                        : <strong><?= $data->keterangan ?></strong> <br>
+                                                        : <strong><?= $data->tunjangan ?></strong> <br>
+                                                        : <strong><?= $data->angka ?></strong> <br>
                                                     </small>
                                                 </div>
                                             </div>
@@ -119,9 +131,10 @@ class Upload extends CI_Controller{
         $start = intval($this->input->get("start"));
         $length = intval($this->input->get("length"));
 
-        $logAbsensi = $this->db->select('u.username, la.*')
+        $logAbsensi = $this->db->select('u.username, la.*, c.cabang')
                             ->from('log_upload_mitra la')
                             ->join('user u', 'la.user_id = u.id')
+                            ->join('cabang c', 'la.cabang_id = c.id')
                             ->where([
                                 'la.company_id' => $this->companyid
                             ])->order_by('id', "DESC")->get();
@@ -133,13 +146,14 @@ class Upload extends CI_Controller{
             $data[] =[
                 $no++,
                 '<p class="mb-0";><strong>'.$row['username'].'</strong></p>',
+                '<p class="mb-0";><strong>'.$row['cabang'].'</strong></p>',
                 '<a class="btn btn-sm btn-round btn-secondary text-white px-3 mb-0 mx-1" href="'.base_url('uploads/mitra/' . $row['filename']).'" style="width:100%" download><i class="fas fa-download me-2" aria-hidden="true"></i>'.$row['filename'].'</a>',
                 '<button type="button" class="btn btn-sm btn-round btn-danger text-white px-3 mb-0 btn-detail-error" onclick="errorLogDetail('.$row['id'].')" style="width:100%"><i class="fas fa-arrow-up me-2" aria-hidden="true"></i>Error '.$error.' Row</button>',
                 '<p class="text-center mb-0";><strong>'.$row['success_row'].'</strong></p>',
                 '<p class="text-center mb-0";><strong>'.$row['total_row'].'</strong></p>',
                 '<strong>'.longdate_indo(date('Y-m-d', strtotime($row['timestamp']))).' - '.date('H:i:s', strtotime($row['timestamp'])).'</strong>',
                 '<div class="btn-group" role="group" aria-label="Basic example">
-                    <a href="'.site_url('mitra/upload/' . $row['id']).'" class="btn btn-sm btn-round btn-primary text-white px-3 mb-0"><i class="fas fa-eye me-2" aria-hidden="true"></i>Detail</a>
+                    <a href="'.site_url('mitra/' . $row['id']).'" class="btn btn-sm btn-round btn-primary text-white px-3 mb-0"><i class="fas fa-eye me-2" aria-hidden="true"></i>Detail</a>
                     <button type="button" class="btn btn-sm btn-round btn-link text-danger px-3 mb-0" onclick="remove('.$row['id'].')"><i class="far fa-trash-alt" aria-hidden="true"></i></button>
                 </div>
                 
@@ -301,6 +315,8 @@ class Upload extends CI_Controller{
 
     function import(){
         $cutoffid = $this->input->post('cutoff_id', TRUE);
+        $cabangid = $this->input->post('cabang_id', TRUE);
+
         $cutoff = $this->db->get_where('cutoff', ['id' => $cutoffid])->row();
         $this->load->library('form_validation');
          $this->form_validation->set_rules('file', 'Upload File', 'callback_checkFileValidation');
@@ -339,9 +355,9 @@ class Upload extends CI_Controller{
 
                     foreach ($sheet->getRowIterator(3) as $index => $row) {
                         $cellIterator = $row->getCellIterator();
-                        $cellIterator->setIterateOnlyExistingCells(TRUE); // This loops through all cells, even if a cell value is not set.
+                        $cellIterator->setIterateOnlyExistingCells(TRUE); 
                         $tunjangan_content = [];
-                        $stringColumn = 4;
+                        $stringColumn = 3;
                         foreach ($cellIterator as $cell) {
                             $val = $cell->getValue();
                             if($val != 'No' && $val != 'NIP' && $val != 'Nama'){
@@ -358,68 +374,109 @@ class Upload extends CI_Controller{
                             }
                         }
                         
-                        $tunjangan[] = $tunjangan_content;
+                        $importTunjangan[] = $tunjangan_content;
                         break;
                     }
                     
                     // $this->output->set_content_type('application/json')->set_output(json_encode($tunjangan[0]));
                     
                     if($sheetData[2]['B'] == $stringCutoff){
-                        $success_row = 0;
-                        $error_row = 0;
                         $dataLog = [
                             'company_id' => $this->companyid,
                             'user_id' => $this->session->userdata('userid'),
                             'cutoff_id' => $cutoffid,
+                            'cabang_id' => $cabangid,
                             'filename' => $fileImport
                         ];
                         $this->db->insert('log_upload_mitra', $dataLog);
                         $logid = $this->db->insert_id();
+                        $datas = [];
                         for($row = 4; $row <= count($sheetData); $row++){
-                            $cekPegawai = $this->db->limit(1)->get_where('pegawai', ['nik' => $sheetData[$row]['B']]);
-                            $datas = [];
+                            $success_row = 0;
+                            $error_row = 0;
+                            $cekPegawai = $this->db->select('p.id, tp.template_id, p.nama')
+                                                    ->from('pegawai p')
+                                                    ->join('tunjangan_pegawai tp', 'tp.pegawai_id = p.id')
+                                                    ->join('template_tunjangan tt', 'tp.template_id = tt.id')
+                                                    ->where([
+                                                        'p.company_id' => $this->companyid,
+                                                        'p.nik' => $sheetData[$row]['B']
+                                                    ])->limit(1)->get();
+
                             if($cekPegawai->num_rows() > 0){
-                                foreach($tunjangan[0] as $t){
-                                    $cekTunjangan = $this->db->get_where('tunjangan', ['id' => $t['id']]);
+                                $pegawai = $cekPegawai->row();
+                                foreach($importTunjangan[0] as $t){
+                                    $cekTunjangan = $this->db->select('dt.type, dt.nominal, t.tunjangan, t.id')
+                                                            ->from('detail_template_tunjangan dt')
+                                                            ->join('tunjangan t', 'dt.tunjangan_id = t.id')
+                                                            ->where([
+                                                                't.company_id' => $this->companyid,
+                                                                'dt.template_id' => $pegawai->template_id,
+                                                                't.tunjangan'=> $t['tunjangan'],
+                                                                'dt.status' => 't'
+                                                            ])->get();
                                     if($cekTunjangan->num_rows() > 0){
                                         if($sheetData[$row][$t['column']] != NULL) {
-                                            $datas[] = [
+                                            $tunjangan = $cekTunjangan->row();
+                                            $nominalTunjangan = (int)str_replace('.', '', $sheetData[$row][$t['column']]) * $tunjangan->nominal;
+                                            $insert = [
                                                 'log_id' => $logid,
-                                                'nip' => $cekPegawai->id,
+                                                'pegawai_id' => $pegawai->id,
                                                 'cutoff_id' => $cutoffid,
-                                                'tunjangan_id' => $cekTunjangan->row()->id,
-                                                'nominal' => $sheetData[$row][$t['column']]
+                                                'tunjangan_id' => $tunjangan->id,
+                                                'nominal' => $nominalTunjangan
                                             ];
-                                        }else{
-                                            /* Error Log Here - Tunjangan Tidak Tersedia */    
+                                            $this->db->insert('summary_mitra', $insert);
+                                            if($this->db->affected_rows() > 0){
+                                                $success_row++;
+                                            }else{
+                                                $log = [
+                                                    'company_id' => $this->companyid,
+                                                    'log_id' => $logid,
+                                                    'error_log' => 'Gagal Di Tambahkan Ke Database',
+                                                    'data' => json_encode([
+                                                        'nik' => $sheetData[$row]['B'],
+                                                        'nama' => $sheetData[$row]['C'],
+                                                        'tunjangan' => $tunjangan->tunjangan,
+                                                        'angka' => $sheetData[$row][$t['column']]
+                                                    ])
+                                                ];
+                                                $this->db->insert('mitra_error_log', $log);
+                                                $error_row = $error_row + 1;
+                                            }
                                         }
-                                    }else{
-                                        /* Error Log Here - Tunjangan Tidak Tersedia */
                                     }
                                 }
                             }else{
                                 /* Error Log Here - Pegawai Tidak Tersedia */
+                                $log = [
+                                    'company_id' => $this->companyid,
+                                    'log_id' => $logid,
+                                    'error_log' => 'Pegawai Tidak Tersedia',
+                                    'data' => json_encode([
+                                        'nik' => $sheetData[$row]['B'],
+                                        'nama' => $sheetData[$row]['C']
+                                    ])
+                                ];
+                                $this->db->insert('mitra_error_log', $log);
+                                $error_row = $error_row + 1;
                             }
                         }
-
-                        $this->output->set_content_type('application/json')->set_output(json_encode($datas));
-                        
-
-                    //     // $dataUpdate = [
-                    //     //     'success_row' => $success_row,
-                    //     //     'error_row' => $error_row,
-                    //     //     'total_row' => $success_row + $error_row
-                    //     // ];
-                    //     // $this->db->where('id', $logid)->update('log_upload_mitra', $dataUpdate);
-                    //     // if($this->db->affected_rows() > 0){
-                    //     //     $this->session->set_flashdata('success', "File Berhasil Di Upload");
-                    //     //     redirect($_SERVER['HTTP_REFERER']);
-                    //     // }else{
-                    //     //     unlink($inputFileName);
-                    //     //     $this->db->where('id', $logid)->delete('log_upload_mitra');
-                    //     //     $this->session->set_flashdata('error', "File Gagal Di Upload");
-                    //     //     redirect($_SERVER['HTTP_REFERER']);
-                    //     // }
+                        $dataUpdate = [
+                            'success_row' => $success_row,
+                            'error_row' => $error_row,
+                            'total_row' => $success_row + $error_row
+                        ];
+                        $this->db->where('id', $logid)->update('log_upload_mitra', $dataUpdate);
+                        if($this->db->affected_rows() > 0){
+                            $this->session->set_flashdata('success', "File Berhasil Di Upload");
+                            redirect($_SERVER['HTTP_REFERER']);
+                        }else{
+                            unlink($inputFileName);
+                            $this->db->where('id', $logid)->delete('log_upload_mitra');
+                            $this->session->set_flashdata('error', "File Gagal Di Upload");
+                            redirect($_SERVER['HTTP_REFERER']);
+                        }
                     }else{
                         unlink($inputFileName);
                         $this->session->set_flashdata('error', "File Tidak Sesuai Dengan Format Yang Tersedia");

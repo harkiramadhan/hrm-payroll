@@ -26,13 +26,13 @@ class Template_tunjangan extends CI_Controller{
     }
 
     function detail($id){
-        $tunjangan = $this->db->select('t.*, rt.kode, rt.satuan')
+        $tunjangan = $this->db->select('t.*, rt.kode, rt.satuan, rt.jenis jenis_role')
                             ->from('tunjangan t')
                             ->join('role_tunjangan rt', 't.role_id = rt.id')
                             ->where([
                                 't.company_id' => $this->companyid,
                                 't.status' => 't'
-                            ])->order_by('t.id', "DESC")->get();
+                            ])->order_by('jenis_role', "ASC")->get();
         $var = [
             'template_tunjangan' => $this->db->get_where('template_tunjangan', ['id' => $id])->row(),
             'tunjangan' => $tunjangan,
@@ -170,13 +170,13 @@ class Template_tunjangan extends CI_Controller{
 
     function editDetail($id){
         $detail = $this->db->get_where('detail_template_tunjangan', ['id' => $id])->row();
-        $tunjangan = $this->db->select('t.*, rt.kode, rt.satuan')
+        $tunjangan = $this->db->select('t.*, rt.kode, rt.satuan, rt.jenis jenis_role')
                             ->from('tunjangan t')
                             ->join('role_tunjangan rt', 't.role_id = rt.id')
                             ->where([
                                 't.company_id' => $this->companyid,
                                 't.status' => 't'
-                            ])->order_by('t.id', "DESC")->get();
+                            ])->order_by('jenis_role', 'ASC')->get();
         ?>
             <div class="card card-plain">
                 <div class="card-header pb-0 text-left">
@@ -190,7 +190,7 @@ class Template_tunjangan extends CI_Controller{
                                 <select name="tunjangan_id" class="form-control" id="exampleFormControlSelect1">
                                     <option value="" selected="" disabled="">- Pilih Tunjangan</option>
                                     <?php foreach($tunjangan->result() as $row){ ?>
-                                        <option value="<?= $row->id ?>" <?= ($detail->tunjangan_id == $row->id) ? 'selected' : '' ?>><?= $row->tunjangan." - ".$row->satuan." - ".$row->keterangan ?></option>
+                                        <option value="<?= $row->id ?>" <?= ($detail->tunjangan_id == $row->id) ? 'selected' : '' ?>><?= $row->jenis_role." - ".$row->tunjangan." - ".$row->satuan." - ".$row->keterangan ?></option>
                                     <?php } ?>
                                 </select>
                             </div>
@@ -352,7 +352,7 @@ class Template_tunjangan extends CI_Controller{
         $start = intval($this->input->get("start"));
         $length = intval($this->input->get("length"));
 
-        $get = $this->db->select('dt.*, t.tunjangan, t.keterangan, t.type tunjangan_type, rt.kode, rt.satuan')
+        $get = $this->db->select('dt.*, t.tunjangan, t.keterangan, t.type tunjangan_type, rt.kode, rt.satuan, rt.jenis jenis_role')
                         ->from('detail_template_tunjangan dt')
                         ->join('tunjangan t', 'dt.tunjangan_id = t.id')
                         ->join('role_tunjangan rt', 't.role_id = rt.id')
@@ -370,7 +370,7 @@ class Template_tunjangan extends CI_Controller{
             $data[] = [
                 $no++,
                 '<strong>'.$row->tunjangan.' - '.$row->keterangan.'</strong>',
-                '<strong>'.$row->satuan.'</strong>',
+                '<strong>'.$row->jenis_role.' - '.$row->satuan.'</strong>',
                 '<p class="text-end mb-0">'.$nominal.'</p>',
                 '<p class="text-end mb-0">'.$badgeType.' '.$badgeTunjangan.'</p>',
                 '<p class="text-end mb-0">'.$badge.'</p>',

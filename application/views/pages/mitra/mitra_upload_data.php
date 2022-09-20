@@ -29,6 +29,7 @@
                     <tr>
                         <th class="text-center w-5px">No</th>
                         <th>Username</th>
+                        <th>Cabang</th>
                         <th class="text-center">File</th>
                         <th class="text-center w-5px">Total Row Gagal</th>
                         <th class="text-center w-5px">Total Row Berhasil</th>
@@ -78,7 +79,7 @@
                                 <div class="col-lg-12">
                                     <label>Pilih Cutoff <small class="text-danger">*</small></label>
                                     <div class="input-group mb-3">
-                                        <select name="cutoff_id" id="" class="form-control">
+                                        <select name="cutoff_id" id="" class="form-control" required>
                                             <option value=""> - Pilih Cutoff</option>
                                             <?php 
                                                 $get = $this->db->get_where('cutoff', ['company_id' => $company->id])->result();
@@ -86,6 +87,17 @@
                                                     echo "<option value='".$rr->id."'>  Periode :: ". $rr->tahun."".sprintf("%02d", $rr->bulan) ."</option>";
                                                 }
                                             ?>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-lg-12">
+                                    <label>Pilih Cabang <small class="text-danger">*</small></label>
+                                    <div class="input-group mb-3">
+                                        <select name="cabang_id" id="" class="form-control" required>
+                                            <option value=""> - Pilih Cabang</option>
+                                            <?php foreach($cabang->result() as $cbb){ ?>
+                                                <option value="<?= $cbb->id ?>"> <?= $cbb->cabang ?></option>
+                                            <?php } ?>
                                         </select>
                                     </div>
                                 </div>

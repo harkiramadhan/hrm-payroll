@@ -63,3 +63,7 @@ $route['trx/absensi/(:num)/table'] = 'trx/absensi/tableDetail/$1';
 
 $route['review/cutoff/(:num)'] = 'review/cutoff/detail/$1';
 $route['review/cutoff/(:num)/table'] = 'review/cutoff/tableDetail/$1';
+
+$route['mitra'] = 'mitra/upload/index';
+$route['mitra/table'] = 'mitra/upload/table';
+$route['mitra/(:num)'] = 'mitra/upload/detail/$1';
