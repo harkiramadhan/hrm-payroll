@@ -67,3 +67,4 @@ $route['review/cutoff/(:num)/table'] = 'review/cutoff/tableDetail/$1';
 $route['mitra'] = 'mitra/upload/index';
 $route['mitra/table'] = 'mitra/upload/table';
 $route['mitra/(:num)'] = 'mitra/upload/detail/$1';
+$route['mitra/detailTable'] = 'mitra/upload/detailTable';

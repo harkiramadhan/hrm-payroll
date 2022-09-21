@@ -30,20 +30,23 @@ class Upload extends CI_Controller{
     }
 
     function detail($id){
+        $summary = $this->db->select('la.*, c.bulan, c.tahun, c.start_date, c.end_date, cb.cabang')
+                            ->from('log_upload_mitra la')
+                            ->join('cutoff c', 'la.cutoff_id = c.id')
+                            ->join('cabang cb', 'la.cabang_id = cb.id')
+                            ->where([
+                                'la.id' => $id,
+                            ])->get()->row();
         $var = [
-            'title' => 'Upload Data Cutoff Mitra',
+            'title' => 'Detail Summary Mitra',
             'company' => $this->M_Company->getById($this->companyid),
-            'cabang' => $this->db->get_where('cabang', ['company_id' => $this->companyid, 'status' => 't']),
-            'page' => 'mitra/mitra_upload_data'
+            'summary' => $summary,
+            'page' => 'mitra/detail_summary',
+            'ajax' => [
+                'mitra_summary'
+            ]
         ];
-
-        $datas = $this->db->select('')
-                        ->from('summary_mitra s')
-                        ->where([
-                            's.log_id' => $id
-                        ])->get();  
-        $this->output->set_content_type('application/json')->set_output(json_encode($datas->result()));
-                            
+        $this->load->view('templates', $var);                
     }
     
     function remove($id){
@@ -196,6 +199,247 @@ class Upload extends CI_Controller{
             "data"              => $data
         ];
         $this->output->set_content_type('application/json')->set_output(json_encode($output));
+    }
+
+    function detailTable(){
+        $cutoffid = $this->input->get('cutoffid', TRUE);
+        $logid = $this->input->get('logid', TRUE);
+
+        $tunjangan = $this->db->select('t.*')
+                                ->from('tunjangan t')
+                                ->join('role_tunjangan rt', 't.role_id = rt.id')
+                                ->where([
+                                    't.company_id' => $this->companyid,
+                                    't.status' => 't',
+                                    'rt.jenis' => 'Mitra'
+                                ])->order_by('t.urut', "ASC")->get();
+
+        $getData = $this->db->select('p.nama, p.nik, s.*')
+                            ->from('summary_mitra s')
+                            ->join('pegawai p', 's.pegawai_id = p.id')
+                            ->where([
+                                's.log_id' => $logid,
+                                's.cutoff_id' => $cutoffid
+                            ])->order_by('p.nama', "ASC")->get();
+        ?>
+            <style>
+                .sticky-col {
+                    position: -webkit-sticky;
+                    position: sticky;
+                    background-color: white !important;
+                }
+
+                .first-col {
+                    width: 100px;
+                    min-width: 100px;
+                    max-width: 100px;
+                    left: 0px;
+                }
+
+                .second-col {
+                    width: 150px;
+                    min-width: 150px;
+                    max-width: 150px;
+                    left: 100px;
+                }
+
+                .third-col {
+                    width: 250px;
+                    min-width: 250px;
+                    max-width: 250px;
+                    left: 250px;
+                }
+
+                .four-col {
+                    width: 100px;
+                    min-width: 100px;
+                    max-width: 100px;
+                    left: 500px;
+                }
+            </style>
+            <div class="card-header">
+                <div class="row">
+                    <div class="col-lg-6">
+                        <h5 class="mb-0"><strong>Summary</strong></h5>
+                    </div>
+                    <div class="col-lg-3 text-end pe-0">
+                        <button type="button" class="btn btn-sm btn-warning" id="btn-lock"><i class="fas fa-lock me-2"></i> Lock</button>
+                    </div>
+                    <div class="col-lg-3 text-end">
+                        <input type="text" name="" id="myInput" class="form-control form-control-sm" placeholder="Cari ...">
+                    </div>
+                </div>
+            </div>
+
+            <div class="table-responsive" style="max-height: 500px!important">
+                <table id="example" class="table table-bordered table-hover" style="width:100%">
+                    <thead>
+                        <tr>
+                            <th rowspan="2" style="vertical-align : middle;text-align:center;position:sticky;top: 0;background-color:white; z-index: 3;" class="text-center w-5px sticky-col first-col">No</th>
+                            <th rowspan="2" style="vertical-align : middle;text-align:center;position:sticky;top: 0;background-color:white; z-index: 3;" class=" sticky-col second-col">NIP</th>
+                            <th rowspan="2" style="vertical-align : middle;text-align:center;position:sticky;top: 0;background-color:white; z-index: 3;" class=" sticky-col third-col">Nama</th>
+                            <th rowspan="2" style="vertical-align : middle;text-align:center;position:sticky;top: 0;background-color:white; z-index: 3;" class=" sticky-col four-col">
+                                <div class="form-check">
+                                    <input type="checkbox" class="form-check-input mt-1 check-all" id="customCheckAll" style="margin-left: auto!important; margin-right: auto !important; left: -15px!important">
+                                </div>
+                                <small><strong>Check All</strong></small>
+                            </th>
+                            <th rowspan="2" style="vertical-align : middle;text-align:center;position:sticky;top: 0;background-color:white" class="">Template <br> Tunjangan</th>
+                            <th rowspan="2" style="vertical-align : middle;text-align:center;position:sticky;top: 0;background-color:white" class="text-center">Nominal Gaji <br> Pokok</th>
+                            <th rowspan="2" style="vertical-align : middle;text-align:center;position:sticky;top: 0;background-color:white" class="text-center">Nominal Gaji <br> Dilaporkan</th>
+                            <th colspan="<?= $tunjangan->num_rows() ?>" style="vertical-align : middle;text-align:center;position:sticky;top: 0;background-color:white" class="text-center">Tunjangan</th>
+                            <th rowspan="2" style="vertical-align : middle;text-align:center;position:sticky;top: 0;background-color:white" class="text-center">Nominal <br> Insentif</th>
+                            <th rowspan="2" style="vertical-align : middle;text-align:center;position:sticky;top: 0;background-color:white" class="text-center">Nominal <br> Tunjangan</th>
+                            <th rowspan="2" style="vertical-align : middle;text-align:center;position:sticky;top: 0;background-color:white" class="text-center">THP</th>
+                            <th rowspan="2" style="vertical-align : middle;text-align:center;position:sticky;top: 0;background-color:white" class="text-center">Action</th>
+                        </tr>
+                        <tr>
+                            <th class="text-center" style="vertical-align : middle;text-align:center;position:sticky;top:50px;background-color:white">Hari</th>
+                            <th class="text-center" style="vertical-align : middle;text-align:center;position:sticky;top:50px;background-color:white">Menit</th>
+                            <th class="text-center" style="vertical-align : middle;text-align:center;position:sticky;top:50px;background-color:white">Hari</th>
+                            <th class="text-center" style="vertical-align : middle;text-align:center;position:sticky;top:50px;background-color:white">Menit</th>
+                            <?php foreach($tunjangan->result() as $th){ ?>
+                                <th class="text-center" style="vertical-align : middle;text-align:center;position:sticky;top:50px;background-color:white"><?= $th->tunjangan ?></th>
+                            <?php } ?>
+                        </tr>
+                    </thead>
+                    <tbody id="myTable">
+                        <?php
+                            $no = 1; 
+                            foreach($getData->result() as $row){ 
+                        ?>
+                        <tr>
+                            <td style="z-index: 2;" class="text-center sticky-col first-col" width="5px"><?= $no++ ?></td>
+                            <td style="z-index: 2;" class="sticky-col second-col"><strong><?= $row->nik ?></strong></td>
+                            <td style="z-index: 2;" class="sticky-col third-col"><strong><?= $row->nama ?></strong></td>
+                            <td style="z-index: 2;" class="sticky-col four-col">
+                                <div class="form-check">
+                                    <input type="checkbox" class="form-check-input mt-1 check-data" name="pegawai_id" id="checkPegawai<?= $row->id ?>" value="<?= $row->id ?>" style="margin-left: auto!important; margin-right: auto !important;">
+                                </div>
+                            </td>
+                            <td><strong><?= $row->shift ?></strong></td>
+                            <td class="text-center"><strong><?= $row->nama_template_tunjangan ?></strong></td>
+                            <td class="text-center"><strong><?= ($row->nominal_gapok) ? rupiah($row->nominal_gapok) : '-' ?></strong></td>
+                            <td class="text-center"><strong><?= ($row->nominal_gaji_dilaporkan) ? rupiah($row->nominal_gaji_dilaporkan) : '-' ?></strong></td>
+                            <?php 
+                                foreach($tunjangan->result() as $tr){    
+                                    $cekSummaryTunjangan = $this->db->get_where('summary_tunjangan', ['pegawai_id' => $row->pegawai_id, 'review_cutoff_id' => $cutoffid, 'tunjangan_id' => $tr->id])->row();
+                                    if(@$cekSummaryTunjangan->nominal){
+                                        $nominalTunjangan = rupiah((int)str_replace('.', '', $cekSummaryTunjangan->nominal));
+                                    }else{
+                                        $nominalTunjangan = '-';
+                                    }
+                            ?>
+                                <td class="text-center"><strong><?= $nominalTunjangan ?></strong></td>
+                            <?php } ?>
+                            <td class="text-center"><strong><?= ($row->nominal_insentif) ? rupiah($row->nominal_insentif) : '-' ?></strong></td>
+                            <td class="text-center"><strong><?= ($row->nominal_tunjangan) ? rupiah($row->nominal_tunjangan) : '-' ?></strong></td>
+                            <td class="text-center"><strong><?= ($row->thp) ? rupiah($row->thp) : '-' ?></strong></td>
+                            <td>
+                                <button type="button" class="btn btn-sm btn-round btn-info text-white px-3 mb-0" onclick="edit(<?= $row->id ?>)"><i class="fas fa-pencil-alt me-2" aria-hidden="true"></i>Edit</button>
+                            </td>
+                        </tr>
+                        <?php } ?>
+                    </tbody>
+                </table>
+            </div>
+
+            <form action="" method="post" id="form-lock">
+                <input type="hidden" name="review_cutoff_id" value="<?= $cutoffid ?>">
+                <div class="hasil">
+
+                </div>
+            </form>
+
+            <script>
+                $('#btn-lock').prop('disabled', true)
+                function btnLock(){
+                    if($('input[name="id[]"]').length === 0){
+                        $('#btn-lock').prop('disabled', true)
+                    }else{
+                        $('#btn-lock').prop('disabled', false)
+                    }
+                }
+
+                $('.check-all').click(function(){
+                    if($(this).is(':checked')){
+                        $('.check-data').prop('checked', true)
+                        $(".check-data").each(function(){
+                            var val = $(this).val()
+                            if($("#hasil_" + val).length == 0) {
+                                $('.hasil').append(
+                                    $("<input>", {
+                                        type: "hidden",
+                                        val: val,
+                                        name: "id[]",
+                                        id: "hasil_" + val
+                                    })
+                                )
+                            }
+                        })
+                    }else{
+                        $('.check-data').prop('checked', false)
+                        $(".check-data").each(function(){
+                            var val = $(this).val()
+                            $('#hasil_' + val).remove()
+                        })
+                    }
+
+                    btnLock()
+                })
+                
+                $('.check-data').click(function(){
+                    var val = $(this).val()
+                    
+                    if($(this).is(':checked')){
+                        $('.hasil').append(
+                            $("<input>", {
+                                type: "hidden",
+                                val: val,
+                                name: "id[]",
+                                id: "hasil_" + val
+                            })
+                        )
+                    }else{
+                        $('#hasil_' + val).remove()
+                    }
+
+                    btnLock()
+                })
+                
+                $("#myInput").on("keyup", function() {
+                    var value = $(this).val().toLowerCase()
+                    $("#myTable tr").filter(function() {
+                        $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+                    })
+                })
+
+                $('#btn-lock').click(function(){
+                    var form = $('#form-lock').serialize()
+                    $.ajax({
+                        url: '<?= site_url('review/cutoff/summaryLock') ?>',
+                        type: 'post',
+                        data: form,
+                        success: function(res){
+                            location.reload()
+                        }
+                    })
+                })
+
+                function edit(id){
+                    var reviewId = '<?= $cutoffid ?>'
+                    $.ajax({
+                        url: '<?= site_url('review/cutoff/edit/') ?>' + id,
+                        type: 'get',
+                        data: {id : id, reviewId : reviewId},
+                        success: function(res){
+                            $('.data-edit-xl').html(res)
+                            $('#modalEditXl').modal('show')
+                        }
+                    })
+                }
+            </script>
+        <?php
     }
 
     function download($cabang_id){
@@ -378,8 +622,6 @@ class Upload extends CI_Controller{
                         break;
                     }
                     
-                    // $this->output->set_content_type('application/json')->set_output(json_encode($tunjangan[0]));
-                    
                     if($sheetData[2]['B'] == $stringCutoff){
                         $dataLog = [
                             'company_id' => $this->companyid,
@@ -394,7 +636,7 @@ class Upload extends CI_Controller{
                         for($row = 4; $row <= count($sheetData); $row++){
                             $success_row = 0;
                             $error_row = 0;
-                            $cekPegawai = $this->db->select('p.id, tp.template_id, p.nama')
+                            $cekPegawai = $this->db->select('p.id, tp.template_id, p.nama, p.nominal_gaji_dilaporkan, p.nominal_gapok')
                                                     ->from('pegawai p')
                                                     ->join('tunjangan_pegawai tp', 'tp.pegawai_id = p.id')
                                                     ->join('template_tunjangan tt', 'tp.template_id = tt.id')
@@ -405,8 +647,12 @@ class Upload extends CI_Controller{
 
                             if($cekPegawai->num_rows() > 0){
                                 $pegawai = $cekPegawai->row();
+                                $totalTunjangan = [];
+                                $totalTunjanganNonTunai = [];
+                                $totalTunjanganPengurangan = [];
+
                                 foreach($importTunjangan[0] as $t){
-                                    $cekTunjangan = $this->db->select('dt.type, dt.nominal, t.tunjangan, t.id')
+                                    $cekTunjangan = $this->db->select('dt.type, dt.nominal, t.tunjangan, t.id, t.type type_tunjangan')
                                                             ->from('detail_template_tunjangan dt')
                                                             ->join('tunjangan t', 'dt.tunjangan_id = t.id')
                                                             ->where([
@@ -426,9 +672,17 @@ class Upload extends CI_Controller{
                                                 'tunjangan_id' => $tunjangan->id,
                                                 'nominal' => $nominalTunjangan
                                             ];
-                                            $this->db->insert('summary_mitra', $insert);
+                                            $this->db->insert('summary_mitra_detail', $insert);
                                             if($this->db->affected_rows() > 0){
-                                                $success_row++;
+                                                if($tunjangan->type_tunjangan == 1){
+                                                    array_push($totalTunjangan, $nominalTunjangan);
+                                                }elseif($tunjangan->type_tunjangan == 2){
+                                                    array_push($totalTunjanganNonTunai, $nominalTunjangan);
+                                                }elseif($tunjangan->type_tunjangan == 3){
+                                                    array_push($totalTunjanganPengurangan, $nominalTunjangan);
+                                                }
+
+                                                $success_row = $success_row + 1;
                                             }else{
                                                 $log = [
                                                     'company_id' => $this->companyid,
@@ -447,6 +701,22 @@ class Upload extends CI_Controller{
                                         }
                                     }
                                 }
+
+                                $dataSummary = [
+                                    'cutoff_id' => $cutoffid,
+                                    'cabang_id' => $cabangid,
+                                    'log_id' => $logid,
+                                    'pegawai_id' => $pegawai->id,
+                                    'nominal_gapok' => $pegawai->nominal_gapok,
+                                    'nominal_gaji_dilaporkan' => $pegawai->nominal_gaji_dilaporkan,
+                                    'nominal_tunjangan' => array_sum($totalTunjangan),
+                                    'total_tunjangan_non_tunai' => array_sum($totalTunjanganNonTunai),
+                                    'total_tunjangan_pengurangan' => array_sum($totalTunjanganPengurangan),
+                                    'nominal_insentif' => NULL,
+                                    'thp' => array_sum($totalTunjangan) - array_sum($totalTunjanganPengurangan) + $pegawai->nominal_gapok,
+                                    'lock' => 'f'
+                                ];
+                                $this->db->insert('summary_mitra', $dataSummary);
                             }else{
                                 /* Error Log Here - Pegawai Tidak Tersedia */
                                 $log = [
