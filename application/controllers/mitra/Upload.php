@@ -214,9 +214,11 @@ class Upload extends CI_Controller{
                                     'rt.jenis' => 'Mitra'
                                 ])->order_by('t.urut', "ASC")->get();
 
-        $getData = $this->db->select('p.nama, p.nik, s.*')
+        $getData = $this->db->select('p.nama, p.nik, s.*, tt.nama nama_template')
                             ->from('summary_mitra s')
                             ->join('pegawai p', 's.pegawai_id = p.id')
+                            ->join('tunjangan_pegawai tp', 'tp.pegawai_id = p.id', "LEFT")
+                            ->join('template_tunjangan tt', 'tp.template_id = tt.id', "LEFT")
                             ->where([
                                 's.log_id' => $logid,
                                 's.cutoff_id' => $cutoffid
@@ -294,10 +296,6 @@ class Upload extends CI_Controller{
                             <th rowspan="2" style="vertical-align : middle;text-align:center;position:sticky;top: 0;background-color:white" class="text-center">Action</th>
                         </tr>
                         <tr>
-                            <th class="text-center" style="vertical-align : middle;text-align:center;position:sticky;top:50px;background-color:white">Hari</th>
-                            <th class="text-center" style="vertical-align : middle;text-align:center;position:sticky;top:50px;background-color:white">Menit</th>
-                            <th class="text-center" style="vertical-align : middle;text-align:center;position:sticky;top:50px;background-color:white">Hari</th>
-                            <th class="text-center" style="vertical-align : middle;text-align:center;position:sticky;top:50px;background-color:white">Menit</th>
                             <?php foreach($tunjangan->result() as $th){ ?>
                                 <th class="text-center" style="vertical-align : middle;text-align:center;position:sticky;top:50px;background-color:white"><?= $th->tunjangan ?></th>
                             <?php } ?>
@@ -317,13 +315,12 @@ class Upload extends CI_Controller{
                                     <input type="checkbox" class="form-check-input mt-1 check-data" name="pegawai_id" id="checkPegawai<?= $row->id ?>" value="<?= $row->id ?>" style="margin-left: auto!important; margin-right: auto !important;">
                                 </div>
                             </td>
-                            <td><strong><?= $row->shift ?></strong></td>
-                            <td class="text-center"><strong><?= $row->nama_template_tunjangan ?></strong></td>
+                            <td class="text-center"><strong><?= $row->nama_template ?></strong></td>
                             <td class="text-center"><strong><?= ($row->nominal_gapok) ? rupiah($row->nominal_gapok) : '-' ?></strong></td>
                             <td class="text-center"><strong><?= ($row->nominal_gaji_dilaporkan) ? rupiah($row->nominal_gaji_dilaporkan) : '-' ?></strong></td>
                             <?php 
                                 foreach($tunjangan->result() as $tr){    
-                                    $cekSummaryTunjangan = $this->db->get_where('summary_tunjangan', ['pegawai_id' => $row->pegawai_id, 'review_cutoff_id' => $cutoffid, 'tunjangan_id' => $tr->id])->row();
+                                    $cekSummaryTunjangan = $this->db->get_where('summary_mitra_detail', ['pegawai_id' => $row->pegawai_id, 'log_id' => $logid, 'tunjangan_id' => $tr->id])->row();
                                     if(@$cekSummaryTunjangan->nominal){
                                         $nominalTunjangan = rupiah((int)str_replace('.', '', $cekSummaryTunjangan->nominal));
                                     }else{
@@ -417,7 +414,7 @@ class Upload extends CI_Controller{
                 $('#btn-lock').click(function(){
                     var form = $('#form-lock').serialize()
                     $.ajax({
-                        url: '<?= site_url('review/cutoff/summaryLock') ?>',
+                        url: '<?= site_url('mitra/upload/summaryLock') ?>',
                         type: 'post',
                         data: form,
                         success: function(res){
@@ -429,7 +426,7 @@ class Upload extends CI_Controller{
                 function edit(id){
                     var reviewId = '<?= $cutoffid ?>'
                     $.ajax({
-                        url: '<?= site_url('review/cutoff/edit/') ?>' + id,
+                        url: '<?= site_url('mitra/upload/editSummary/') ?>' + id,
                         type: 'get',
                         data: {id : id, reviewId : reviewId},
                         success: function(res){
@@ -440,6 +437,7 @@ class Upload extends CI_Controller{
                 }
             </script>
         <?php
+        
     }
 
     function download($cabang_id){
@@ -605,7 +603,14 @@ class Upload extends CI_Controller{
                         foreach ($cellIterator as $cell) {
                             $val = $cell->getValue();
                             if($val != 'No' && $val != 'NIP' && $val != 'Nama'){
-                                $cekTunjangan = $this->db->get_where('tunjangan', ['tunjangan' => $cell->getValue()]);
+                                $cekTunjangan = $this->db->select('t.*')
+                                                        ->from('tunjangan t')
+                                                        ->join('role_tunjangan rt', 't.role_id = rt.id')
+                                                        ->where([
+                                                            't.tunjangan' => $cell->getValue(),
+                                                            'rt.jenis' => 'Mitra'
+                                                        ])->get();
+
                                 if($cekTunjangan->num_rows() > 0){
                                     $dataTunjangan = [
                                         'id' => $cekTunjangan->row()->id,
@@ -658,7 +663,7 @@ class Upload extends CI_Controller{
                                                             ->where([
                                                                 't.company_id' => $this->companyid,
                                                                 'dt.template_id' => $pegawai->template_id,
-                                                                't.tunjangan'=> $t['tunjangan'],
+                                                                't.id'=> $t['id'],
                                                                 'dt.status' => 't'
                                                             ])->get();
                                     if($cekTunjangan->num_rows() > 0){
