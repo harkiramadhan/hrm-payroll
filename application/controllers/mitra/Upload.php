@@ -772,6 +772,22 @@ class Upload extends CI_Controller{
         }
     }
 
+    function delete($id){
+        $log = $this->db->get_where('log_upload_mitra', ['id' => $id])->row();
+        if(unlink('./uploads/mitra/' . $log->filename)){
+            $this->db->where('id', $id)->delete('log_upload_mitra');
+            if($this->db->affected_rows() > 0){
+                $this->session->set_flashdata('success', "Data Berhasil Di Hapus");
+            }else{
+                $this->session->set_flashdata('error', "Data Gagal Di Hapus");
+            }
+        }else{
+            $this->session->set_flashdata('error', "Data Gagal Di Hapus");
+        }
+
+        redirect($_SERVER['HTTP_REFERER']);
+    }
+
     /* Form Validation Callback */
     public function checkFileValidation($string) {
         $file_mimes = array('text/x-comma-separated-values', 
