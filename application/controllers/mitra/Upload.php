@@ -549,7 +549,7 @@ class Upload extends CI_Controller{
 
         header('Content-Type: application/vnd.ms-excel');
         header('Last-Modified: ' . gmdate('D, d M Y H:i:s') . ' GMT');
-        header('Content-Disposition: attachment;filename=Format Import Mitra - '. $cabang->cabang .'.Xlsx'); 
+        header('Content-Disposition: attachment;filename=Format Import Mitra - '. $cabang->cabang .' - ' .$stringCutoff. '.Xlsx'); 
         header('Cache-Control: max-age=0');
         ob_end_clean();
         $Excel_writer->save('php://output');
