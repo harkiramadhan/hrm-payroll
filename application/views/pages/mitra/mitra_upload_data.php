@@ -30,6 +30,7 @@
                         <th class="text-center w-5px">No</th>
                         <th>Username</th>
                         <th>Cabang</th>
+                        <th class="text-center">Periode</th>
                         <th class="text-center">File</th>
                         <th class="text-center w-5px">Total Row Gagal</th>
                         <th class="text-center w-5px">Total Row Berhasil</th>

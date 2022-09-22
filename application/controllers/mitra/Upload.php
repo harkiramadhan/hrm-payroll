@@ -134,10 +134,11 @@ class Upload extends CI_Controller{
         $start = intval($this->input->get("start"));
         $length = intval($this->input->get("length"));
 
-        $logAbsensi = $this->db->select('u.username, la.*, c.cabang')
+        $logAbsensi = $this->db->select('u.username, la.*, c.cabang, ct.bulan, ct.tahun')
                             ->from('log_upload_mitra la')
                             ->join('user u', 'la.user_id = u.id')
                             ->join('cabang c', 'la.cabang_id = c.id')
+                            ->join('cutoff ct', 'la.cutoff_id = ct.id')
                             ->where([
                                 'la.company_id' => $this->companyid
                             ])->order_by('id', "DESC")->get();
@@ -146,10 +147,12 @@ class Upload extends CI_Controller{
 
         foreach($logAbsensi->result_array() as $row){
             $error = ($row['error_row'] > 0) ? $row['error_row'] : 0;
+            $periode = 'Periode ' . $row['tahun']."".sprintf("%02d", $row['bulan']);
             $data[] =[
                 $no++,
                 '<p class="mb-0";><strong>'.$row['username'].'</strong></p>',
                 '<p class="mb-0";><strong>'.$row['cabang'].'</strong></p>',
+                '<p class="mb-0 text-center";><strong>'.$periode.'</strong></p>',
                 '<a class="btn btn-sm btn-round btn-secondary text-white px-3 mb-0 mx-1" href="'.base_url('uploads/mitra/' . $row['filename']).'" style="width:100%" download><i class="fas fa-download me-2" aria-hidden="true"></i>'.$row['filename'].'</a>',
                 '<button type="button" class="btn btn-sm btn-round btn-danger text-white px-3 mb-0 btn-detail-error" onclick="errorLogDetail('.$row['id'].')" style="width:100%"><i class="fas fa-arrow-up me-2" aria-hidden="true"></i>Error '.$error.' Row</button>',
                 '<p class="text-center mb-0";><strong>'.$row['success_row'].'</strong></p>',
@@ -638,9 +641,9 @@ class Upload extends CI_Controller{
                         $this->db->insert('log_upload_mitra', $dataLog);
                         $logid = $this->db->insert_id();
                         $datas = [];
+                        $success_row = 0;
+                        $error_row = 0;
                         for($row = 4; $row <= count($sheetData); $row++){
-                            $success_row = 0;
-                            $error_row = 0;
                             $cekPegawai = $this->db->select('p.id, tp.template_id, p.nama, p.nominal_gaji_dilaporkan, p.nominal_gapok')
                                                     ->from('pegawai p')
                                                     ->join('tunjangan_pegawai tp', 'tp.pegawai_id = p.id')
@@ -686,8 +689,6 @@ class Upload extends CI_Controller{
                                                 }elseif($tunjangan->type_tunjangan == 3){
                                                     array_push($totalTunjanganPengurangan, $nominalTunjangan);
                                                 }
-
-                                                $success_row = $success_row + 1;
                                             }else{
                                                 $log = [
                                                     'company_id' => $this->companyid,
@@ -722,6 +723,9 @@ class Upload extends CI_Controller{
                                     'lock' => 'f'
                                 ];
                                 $this->db->insert('summary_mitra', $dataSummary);
+                                if($this->db->affected_rows() > 0){
+                                    $success_row = $success_row + 1;
+                                }
                             }else{
                                 /* Error Log Here - Pegawai Tidak Tersedia */
                                 $log = [
