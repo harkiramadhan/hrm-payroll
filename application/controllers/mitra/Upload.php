@@ -283,6 +283,7 @@ class Upload extends CI_Controller{
                                 's.cutoff_id' => $cutoffid,
                                 's.lock' => 'f'
                             ])->order_by('p.nama', "ASC")->get();
+                            
         ?>
             <style>
                 .sticky-col {
