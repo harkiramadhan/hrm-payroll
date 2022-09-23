@@ -638,8 +638,14 @@ class Cutoff extends CI_Controller{
                             <th class="text-center" style="vertical-align : middle;text-align:center;position:sticky;top:50px;background-color:white">Menit</th>
                             <th class="text-center" style="vertical-align : middle;text-align:center;position:sticky;top:50px;background-color:white">Hari</th>
                             <th class="text-center" style="vertical-align : middle;text-align:center;position:sticky;top:50px;background-color:white">Menit</th>
-                            <?php foreach($tunjangan->result() as $th){ ?>
-                                <th class="text-center" style="vertical-align : middle;text-align:center;position:sticky;top:50px;background-color:white"><?= $th->tunjangan ?></th>
+                            <?php 
+                                foreach($tunjangan->result() as $th){ 
+                                    $class = 'bg-white';
+                                    if($th->type == 3){
+                                        $class = 'bg-danger text-white';
+                                    }
+                            ?>
+                                <th class="text-center <?= $class ?>" style="vertical-align:middle;text-align:center;position:sticky;top:50px;"><strong><?= $th->tunjangan ?></strong></th>
                             <?php } ?>
                         </tr>
                     </thead>

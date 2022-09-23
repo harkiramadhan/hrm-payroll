@@ -277,7 +277,8 @@ class Upload extends CI_Controller{
                             ->join('template_tunjangan tt', 'tp.template_id = tt.id', "LEFT")
                             ->where([
                                 's.log_id' => $logid,
-                                's.cutoff_id' => $cutoffid
+                                's.cutoff_id' => $cutoffid,
+                                's.lock' => 'f'
                             ])->order_by('p.nama', "ASC")->get();
         ?>
             <style>
@@ -404,7 +405,7 @@ class Upload extends CI_Controller{
             </div>
 
             <form action="" method="post" id="form-lock">
-                <input type="hidden" name="review_cutoff_id" value="<?= $cutoffid ?>">
+                <input type="hidden" name="log_id" value="<?= $logid ?>">
                 <div class="hasil">
 
                 </div>
@@ -1087,8 +1088,22 @@ class Upload extends CI_Controller{
     }
 
     function summaryLock(){
-        $this->output->set_content_type('application/json')->set_output(json_encode(json));
-        
+        $logid = $this->input->post('log_id', TRUE);
+        $ids = $this->input->post('id[]', TRUE);
+        $success_row = 0;
+        foreach($ids as $val){
+            $this->db->where(['id'=> $val, 'log_id' => $logid])->update('summary_mitra', [
+                'lock' => 't'
+            ]);
+            if($this->db->affected_rows() > 0){
+                $success_row = $success_row + 1;
+            }
+        }
+        if($success_row > 0){
+            $this->session->set_flashdata('success', "Data Berhasil Di Lock");
+        }else{
+            $this->session->set_flashdata('error', "Data Gagal Di Lock");
+        }
     }
 
     /* Form Validation Callback */
