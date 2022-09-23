@@ -24,6 +24,7 @@ class Upload extends CI_Controller{
             'title' => 'Upload Data Cutoff Mitra',
             'company' => $this->M_Company->getById($this->companyid),
             'cabang' => $this->db->get_where('cabang', ['company_id' => $this->companyid, 'status' => 't']),
+            'cutoff' => $this->M_Cutoff->getActive($this->companyid),
             'page' => 'mitra/mitra_upload_data'
         ];
         $this->load->view('templates', $var);

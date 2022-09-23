@@ -79,16 +79,10 @@
                         <form action="<?= site_url('mitra/upload/import') ?>" role="form text-left" method="post" enctype="multipart/form-data">
                             <div class="row">
                                 <div class="col-lg-12">
-                                    <label>Pilih Cutoff <small class="text-danger">*</small></label>
+                                    <label>Cutoff <small class="text-danger">*</small></label>
                                     <div class="input-group mb-3">
                                         <select name="cutoff_id" id="" class="form-control" required>
-                                            <option value=""> - Pilih Cutoff</option>
-                                            <?php 
-                                                $get = $this->db->get_where('cutoff', ['company_id' => $company->id])->result();
-                                                foreach($get as $rr){
-                                                    echo "<option value='".$rr->id."'>  Periode :: ". $rr->tahun."".sprintf("%02d", $rr->bulan) ."</option>";
-                                                }
-                                            ?>
+                                            <option value="<?= $cutoff->id ?>"> Periode <?= $cutoff->tahun."".sprintf("%02d", $cutoff->bulan) ?></option>
                                         </select>
                                     </div>
                                 </div>
