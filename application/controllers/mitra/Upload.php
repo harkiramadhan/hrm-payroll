@@ -199,6 +199,7 @@ class Upload extends CI_Controller{
         $no = 1;
 
         foreach($logAbsensi->result_array() as $row){
+            $getLocked = $this->db->select('id')->get_where('summary_mitra', ['log_id' => $row['id'], 'lock' => 't'])->num_rows();
             $error = ($row['error_row'] > 0) ? $row['error_row'] : 0;
             $periode = 'Periode ' . $row['tahun']."".sprintf("%02d", $row['bulan']);
             $data[] =[
@@ -210,6 +211,7 @@ class Upload extends CI_Controller{
                 '<button type="button" class="btn btn-sm btn-round btn-danger text-white px-3 mb-0 btn-detail-error" onclick="errorLogDetail('.$row['id'].')" style="width:100%"><i class="fas fa-arrow-up me-2" aria-hidden="true"></i>Error '.$error.' Row</button>',
                 '<p class="text-center mb-0";><strong>'.$row['success_row'].'</strong></p>',
                 '<p class="text-center mb-0";><strong>'.$row['total_row'].'</strong></p>',
+                '<p class="text-center mb-0";><strong>'.$getLocked.'</strong></p>',
                 '<strong>'.longdate_indo(date('Y-m-d', strtotime($row['timestamp']))).' - '.date('H:i:s', strtotime($row['timestamp'])).'</strong>',
                 '<div class="btn-group" role="group" aria-label="Basic example">
                     <a href="'.site_url('mitra/' . $row['id']).'" class="btn btn-sm btn-round btn-primary text-white px-3 mb-0"><i class="fas fa-eye me-2" aria-hidden="true"></i>Detail</a>

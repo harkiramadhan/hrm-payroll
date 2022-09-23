@@ -35,6 +35,7 @@
                         <th class="text-center w-5px">Total Row Gagal</th>
                         <th class="text-center w-5px">Total Row Berhasil</th>
                         <th class="text-center w-5px">Total Row</th>
+                        <th class="text-center w-5px">Locked</th>
                         <th>Timestamp</th>
                         <th class="text-center w-15p">Action</th>
                     </tr>
