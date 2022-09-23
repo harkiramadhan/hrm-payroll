@@ -345,7 +345,7 @@ class Upload extends CI_Controller{
                         </tr>
                         <tr>
                             <?php foreach($tunjangan->result() as $th){ ?>
-                                <th class="text-center" style="vertical-align : middle;text-align:center;position:sticky;top:50px;background-color:white"><?= $th->tunjangan."<br>".$th->id ?></th>
+                                <th class="text-center" style="vertical-align : middle;text-align:center;position:sticky;top:50px;background-color:white"><?= $th->tunjangan ?></th>
                             <?php } ?>
                         </tr>
                     </thead>
@@ -1068,9 +1068,13 @@ class Upload extends CI_Controller{
                     rupiah = split[1] != undefined ? rupiah + ',' + split[1] : rupiah;
                     return prefix == undefined ? rupiah : (rupiah ? 'Rp. ' + rupiah : '');
                 }
-
             </script>
         <?php
+    }
+
+    function summaryLock(){
+        $this->output->set_content_type('application/json')->set_output(json_encode(json));
+        
     }
 
     /* Form Validation Callback */
