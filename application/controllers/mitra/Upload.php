@@ -63,7 +63,7 @@ class Upload extends CI_Controller{
                 'tunjangan_id' => $tr
             ]);
             if($cekTunjangan->num_rows() > 0){
-                
+
             }else{
 
             }
@@ -852,6 +852,7 @@ class Upload extends CI_Controller{
                             ->where([
                                 'tp.pegawai_id' => $summary->pegawai_id
                             ])->get()->row();
+                            
 
         ?>
             <div class="card card-plain">
