@@ -48,6 +48,51 @@ class Upload extends CI_Controller{
         ];
         $this->load->view('templates', $var);                
     }
+
+    function update($id){
+        $logid = $this->input->post('log_id', TRUE);
+        $cutoffid = $this->input->post('cutoff_id', TRUE);
+        $pegawaiid = $this->input->post('pegawai_id', TRUE);
+
+        $tunjanganid = $this->input->post('tunjangan_id', TRUE);
+        foreach($tunjanganid as $tr => $valTr){ 
+            $cekTunjangan = $this->db->get_where('summary_mitra_detail', [
+                'pegawai_id' => $pegawaiid,
+                'cutoff_id' => $cutoffid,
+                'log_id' => $logid,
+                'tunjangan_id' => $tr
+            ]);
+            if($cekTunjangan->num_rows() > 0){
+                
+            }else{
+
+            }
+            $updateTunjangan[] = [
+                'log_id' => $logid,
+                'pegawai_id' => $pegawaiid,
+                'cutoff_id' => $cutoffid,
+                'tunjangan_id' => $tr,
+                'nominal' => $valTr
+            ];
+        }
+
+        $updateSummary = [
+            'nominal_gapok' => $this->input->post('nominal_gapok', TRUE),
+            'nominal_gaji_dilaporkan' => $this->input->post('nominal_gaji_dilaporkan', TRUE),
+            'nominal_tunjangan' => $this->input->post('nominal_tunjangan', TRUE),
+            'total_tunjangan_non_tunai' => $this->input->post('total_tunjangan_non_tunai', TRUE),
+            'total_tunjangan_pengurangan' => $this->input->post('total_tunjangan_pengurangan', TRUE),
+            'nominal_insentif' => $this->input->post('nominal_insentif', TRUE),
+            'thp' => $this->input->post('thp', TRUE),
+        ];
+
+        $res = [
+            'tunjangan' => $updateTunjangan,
+            'summary' => $updateSummary
+        ];
+        $this->output->set_content_type('application/json')->set_output(json_encode($res));
+        
+    }
     
     function remove($id){
         $absensi = $this->db->get_where('log_upload_mitra', ['id' => $id])->row();
@@ -427,11 +472,12 @@ class Upload extends CI_Controller{
                 })
 
                 function edit(id){
-                    var reviewId = '<?= $cutoffid ?>'
+                    var logid = '<?= $logid ?>'
+                    var cutoffid = '<?= $cutoffid ?>'
                     $.ajax({
                         url: '<?= site_url('mitra/upload/editSummary/') ?>' + id,
                         type: 'get',
-                        data: {id : id, reviewId : reviewId},
+                        data: {logid : logid, cutoffid : cutoffid},
                         success: function(res){
                             $('.data-edit-xl').html(res)
                             $('#modalEditXl').modal('show')
@@ -786,6 +832,222 @@ class Upload extends CI_Controller{
         }
 
         redirect($_SERVER['HTTP_REFERER']);
+    }
+
+    function editSummary($id){
+        $logid = $this->input->get('logid', TRUE);
+        $cutoffid = $this->input->get('cutoffid', TRUE);
+        $summary = $this->db->select('s.*, p.nama, p.nik, p.nominal_gapok, p.nominal_gaji_dilaporkan')
+                            ->from('summary_mitra s')
+                            ->join('pegawai p', 's.pegawai_id = p.id')
+                            ->where([
+                                's.id' => $id,
+                                's.log_id' => $logid,
+                                's.cutoff_id' => $cutoffid
+                            ])->get()->row();
+
+        $tunjanganPegawai = $this->db->select('tm.*, tm.nama nama_template')
+                            ->from('tunjangan_pegawai tp')
+                            ->join('template_tunjangan tm', 'tp.template_id = tm.id')
+                            ->where([
+                                'tp.pegawai_id' => $summary->pegawai_id
+                            ])->get()->row();
+
+        ?>
+            <div class="card card-plain">
+                <div class="card-header pb-0 text-left">
+                    <h6 class="font-weight-bolder">Edit Summary</h6>
+                </div>
+                <div class="card-body pb-0">
+                    <form action="<?= site_url('mitra/upload/update/' . $id) ?>" role="form text-left" method="post">
+                        <input type="hidden" name="pegawai_id" value="<?= $summary->pegawai_id ?>">
+                        <input type="hidden" name="summary_id" value="<?= $summary->id ?>">
+                        <input type="hidden" name="log_id" value="<?= $summary->log_id ?>">
+                        <input type="hidden" name="cutoff_id" value="<?= $cutoffid ?>">
+
+                        <div class="row">
+                            <div class="col-lg-3">
+                                <label>NIP</label>
+                                <div class="input-group mb-3">
+                                    <input type="text" class="form-control" placeholder="NIP" aria-label="NIP" name="nip" value="<?= $summary->nik ?>" disabled>
+                                </div>
+                            </div>
+                            <div class="col-lg-9">
+                                <label>Nama</label>
+                                <div class="input-group mb-3">
+                                    <input type="text" class="form-control" placeholder="Nama" aria-label="Nama" name="nama" value="<?= $summary->nama ?>" disabled>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-lg-4">
+                                <label>Template Tunjangan</label>
+                                <div class="input-group mb-3">
+                                    <input type="text" class="form-control" value="<?= @$tunjanganPegawai->nama_template ?>" disabled>
+                                </div>
+                            </div>
+                            <div class="col-lg-4">
+                                <label>Nominal Gaji Pokok</label>
+                                <div class="input-group mb-3">
+                                    <input type="text" class="form-control" value="<?= rupiah($summary->nominal_gapok) ?>" disabled>
+                                </div>
+                            </div>
+                            <div class="col-lg-4">
+                                <label>Nominal Gaji Dilaporkan</label>
+                                <div class="input-group mb-3">
+                                    <input type="text" class="form-control" value="<?= rupiah($summary->nominal_gaji_dilaporkan) ?>" disabled>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="table-responsive p-0 mt-4">
+                            <table class="table table-hover" style="width:100%">
+                                <thead>
+                                    <tr>
+                                        <th class="text-center" width="5px">No</th>
+                                        <th width="5px">Tunjangan</th>
+                                        <th width="5px">Tipe</th>
+                                        <th>Nominal</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <?php 
+                                        $not = 1;
+                                        $getTunjangan = $this->db->select('dt.*, t.tunjangan, t.keterangan, t.type tunjangan_type, rt.kode, rt.satuan')
+                                                                ->from('detail_template_tunjangan dt')
+                                                                ->join('tunjangan t', 'dt.tunjangan_id = t.id')
+                                                                ->join('role_tunjangan rt', 't.role_id = rt.id')
+                                                                ->where('dt.template_id', @$tunjanganPegawai->id)
+                                                                ->order_by('t.urut', "ASC")->get();
+
+                                        $totalTunjangan = [];
+                                        $totalTunjanganPengurangan = [];
+                                        $totalTunjanganNonTunai = [];
+
+                                        foreach($getTunjangan->result() as $tem){
+                                            $badgeTunjangan = jenisTunjangan($tem->tunjangan_type);
+                                    ?>
+                                    <tr>
+                                        <td class="text-center"><?= $not++ ?></td>
+                                        <td><?= $tem->tunjangan.' - '.$tem->keterangan ?></td>
+                                        <td><?= $badgeTunjangan ?></td>
+                                        <td>
+                                            <?php
+                                                $nominalHasil = 0; 
+                                                $cekTunjangan = $this->db->get_where('summary_mitra_detail', ['pegawai_id' => $summary->pegawai_id, 'log_id' => $summary->log_id, 'tunjangan_id' => $tem->tunjangan_id]);
+                                                if($cekTunjangan->num_rows() > 0){
+                                                    $nominalHasil = $cekTunjangan->row()->nominal;
+                                                }
+
+                                                if($tem->tunjangan_type == 1){
+                                                    array_push($totalTunjangan, $nominalHasil);
+                                                }elseif($tem->tunjangan_type == 2){
+                                                    array_push($totalTunjanganNonTunai, $nominalHasil);
+                                                }else{
+                                                    array_push($totalTunjanganPengurangan, $nominalHasil);
+                                                }
+
+                                                if($cekTunjangan->num_rows() > 0){
+                                                    $nomTunjangan = (int)str_replace('.', '', $cekTunjangan->row()->nominal);
+                                                }else{
+                                                    $nomTunjangan = $nominalHasil;
+                                                }
+                                            ?>
+                                            <input type="number" class="form-control form-control-sm nominal-tunjangan" name="tunjangan_id[<?= $tem->tunjangan_id ?>]" data-type="<?= $tem->tunjangan_type ?>" data-nom="<?= $tem->type ?>" data-id="<?= $tem->id ?>" value="<?= rupiah($nomTunjangan) ?>">
+                                        </td>
+                                    </tr>
+                                    <?php } ?>
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="row">
+                            <div class="col-lg-3">
+                                <label>Total Insentif</label>
+                                <div class="input-group mb-3">
+                                    <input type="text" class="form-control nominal-insentif" placeholder="Total Insentif" id="nominal_insentif" name="nominal_insentif" value="<?= ($summary->nominal_insentif) ? rupiah($summary->nominal_insentif) : 0 ?>">
+                                </div>
+                            </div>
+                            <div class="col-lg-3">
+                                <label>Total Tunjangan</label>
+                                <div class="input-group mb-3">
+                                    <input type="text" class="form-control" placeholder="Total Tunjangan" id="total_tunjangan" name="total_tunjangan" value="<?= ($summary->nominal_tunjangan) ? rupiah($summary->nominal_tunjangan) : rupiah(array_sum($totalTunjangan)) ?>">
+                                </div>
+                            </div>
+                            <div class="col-lg-3">
+                                <label>Total Tunjangan Non Tunai</label>
+                                <div class="input-group mb-3">
+                                    <input type="text" class="form-control" placeholder="Total Tunjangan" id="total_tunjangan_non_tunai" name="total_tunjangan_non_tunai" value="<?= ($summary->total_tunjangan_non_tunai) ? rupiah($summary->total_tunjangan_non_tunai) : rupiah(array_sum($totalTunjanganNonTunai)) ?>">
+                                </div>
+                            </div>
+                            <div class="col-lg-3">
+                                <label>Total Tunjangan Pengurangan</label>
+                                <div class="input-group mb-3">
+                                    <input type="text" class="form-control" placeholder="Total Tunjangan" id="total_tunjangan_pengurangan" name="total_tunjangan_pengurangan" value="<?= ($summary->total_tunjangan_pengurangan) ? rupiah($summary->total_tunjangan_pengurangan) : rupiah(array_sum($totalTunjanganPengurangan)) ?>">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="text-center">
+                            <button type="submit" class="btn btn-sm btn-round bg-success btn-lg w-100 mt-4 me-4 ml-4 mb-0 text-white">Simpan</button>
+                        </div>
+                    </form>
+                </div>
+                <div class="card-footer text-center pt-0 px-lg-2 px-1">
+                    <button type="button" class="btn btn-sm btn-link btn-block  ml-auto" data-bs-dismiss="modal">Batal</button>
+                </div>
+            </div>
+
+            <script>
+                $('.nominal-tunjangan, .nominal-insentif').keyup(function(){
+                    var sumPenambahan = 0;
+                    var sumNonTunai = 0;
+                    var sumPengurangan = 0;
+
+                    var formatted = formatRupiah($(this).val())
+                    $(this).val(formatted)
+
+                    $(".nominal-tunjangan[data-type=1]" ).each(function(){
+                        var amountPenambahan = parseInt($(this).val().replace(/[^0-9]+/g, ""))
+                        sumPenambahan +=amountPenambahan
+                    })
+
+                    var sumInsentif = parseInt($('#nominal_insentif').val().replace(/[^0-9]+/g, ""))
+                    sumPenambahan += sumInsentif
+
+                    $('#total_tunjangan').val(formatRupiah(sumPenambahan))
+
+                    $(".nominal-tunjangan[data-type=2]" ).each(function(){
+                        var amountNonTunai = parseInt($(this).val().replace(/[^0-9]+/g, ""))
+                        sumNonTunai +=amountNonTunai
+                    })
+
+                    $('#total_tunjangan_non_tunai').val(formatRupiah(sumNonTunai))
+
+                    $(".nominal-tunjangan[data-type=3]" ).each(function(){
+                        var amountPengurangan = parseInt($(this).val().replace(/[^0-9]+/g, ""))
+                        sumPengurangan +=amountPengurangan
+                    })
+
+                    $('#total_tunjangan_pengurangan').val(formatRupiah(sumPengurangan))
+                })
+
+                function formatRupiah(angka, prefix){
+                    var number_string = angka.toString().replace(/[^0-9]+/g, ""),
+                    split   		= number_string.split(','),
+                    sisa     		= split[0].length % 3,
+                    rupiah     		= split[0].substr(0, sisa),
+                    ribuan     		= split[0].substr(sisa).match(/\d{3}/gi);
+        
+                    // tambahkan titik jika yang di input sudah menjadi angka ribuan
+                    if(ribuan){
+                        separator = sisa ? '.' : '';
+                        rupiah += separator + ribuan.join('.');
+                    }
+        
+                    rupiah = split[1] != undefined ? rupiah + ',' + split[1] : rupiah;
+                    return prefix == undefined ? rupiah : (rupiah ? 'Rp. ' + rupiah : '');
+                }
+
+            </script>
+        <?php
     }
 
     /* Form Validation Callback */
