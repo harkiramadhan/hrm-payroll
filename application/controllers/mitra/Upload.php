@@ -56,6 +56,7 @@ class Upload extends CI_Controller{
 
         $tunjanganid = $this->input->post('tunjangan_id', TRUE);
         foreach($tunjanganid as $tr => $valTr){ 
+            $nominalTunjangan = str_replace([',', '.'], '', $valTr);
             $cekTunjangan = $this->db->get_where('summary_mitra_detail', [
                 'pegawai_id' => $pegawaiid,
                 'cutoff_id' => $cutoffid,
@@ -63,35 +64,42 @@ class Upload extends CI_Controller{
                 'tunjangan_id' => $tr
             ]);
             if($cekTunjangan->num_rows() > 0){
-
+                $this->db->where('id', $cekTunjangan->row()->id)->update('summary_mitra_detail', [
+                    'log_id' => $logid,
+                    'pegawai_id' => $pegawaiid,
+                    'cutoff_id' => $cutoffid,
+                    'tunjangan_id' => $tr,
+                    'nominal' => $nominalTunjangan
+                ]);
             }else{
-
+                $this->db->insert('summary_mitra_detail', [
+                    'log_id' => $logid,
+                    'pegawai_id' => $pegawaiid,
+                    'cutoff_id' => $cutoffid,
+                    'tunjangan_id' => $tr,
+                    'nominal' => $nominalTunjangan
+                ]);
             }
-            $updateTunjangan[] = [
-                'log_id' => $logid,
-                'pegawai_id' => $pegawaiid,
-                'cutoff_id' => $cutoffid,
-                'tunjangan_id' => $tr,
-                'nominal' => $valTr
-            ];
         }
 
-        $updateSummary = [
-            'nominal_gapok' => $this->input->post('nominal_gapok', TRUE),
-            'nominal_gaji_dilaporkan' => $this->input->post('nominal_gaji_dilaporkan', TRUE),
-            'nominal_tunjangan' => $this->input->post('nominal_tunjangan', TRUE),
-            'total_tunjangan_non_tunai' => $this->input->post('total_tunjangan_non_tunai', TRUE),
-            'total_tunjangan_pengurangan' => $this->input->post('total_tunjangan_pengurangan', TRUE),
-            'nominal_insentif' => $this->input->post('nominal_insentif', TRUE),
-            'thp' => $this->input->post('thp', TRUE),
-        ];
+        $nominal_gapok = str_replace(['.', ','], '', $this->input->post('nominal_gapok', TRUE));
+        $nominal_gaji_dilaporkan = str_replace(['.', ','], '', $this->input->post('nominal_gaji_dilaporkan', TRUE));
+        $total_tunjangan = str_replace(['.', ','], '', $this->input->post('total_tunjangan', TRUE));
+        $total_tunjangan_non_tunai = str_replace(['.', ','], '', $this->input->post('total_tunjangan_non_tunai', TRUE));
+        $total_tunjangan_pengurangan = str_replace(['.', ','], '', $this->input->post('total_tunjangan_pengurangan', TRUE));
+        $nominal_insentif = str_replace(['.', ','], '', $this->input->post('nominal_insentif', TRUE));
 
-        $res = [
-            'tunjangan' => $updateTunjangan,
-            'summary' => $updateSummary
-        ];
-        $this->output->set_content_type('application/json')->set_output(json_encode($res));
-        
+        $this->db->where('id', $id)->update('summary_mitra', [
+            'nominal_gapok' => $nominal_gapok,
+            'nominal_gaji_dilaporkan' => $nominal_gaji_dilaporkan,
+            'nominal_tunjangan' => $total_tunjangan,
+            'total_tunjangan_non_tunai' => $total_tunjangan_non_tunai,
+            'total_tunjangan_pengurangan' => $total_tunjangan_pengurangan,
+            'nominal_insentif' => $nominal_insentif,
+            'thp' => ($nominal_insentif + $total_tunjangan) - $total_tunjangan_pengurangan
+        ]);
+        $this->session->set_flashdata('success', "Data Berhasil Di Simpan");
+        redirect($_SERVER['HTTP_REFERER']);
     }
     
     function remove($id){
@@ -344,8 +352,14 @@ class Upload extends CI_Controller{
                             <th rowspan="2" style="vertical-align : middle;text-align:center;position:sticky;top: 0;background-color:white" class="text-center">Action</th>
                         </tr>
                         <tr>
-                            <?php foreach($tunjangan->result() as $th){ ?>
-                                <th class="text-center" style="vertical-align : middle;text-align:center;position:sticky;top:50px;background-color:white"><?= $th->tunjangan ?></th>
+                            <?php 
+                                foreach($tunjangan->result() as $th){ 
+                                    $class = 'bg-white';
+                                    if($th->type == 3){
+                                        $class = 'bg-danger text-white';
+                                    }
+                            ?>
+                                <th class="text-center <?= $class ?>" style="vertical-align:middle;text-align:center;position:sticky;top:50px;"><strong><?= $th->tunjangan ?></strong></th>
                             <?php } ?>
                         </tr>
                     </thead>
@@ -888,13 +902,13 @@ class Upload extends CI_Controller{
                             <div class="col-lg-4">
                                 <label>Nominal Gaji Pokok</label>
                                 <div class="input-group mb-3">
-                                    <input type="text" class="form-control" value="<?= rupiah($summary->nominal_gapok) ?>" disabled>
+                                    <input type="text" class="form-control" name="nominal_gapok" value="<?= rupiah($summary->nominal_gapok) ?>" disabled>
                                 </div>
                             </div>
                             <div class="col-lg-4">
                                 <label>Nominal Gaji Dilaporkan</label>
                                 <div class="input-group mb-3">
-                                    <input type="text" class="form-control" value="<?= rupiah($summary->nominal_gaji_dilaporkan) ?>" disabled>
+                                    <input type="text" class="form-control" name="nominal_gaji_dilaporkan" value="<?= rupiah($summary->nominal_gaji_dilaporkan) ?>" disabled>
                                 </div>
                             </div>
                         </div>
