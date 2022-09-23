@@ -345,7 +345,7 @@ class Upload extends CI_Controller{
                         </tr>
                         <tr>
                             <?php foreach($tunjangan->result() as $th){ ?>
-                                <th class="text-center" style="vertical-align : middle;text-align:center;position:sticky;top:50px;background-color:white"><?= $th->tunjangan ?></th>
+                                <th class="text-center" style="vertical-align : middle;text-align:center;position:sticky;top:50px;background-color:white"><?= $th->tunjangan."<br>".$th->id ?></th>
                             <?php } ?>
                         </tr>
                     </thead>
@@ -852,8 +852,6 @@ class Upload extends CI_Controller{
                             ->where([
                                 'tp.pegawai_id' => $summary->pegawai_id
                             ])->get()->row();
-                            
-
         ?>
             <div class="card card-plain">
                 <div class="card-header pb-0 text-left">
@@ -913,11 +911,14 @@ class Upload extends CI_Controller{
                                 <tbody>
                                     <?php 
                                         $not = 1;
-                                        $getTunjangan = $this->db->select('dt.*, t.tunjangan, t.keterangan, t.type tunjangan_type, rt.kode, rt.satuan')
+                                        $getTunjangan = $this->db->select('dt.*, t.tunjangan, t.keterangan, t.type tunjangan_type, rt.kode, rt.satuan, t.id tunjanganid')
                                                                 ->from('detail_template_tunjangan dt')
                                                                 ->join('tunjangan t', 'dt.tunjangan_id = t.id')
                                                                 ->join('role_tunjangan rt', 't.role_id = rt.id')
-                                                                ->where('dt.template_id', @$tunjanganPegawai->id)
+                                                                ->where([
+                                                                    'dt.template_id' => @$tunjanganPegawai->id,
+                                                                    't.status' => 't'
+                                                                ])
                                                                 ->order_by('t.urut', "ASC")->get();
 
                                         $totalTunjangan = [];
@@ -934,7 +935,7 @@ class Upload extends CI_Controller{
                                         <td>
                                             <?php
                                                 $nominalHasil = 0; 
-                                                $cekTunjangan = $this->db->get_where('summary_mitra_detail', ['pegawai_id' => $summary->pegawai_id, 'log_id' => $summary->log_id, 'tunjangan_id' => $tem->tunjangan_id]);
+                                                $cekTunjangan = $this->db->get_where('summary_mitra_detail', ['pegawai_id' => $summary->pegawai_id, 'log_id' => $logid, 'tunjangan_id' => $tem->tunjanganid]);
                                                 if($cekTunjangan->num_rows() > 0){
                                                     $nominalHasil = $cekTunjangan->row()->nominal;
                                                 }
@@ -946,14 +947,8 @@ class Upload extends CI_Controller{
                                                 }else{
                                                     array_push($totalTunjanganPengurangan, $nominalHasil);
                                                 }
-
-                                                if($cekTunjangan->num_rows() > 0){
-                                                    $nomTunjangan = (int)str_replace('.', '', $cekTunjangan->row()->nominal);
-                                                }else{
-                                                    $nomTunjangan = $nominalHasil;
-                                                }
                                             ?>
-                                            <input type="number" class="form-control form-control-sm nominal-tunjangan" name="tunjangan_id[<?= $tem->tunjangan_id ?>]" data-type="<?= $tem->tunjangan_type ?>" data-nom="<?= $tem->type ?>" data-id="<?= $tem->id ?>" value="<?= rupiah($nomTunjangan) ?>">
+                                            <input type="text" class="form-control form-control-sm nominal-tunjangan" name="tunjangan_id[<?= $tem->tunjangan_id ?>]" data-type="<?= $tem->tunjangan_type ?>" data-nom="<?= $tem->type ?>" data-id="<?= $tem->id ?>" value="<?= rupiah($nominalHasil) ?>">
                                         </td>
                                     </tr>
                                     <?php } ?>
@@ -1029,6 +1024,33 @@ class Upload extends CI_Controller{
 
                     $('#total_tunjangan_pengurangan').val(formatRupiah(sumPengurangan))
                 })
+
+                (function($) {
+                $.fn.inputFilter = function(callback, errMsg) {
+                    return this.on("input keydown keyup mousedown mouseup select contextmenu drop focusout", function(e) {
+                    if (callback(this.value)) {
+                        // Accepted value
+                        if (["keydown","mousedown","focusout"].indexOf(e.type) >= 0){
+                            $(this).removeClass("input-error");
+                            this.setCustomValidity("");
+                        }
+                        this.oldValue = this.value;
+                        this.oldSelectionStart = this.selectionStart;
+                        this.oldSelectionEnd = this.selectionEnd;
+                    } else if (this.hasOwnProperty("oldValue")) {
+                        // Rejected value - restore the previous one
+                        $(this).addClass("input-error");
+                        this.setCustomValidity(errMsg);
+                        this.reportValidity();
+                        this.value = this.oldValue;
+                        this.setSelectionRange(this.oldSelectionStart, this.oldSelectionEnd);
+                    } else {
+                        // Rejected value - nothing to restore
+                        this.value = "";
+                    }
+                    });
+                };
+                }(jQuery));
 
                 function formatRupiah(angka, prefix){
                     var number_string = angka.toString().replace(/[^0-9]+/g, ""),
