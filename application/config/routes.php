@@ -68,3 +68,11 @@ $route['mitra'] = 'mitra/upload/index';
 $route['mitra/table'] = 'mitra/upload/table';
 $route['mitra/(:num)'] = 'mitra/upload/detail/$1';
 $route['mitra/detailTable'] = 'mitra/upload/detailTable';
+
+$route['slip/pegawai/(:num)/(:num)'] = 'slip/pegawai/detail/$1/$2';
+$route['slip/pegawai/(:num)/(:num)/table'] = 'slip/pegawai/detailTable/$1/$2';
+$route['slip/pegawai/(:num)/(:num)/pdf'] = 'slip/pegawai/pdf/$1/$2';
+
+$route['slip/mitra/(:num)/(:num)'] = 'slip/mitra/detail/$1/$2';
+$route['slip/mitra/(:num)/(:num)/table'] = 'slip/mitra/detailTable/$1/$2';
+$route['slip/mitra/(:num)/(:num)/pdf'] = 'slip/mitra/pdf/$1/$2';

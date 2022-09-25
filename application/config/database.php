@@ -75,10 +75,10 @@ $query_builder = TRUE;
 
 $db['default'] = array(
 	'dsn'	=> '',
-	'hostname' => 'www.simpaud.com',
-	'username' => 'simdev',
-	'password' => 's1mpaud3v',
-	'database' => 'hrm_payroll',
+	'hostname' => 'nyamancurhat.id',
+	'username' => 'nyamancu_payroll',
+	'password' => 'nyamancu_payroll',
+	'database' => 'nyamancu_payroll',
 	'dbdriver' => 'mysqli',
 	'dbprefix' => '',
 	'pconnect' => FALSE,
