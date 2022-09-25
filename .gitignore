@@ -18,6 +18,7 @@ user_guide_src/cilexer/pycilexer.egg-info/*
 /uploads/mitra/
 /uploads/absensi/
 /uploads/image/
+/application/config/database.php
 
 # IDE Files
 #-------------------------
