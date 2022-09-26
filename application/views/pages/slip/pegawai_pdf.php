@@ -237,7 +237,7 @@
                         <?php } ?>
                         <tr class="heading">
                             <td align="right" style="padding-right: 20px;" colspan="3">Total Pendapatan (Gross)</td>
-                            <td>Rp. <?= rupiah(array_sum($totalTunjangan)) ?>,-</td>
+                            <td>Rp. <?= rupiah(array_sum($totalTunjangan) + $summary->nominal_gapok) ?>,-</td>
                         </tr>
                     </table>
 

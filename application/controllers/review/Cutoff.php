@@ -111,18 +111,24 @@ class Cutoff extends CI_Controller{
         $review_cutoff_id = $this->input->post('review_cutoff_id', TRUE);
         $pegawai_id = $this->input->post('pegawai_id', TRUE);
         $tunjanganid = $this->input->post('tunjangan_id[]', TRUE);
+        $arrayJumlah = $this->input->post('jumlah[]', TRUE);
 
         if($tunjanganid > 0){
             foreach($tunjanganid as $key => $val){
+                $jumlah = $arrayJumlah[$key];
                 $cekTunjangan = $this->db->get_where('summary_tunjangan', ['pegawai_id' => $pegawai_id, 'review_cutoff_id' => $review_cutoff_id, 'tunjangan_id' => $key]);
                 if($cekTunjangan->num_rows() > 0){
-                    $this->db->where('id', $cekTunjangan->row()->id)->update('summary_tunjangan', ['nominal' => $val]);
+                    $this->db->where('id', $cekTunjangan->row()->id)->update('summary_tunjangan', [
+                        'jumlah' => $jumlah,
+                        'nominal' => $val
+                    ]);
                 }else{
                     $this->db->insert('summary_tunjangan', [
                         'pegawai_id' => $pegawai_id,
                         'nip' => $nip,
                         'review_cutoff_id' => $review_cutoff_id,
                         'tunjangan_id' => $key,
+                        'jumlah' => $jumlah,
                         'nominal' => str_replace('.', "", $val)
                     ]);
                 }
@@ -386,6 +392,7 @@ class Cutoff extends CI_Controller{
                                                     <strong><?= $nominalString ?></strong>
                                                 </td>
                                                 <td>
+                                                    <input type="hidden" name="jumlah[<?= $tem->tunjangan_id ?>]" value="<?= $nominalString ?>">
                                                     <input type="number" class="form-control form-control-sm nominal-tunjangan" name="tunjangan_id[<?= $tem->tunjangan_id ?>]" data-type="<?= $tem->tunjangan_type ?>" data-nom="<?= $tem->type ?>" data-id="<?= $tem->id ?>" value="<?= rupiah($nomTunjangan) ?>">
                                                 </td>
                                             </tr>

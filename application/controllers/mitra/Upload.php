@@ -54,9 +54,11 @@ class Upload extends CI_Controller{
         $logid = $this->input->post('log_id', TRUE);
         $cutoffid = $this->input->post('cutoff_id', TRUE);
         $pegawaiid = $this->input->post('pegawai_id', TRUE);
+        $arrayJumlah = $this->input->post('jumlah[]', TRUE);
 
         $tunjanganid = $this->input->post('tunjangan_id', TRUE);
         foreach($tunjanganid as $tr => $valTr){ 
+            $jumlah = $arrayJumlah[$tr];
             $nominalTunjangan = str_replace([',', '.'], '', $valTr);
             $cekTunjangan = $this->db->get_where('summary_mitra_detail', [
                 'pegawai_id' => $pegawaiid,
@@ -70,6 +72,7 @@ class Upload extends CI_Controller{
                     'pegawai_id' => $pegawaiid,
                     'cutoff_id' => $cutoffid,
                     'tunjangan_id' => $tr,
+                    'jumlah' => $jumlah,
                     'nominal' => $nominalTunjangan
                 ]);
             }else{
@@ -78,6 +81,7 @@ class Upload extends CI_Controller{
                     'pegawai_id' => $pegawaiid,
                     'cutoff_id' => $cutoffid,
                     'tunjangan_id' => $tr,
+                    'jumlah' => $jumlah,
                     'nominal' => $nominalTunjangan
                 ]);
             }
