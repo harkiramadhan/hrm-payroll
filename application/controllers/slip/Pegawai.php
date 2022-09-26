@@ -122,7 +122,8 @@ class Pegawai extends CI_Controller{
                                 'tp.pegawai_id' => $summary->pegawai_id
                             ])->order_by('t.urut', "ASC")->get();
 
-        $filename = "Slip Pegawai -";
+        $periode = bulan($cutofff->bulan)." ".$cutofff->tahun;
+        $filename = "Slip Pegawai - " . $summary->nama . ' - Periode ' . $periode;
         $var = [
             'cutoff' => $cutofff,
             'summary' => $summary,
