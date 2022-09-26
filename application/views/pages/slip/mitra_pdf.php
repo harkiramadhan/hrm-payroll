@@ -198,7 +198,7 @@
                     Gaji Pokok
                 </h5></td>
                 <td width="70%"><h5 style="margin: 0 0 0 0">
-                    : &nbsp;&nbsp;Rp. <?= rupiah($summary->nominal_gapok) ?>,-
+                    : &nbsp;&nbsp;Rp. <?= rupiah(($summary->nominal_gapok != 0) ? $summary->nominal_gapok : 0) ?>,-
                 </h5></td>
             </tr>
         </table>
