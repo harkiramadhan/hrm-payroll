@@ -911,13 +911,13 @@ class Upload extends CI_Controller{
                             <div class="col-lg-4">
                                 <label>Nominal Gaji Pokok</label>
                                 <div class="input-group mb-3">
-                                    <input type="text" class="form-control" name="nominal_gapok" value="<?= rupiah($summary->nominal_gapok) ?>" disabled>
+                                    <input type="text" class="form-control" name="nominal_gapok" value="<?= ($summary->nominal_gapok) ? rupiah($summary->nominal_gapok) : ' - ' ?>" disabled>
                                 </div>
                             </div>
                             <div class="col-lg-4">
                                 <label>Nominal Gaji Dilaporkan</label>
                                 <div class="input-group mb-3">
-                                    <input type="text" class="form-control" name="nominal_gaji_dilaporkan" value="<?= rupiah($summary->nominal_gaji_dilaporkan) ?>" disabled>
+                                    <input type="text" class="form-control" name="nominal_gaji_dilaporkan" value="<?= ($summary->nominal_gaji_dilaporkan) ? rupiah($summary->nominal_gaji_dilaporkan) : ' - ' ?>" disabled>
                                 </div>
                             </div>
                         </div>

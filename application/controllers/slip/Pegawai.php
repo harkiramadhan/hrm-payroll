@@ -119,7 +119,18 @@ class Pegawai extends CI_Controller{
                             ->join('detail_template_tunjangan dt', 'dt.template_id = tp.template_id')
                             ->join('tunjangan t', 'dt.tunjangan_id = t.id')
                             ->where([
-                                'tp.pegawai_id' => $summary->pegawai_id
+                                'tp.pegawai_id' => $summary->pegawai_id,
+                                't.type !=' => 3
+                            ])->order_by('t.urut', "ASC")->get();
+
+        $tunjanganPotongan = $this->db->select('t.*, tt.nama, dt.nominal')
+                            ->from('tunjangan_pegawai tp')
+                            ->join('template_tunjangan tt', 'tp.template_id = tt.id')
+                            ->join('detail_template_tunjangan dt', 'dt.template_id = tp.template_id')
+                            ->join('tunjangan t', 'dt.tunjangan_id = t.id')
+                            ->where([
+                                'tp.pegawai_id' => $summary->pegawai_id,
+                                't.type' => 3
                             ])->order_by('t.urut', "ASC")->get();
 
         $periode = bulan($cutofff->bulan)." ".$cutofff->tahun;
@@ -127,10 +138,11 @@ class Pegawai extends CI_Controller{
         $var = [
             'cutoff' => $cutofff,
             'summary' => $summary,
-            'tunjangan' => $tunjangan
+            'tunjangan' => $tunjangan,
+            'tunjanganPotongan' => $tunjanganPotongan
         ];
         // $this->load->view('pages/slip/pegawai_pdf', $var);
-        $mpdf = new \Mpdf\Mpdf(['mode' => 'utf-8', 'format' => 'A4-P']);
+        $mpdf = new \Mpdf\Mpdf(['mode' => 'utf-8', 'format' => 'A4-L']);
         $html = $this->load->view('pages/slip/pegawai_pdf', $var, true);
         $mpdf->WriteHTML($html);
         $mpdf->Output($filename.".pdf", "I");
