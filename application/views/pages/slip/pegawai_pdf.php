@@ -217,6 +217,7 @@
                             $totalTunjangan = [];
                             foreach($tunjangan->result() as $tr){ 
                                 $nominalTunjangan = '';
+                                $jumlah =  rupiah($tr->nominal)." * X";
                                 $getTunjangan = $this->db->get_where('summary_tunjangan', [
                                     'pegawai_id' => $summary->pegawai_id,
                                     'tunjangan_id' => $tr->id,
@@ -225,13 +226,14 @@
 
                                 if($getTunjangan->num_rows() > 0) {
                                     $nominalTunjangan = (int)str_replace(['.', ','], '', $getTunjangan->row()->nominal);
+                                    $jumlah = $getTunjangan->row()->jumlah;
                                 }
                                 array_push($totalTunjangan, $nominalTunjangan);
                         ?>
                         <tr class="">
                             <td><?= $tr->tunjangan ?></td>
                             <td style="text-align: center!important; text-align: center; vertical-align: middle;">:</td>
-                            <td><?= 'X * ' . rupiah($tr->nominal) ?></td>
+                            <td><?= $jumlah ?></td>
                             <td> = Rp.&nbsp;<?= rupiah($nominalTunjangan) ?>,-</td>
                         </tr>
                         <?php } ?>
