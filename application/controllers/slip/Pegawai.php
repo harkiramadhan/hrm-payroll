@@ -113,23 +113,23 @@ class Pegawai extends CI_Controller{
                                 's.cutoff_id' => $cutoffid
                             ])->get()->row();
 
-        $tunjangan = $this->db->select('t.*, tt.nama, dt.nominal')
-                            ->from('tunjangan_pegawai tp')
-                            ->join('template_tunjangan tt', 'tp.template_id = tt.id')
-                            ->join('detail_template_tunjangan dt', 'dt.template_id = tp.template_id')
-                            ->join('tunjangan t', 'dt.tunjangan_id = t.id')
+       $tunjangan = $this->db->select('st.nominal, st.jumlah, t.*')                     
+                            ->from('summary_tunjangan st')
+                            ->join('tunjangan t', 'st.tunjangan_id = t.id')
                             ->where([
-                                'tp.pegawai_id' => $summary->pegawai_id,
+                                'st.pegawai_id' => $summary->pegawai_id,
+                                'st.review_cutoff_id' => $summary->review_cutoff_id,
+                                'st.nominal !=' => 0,                   
                                 't.type !=' => 3
                             ])->order_by('t.urut', "ASC")->get();
 
-        $tunjanganPotongan = $this->db->select('t.*, tt.nama, dt.nominal')
-                            ->from('tunjangan_pegawai tp')
-                            ->join('template_tunjangan tt', 'tp.template_id = tt.id')
-                            ->join('detail_template_tunjangan dt', 'dt.template_id = tp.template_id')
-                            ->join('tunjangan t', 'dt.tunjangan_id = t.id')
+        $tunjanganPotongan = $this->db->select('st.nominal, st.jumlah, t.*')                     
+                            ->from('summary_tunjangan st')
+                            ->join('tunjangan t', 'st.tunjangan_id = t.id')
                             ->where([
-                                'tp.pegawai_id' => $summary->pegawai_id,
+                                'st.pegawai_id' => $summary->pegawai_id,
+                                'st.review_cutoff_id' => $summary->review_cutoff_id,
+                                'st.nominal !=' => 0,                   
                                 't.type' => 3
                             ])->order_by('t.urut', "ASC")->get();
 

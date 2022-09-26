@@ -15,7 +15,7 @@
 
             td{
 
-                font-size: 8px !important;
+                font-size: 10px !important;
             }
 
 			body {
@@ -25,14 +25,14 @@
 			}
 
 			body h1 {
-				font-weight: 300;
+				font-weight: 300; 
 				margin-bottom: 0px;
 				padding-bottom: 0px;
 				color: #000;
 			}
 
 			body h3 {
-				font-weight: 300;
+				font-weight: 300; 
 				font-style: italic;
 				color: #555;
 			}
@@ -46,8 +46,7 @@
 				/* padding: 30px; */
 				/* border: 1px solid #eee; */
 				/* box-shadow: 0 0 10px rgba(0, 0, 0, 0.15); */
-				font-size: 8px;
-				line-height: 24px;
+				font-size: 10px;
 				font-family: 'Helvetica Neue', 'Helvetica', Helvetica, Arial, sans-serif;
 				color: #555;
 			}
@@ -216,18 +215,8 @@
                             <?php 
                                 $totalTunjangan = [];
                                 foreach($tunjangan->result() as $tr){ 
-                                    $nominalTunjangan = '';
-                                    $jumlah =  rupiah($tr->nominal)." * X";
-                                    $getTunjangan = $this->db->get_where('summary_tunjangan', [
-                                        'pegawai_id' => $summary->pegawai_id,
-                                        'tunjangan_id' => $tr->id,
-                                        'review_cutoff_id' => $summary->review_cutoff_id
-                                    ]);
+                                    $nominalTunjangan = (int)str_replace(['.', ','], '', $tr->nominal);
 
-                                    if($getTunjangan->num_rows() > 0) {
-                                        $nominalTunjangan = (int)str_replace(['.', ','], '', $getTunjangan->row()->nominal);
-                                        $jumlah = $getTunjangan->row()->jumlah;
-                                    }
                                     if($tr->type == 1){
                                         array_push($totalTunjangan, $nominalTunjangan);
                                     }
@@ -235,7 +224,7 @@
                             <tr class="">
                                 <td><?= $tr->tunjangan ?></td>
                                 <td style="text-align: center!important; text-align: center; vertical-align: middle;">:</td>
-                                <td><?= $jumlah ?></td>
+                                <td><?= $tr->jumlah ?></td>
                                 <td> = Rp.&nbsp;<?= rupiah($nominalTunjangan) ?>,-</td>
                             </tr>
                             <?php } ?>
@@ -263,17 +252,7 @@
                             <?php 
                                 $totalTunjanganPotongan = [];
                                 foreach($tunjanganPotongan->result() as $tpr){ 
-                                    $nominalTunjanganPotongan = '';
-                                    $getTunjanganPotongan = $this->db->get_where('summary_tunjangan', [
-                                        'pegawai_id' => $summary->pegawai_id,
-                                        'tunjangan_id' => $tpr->id,
-                                        'review_cutoff_id' => $summary->review_cutoff_id
-                                    ]);
-
-                                    if($getTunjanganPotongan->num_rows() > 0) {
-                                        $nominalTunjanganPotongan = (int)str_replace(['.', ','], '', $getTunjanganPotongan->row()->nominal);
-                                        $jumlah = $getTunjanganPotongan->row()->jumlah;
-                                    }
+                                    $nominalTunjanganPotongan = (int)str_replace(['.', ','], '', $tpr->nominal);
                                     array_push($totalTunjanganPotongan, $nominalTunjanganPotongan);
                             ?>
                             <tr class="">
@@ -296,42 +275,26 @@
                 </h1></td>
             </tr>
         </table>
-
-        <br>
         
-        <table id="ttd" style="page-break-inside: avoid;">
+        <table style="page-break-inside: avoid; margin-top: 10px">
             <tr>
-                <td width="" class="">
+                <td width="50%" class="" style="text-align: center;">
                     Diterima Oleh,
                     <br>
                     <br>
                     <br>    
                     <br>
                     <br>
-                    <br>
-                    ( <?= $summary->nama ?> )
+                    <h5>( <?= $summary->nama ?> )</h5>
                 </td>
-                <td width="" class="" style="text-align: right;">
+                <td width="50%" class="" style="text-align: center;">
                     Disetujui Oleh,
                     <br>
                     <br>
                     <br>    
                     <br>
                     <br>
-                    <br>
-                    ( Chosyi Udin )
-                </td>
-            </tr>
-            <tr>
-                <td class="">
-                </td>
-                <td class="">
-                </td>
-            </tr>
-            <tr>
-                <td class="">
-                </td>
-                <td class="">
+                    <h5>( Chosyi Udin )</h5>
                 </td>
             </tr>
         </table>
