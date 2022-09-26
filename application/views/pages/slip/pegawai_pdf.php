@@ -15,7 +15,7 @@
 
             td{
 
-                font-size: 10px !important;
+                font-size: 12px !important;
             }
 
 			body {
@@ -205,8 +205,8 @@
         
         <table style="margin-top: 10px">
             <tr>
-                <td width="60%">
-                    <table width="60%"> 
+                <td width="50%">
+                    <table width="50%"> 
                             <tr class="information">
                                 <td style="padding-bottom:5px;" align="left" >
                                     <h4>Tunjangan</h4>
@@ -225,7 +225,8 @@
                                 <td><?= $tr->tunjangan ?></td>
                                 <td style="text-align: center!important; text-align: center; vertical-align: middle;">:</td>
                                 <td><?= $tr->jumlah ?></td>
-                                <td> = Rp.&nbsp;<?= rupiah($nominalTunjangan) ?>,-</td>
+                                <td align="right">Rp.</td>
+                                <td align="right">&nbsp;<?= rupiah($nominalTunjangan) ?>,-</td>
                             </tr>
                             <?php } ?>
                             <?php if($summary->nominal_insentif == TRUE && $summary->nominal_insentif != 0): ?>
@@ -233,17 +234,19 @@
                                 <td>Insentif</td>
                                 <td style="text-align: center!important; text-align: center; vertical-align: middle;">:</td>
                                 <td></td>
-                                <td> = Rp.&nbsp;<?= rupiah($summary->nominal_insentif) ?> ,-</td>
+                                <td align="right">Rp.</td>
+                                <td align="right">&nbsp;<?= rupiah($summary->nominal_insentif) ?> ,-</td>
                             </tr>
                             <?php endif; ?>
                             <tr class="heading">
-                                <td align="right" style="padding-right: 20px;" colspan="3">Total Pendapatan (Gross)</td>
-                                <td>Rp. <?= rupiah(array_sum($totalTunjangan) + $summary->nominal_gapok + $summary->nominal_insentif) ?> ,-</td>
+                                <td align="right" style="padding-right: 20px; border: 0!important;" colspan="3">Total Pendapatan (Gross)</td>
+                                <td align="right" style="border: 0!important;">Rp.</td>
+                                <td align="right" style="border: 0!important;"><?= rupiah(array_sum($totalTunjangan) + $summary->nominal_gapok + $summary->nominal_insentif) ?> ,-</td>
                             </tr>
                     </table>
                 </td>
-                <td width="40%">
-                    <table width="40%"> 
+                <td width="50%">
+                    <table width="50%"> 
                             <tr class="information">
                                 <td style="padding-bottom:5px;" align="left" >
                                     <h4>Potongan Atas Gaji</h4>
@@ -258,12 +261,15 @@
                             <tr class="">
                                 <td><?= $tpr->tunjangan ?></td>
                                 <td style="text-align: center!important; text-align: center; vertical-align: middle;">:</td>
-                                <td>Rp.&nbsp;<?= rupiah($nominalTunjanganPotongan) ?> ,-</td>
+                                <td><?= $tpr->jumlah ?></td>
+                                <td align="right">Rp.</td>
+                                <td align="right">&nbsp;<?= rupiah($nominalTunjanganPotongan) ?> ,-</td>
                             </tr>
                             <?php } ?>
                             <tr class="heading">
-                                <td align="right" style="padding-right: 20px;" colspan="3">Total Potongan</td>
-                                <td>Rp. <?= rupiah(array_sum($totalTunjanganPotongan)) ?> ,-</td>
+                                <td align="right" style="padding-right: 20px; border:0!important" colspan="3">Total Potongan</td>
+                                <td style="border: 0!important;" align="right">Rp.</td>
+                                <td style="border: 0!important;" align="right"><?= rupiah(array_sum($totalTunjanganPotongan)) ?> ,-</td>
                             </tr>
                     </table>
                 </td>

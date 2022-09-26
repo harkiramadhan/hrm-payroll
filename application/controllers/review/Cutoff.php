@@ -323,6 +323,7 @@ class Cutoff extends CI_Controller{
                                                 <th class="text-center" width="5px">No</th>
                                                 <th width="5px">Tunjangan</th>
                                                 <th width="5px">Tipe</th>
+                                                <th></th>
                                                 <th>Nominal</th>
                                             </tr>
                                         </thead>
@@ -387,6 +388,10 @@ class Cutoff extends CI_Controller{
                                                             $nomTunjangan = (int)str_replace('.', '', $cekTunjangan->row()->nominal);
                                                         }else{
                                                             $nomTunjangan = $nominalHasil;
+                                                        }
+
+                                                        if($tem->nominal == 0 && $cekTunjangan->row()->nominal != 0 ){
+                                                            $nominalString = rupiah($nomTunjangan)." * 1";
                                                         }
                                                     ?>
                                                     <strong><?= $nominalString ?></strong>

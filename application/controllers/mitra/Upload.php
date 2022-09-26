@@ -747,6 +747,8 @@ class Upload extends CI_Controller{
                                                 'pegawai_id' => $pegawai->id,
                                                 'cutoff_id' => $cutoffid,
                                                 'tunjangan_id' => $tunjangan->id,
+                                                'jumlah' => rupiah($tunjangan->nominal)." * ".$sheetData[$row][$t['column']],
+                                                'rit' => $sheetData[$row][$t['column']],
                                                 'nominal' => $nominalTunjangan
                                             ];
                                             $this->db->insert('summary_mitra_detail', $insert);
@@ -928,6 +930,7 @@ class Upload extends CI_Controller{
                                         <th class="text-center" width="5px">No</th>
                                         <th width="5px">Tunjangan</th>
                                         <th width="5px">Tipe</th>
+                                        <th></th>
                                         <th>Nominal</th>
                                     </tr>
                                 </thead>
@@ -950,6 +953,7 @@ class Upload extends CI_Controller{
 
                                         foreach($getTunjangan->result() as $tem){
                                             $badgeTunjangan = jenisTunjangan($tem->tunjangan_type);
+                                            $nominal = ($tem->type == 'N') ? rupiah($tem->nominal) : $tem->nominal."%";
                                     ?>
                                     <tr>
                                         <td class="text-center"><?= $not++ ?></td>
@@ -961,6 +965,11 @@ class Upload extends CI_Controller{
                                                 $cekTunjangan = $this->db->get_where('summary_mitra_detail', ['pegawai_id' => $summary->pegawai_id, 'log_id' => $logid, 'tunjangan_id' => $tem->tunjanganid]);
                                                 if($cekTunjangan->num_rows() > 0){
                                                     $nominalHasil = $cekTunjangan->row()->nominal;
+                                                    if($tem->nominal != 1){
+                                                        $nominalString = rupiah($tem->nominal)." * ".$cekTunjangan->row()->rit;
+                                                    }else{
+                                                        $nominalString = rupiah($tem->nominal)." * ".rupiah($cekTunjangan->row()->nominal);
+                                                    }
                                                 }
 
                                                 if($tem->tunjangan_type == 1){
@@ -970,7 +979,11 @@ class Upload extends CI_Controller{
                                                 }else{
                                                     array_push($totalTunjanganPengurangan, $nominalHasil);
                                                 }
-                                            ?>
+                                            ?>    
+                                            <strong><?= $nominalString  ?></strong>
+                                        </td>
+                                        <td>
+                                            <input type="hidden" name="jumlah[<?= $tem->tunjangan_id ?>]" value="<?= $nominalString ?>">
                                             <input type="text" class="form-control form-control-sm nominal-tunjangan" name="tunjangan_id[<?= $tem->tunjangan_id ?>]" data-type="<?= $tem->tunjangan_type ?>" data-nom="<?= $tem->type ?>" data-id="<?= $tem->id ?>" value="<?= rupiah($nominalHasil) ?>">
                                         </td>
                                     </tr>
