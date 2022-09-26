@@ -132,27 +132,26 @@ class Cutoff extends CI_Controller{
                         'nominal' => str_replace('.', "", $val)
                     ]);
                 }
-
-                if($this->db->affected_rows() > 0){
-                    $this->db->where([
-                        'cutoff_id' => $cutoffid,
-                        'nip' => $nip,
-                    ])->update('summary', [
-                        'nominal_insentif' => str_replace('.', "", $this->input->post('nominal_insentif', TRUE)),
-                        'nominal_tunjangan' => str_replace('.', "", $this->input->post('total_tunjangan', TRUE)),
-                        'total_tunjangan_non_tunai' => str_replace('.', "", $this->input->post('total_tunjangan_non_tunai', TRUE)),
-                        'total_tunjangan_pengurangan' => str_replace('.', "", $this->input->post('total_tunjangan_pengurangan', TRUE)),
-                        'thp' => str_replace('.', "", $this->input->post('total_tunjangan', TRUE)) - str_replace('.', "", $this->input->post('total_tunjangan_pengurangan', TRUE)) + str_replace('.', "", $this->input->post('nominal_gapok', TRUE))
-                    ]);
-                }
-
             }
+
+            $this->db->where([
+                'cutoff_id' => $cutoffid,
+                'nip' => $nip,
+            ])->update('summary', [
+                'nominal_insentif' => str_replace('.', "", $this->input->post('nominal_insentif', TRUE)),
+                'nominal_tunjangan' => str_replace('.', "", $this->input->post('total_tunjangan', TRUE)),
+                'total_tunjangan_non_tunai' => str_replace('.', "", $this->input->post('total_tunjangan_non_tunai', TRUE)),
+                'total_tunjangan_pengurangan' => str_replace('.', "", $this->input->post('total_tunjangan_pengurangan', TRUE)),
+                'thp' => (int)str_replace('.', "", $this->input->post('total_tunjangan', TRUE)) - (int)str_replace('.', "", $this->input->post('total_tunjangan_pengurangan', TRUE)) + (int)str_replace('.', "", $this->input->post('nominal_gapok', TRUE))
+            ]);
             
             $this->session->set_flashdata('success', "Data Berhasil Di Simpan");
         }else{
             $this->session->set_flashdata('error', "Data Gagal Di Simpan");
         }
         redirect($_SERVER['HTTP_REFERER']);
+        // $this->output->set_content_type('application/json')->set_output(json_encode($this->input->post()));
+        
     }
 
     function edit($id){
@@ -340,10 +339,13 @@ class Cutoff extends CI_Controller{
                                                 $totalTunjangan = [];
                                                 $totalTunjanganPengurangan = [];
                                                 $totalTunjanganNonTunai = [];
+                                                $nominalHasil = [];
 
                                                 foreach($getTunjangan->result() as $tem){
                                                     $badgeTunjangan = jenisTunjangan($tem->tunjangan_type);
                                                     $nominal = ($tem->type == 'N') ? rupiah($tem->nominal) : $tem->nominal."%";
+                                                    $nominalString = '';
+                                                    $nomTunjangan = 0;
                                                     if(strtolower($tem->tunjangan) == 'piket'){
                                                         if($summary->total_hadir >= $summary->hari_efektif){}else{
                                                             continue;
@@ -398,7 +400,7 @@ class Cutoff extends CI_Controller{
                                                 </td>
                                                 <td>
                                                     <input type="hidden" name="jumlah[<?= $tem->tunjangan_id ?>]" value="<?= $nominalString ?>">
-                                                    <input type="number" class="form-control form-control-sm nominal-tunjangan" name="tunjangan_id[<?= $tem->tunjangan_id ?>]" data-type="<?= $tem->tunjangan_type ?>" data-nom="<?= $tem->type ?>" data-id="<?= $tem->id ?>" value="<?= rupiah($nomTunjangan) ?>">
+                                                    <input type="number" class="form-control form-control-sm nominal-tunjangan" name="tunjangan_id[<?= $tem->tunjangan_id ?>]" data-type="<?= $tem->tunjangan_type ?>" data-nom="<?= $tem->type ?>" data-id="<?= $tem->id ?>" value="<?= rupiah((@$nomTunjangan) ? @$nomTunjangan : 0) ?>">
                                                 </td>
                                             </tr>
                                             <?php } ?>

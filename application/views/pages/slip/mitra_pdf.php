@@ -182,7 +182,7 @@
                     Total Hari Kerja
                 </h5></td>
                 <td width="70%"><h5 style="margin: 0 0 0 0">
-                    : &nbsp;&nbsp;<?= $summary->hari_efektif ?> Hari Kerja
+                    : &nbsp;&nbsp;0 Hari Kerja
                 </h5></td>
             </tr>
             <tr>
@@ -190,7 +190,7 @@
                     Absensi
                 </h5></td>
                 <td width="70%"><h5 style="margin: 0 0 0 0">
-                    : &nbsp;&nbsp;<?= $summary->total_hadir ?> Hadir / (Finger Print)
+                    : &nbsp;&nbsp;<?= @$kehadiran->row()->rit ?> Hadir / (Finger Print)
                 </h5></td>
             </tr>
             <tr>

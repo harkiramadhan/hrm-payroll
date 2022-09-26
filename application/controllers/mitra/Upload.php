@@ -742,12 +742,13 @@ class Upload extends CI_Controller{
                                         if($sheetData[$row][$t['column']] != NULL) {
                                             $tunjangan = $cekTunjangan->row();
                                             $nominalTunjangan = (int)str_replace('.', '', $sheetData[$row][$t['column']]) * $tunjangan->nominal;
+                                            $nominalString = ($tunjangan->nominal == 1) ? rupiah($sheetData[$row][$t['column']])." * ".rupiah($tunjangan->nominal) : rupiah($tunjangan->nominal)." * ".rupiah($sheetData[$row][$t['column']]);
                                             $insert = [
                                                 'log_id' => $logid,
                                                 'pegawai_id' => $pegawai->id,
                                                 'cutoff_id' => $cutoffid,
                                                 'tunjangan_id' => $tunjangan->id,
-                                                'jumlah' => rupiah($tunjangan->nominal)." * ".$sheetData[$row][$t['column']],
+                                                'jumlah' => $nominalString,
                                                 'rit' => $sheetData[$row][$t['column']],
                                                 'nominal' => $nominalTunjangan
                                             ];
