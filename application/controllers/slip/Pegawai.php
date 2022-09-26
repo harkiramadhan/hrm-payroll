@@ -100,6 +100,39 @@ class Pegawai extends CI_Controller{
     }
 
     function pdf($summaryid, $cutoffid){
-        
+        $cutofff = $this->db->get_where('cutoff', ['id' => $cutoffid])->row();
+
+        $summary = $this->db->select('s.*, p.nama, p.nik, p.no_rekening, j.jabatan, d.departement, p.id pegawai_id')
+                            ->from('summary s')
+                            ->join('pegawai p', 's.nip = p.nik')
+                            ->join('jabatan j', 'p.jabatan_id = j.id')
+                            ->join('departement d', 'p.dept_id = d.id')
+
+                            ->where([
+                                's.id' => $summaryid,
+                                's.cutoff_id' => $cutoffid
+                            ])->get()->row();
+
+        $tunjangan = $this->db->select('t.*, tt.nama, dt.nominal')
+                            ->from('tunjangan_pegawai tp')
+                            ->join('template_tunjangan tt', 'tp.template_id = tt.id')
+                            ->join('detail_template_tunjangan dt', 'dt.template_id = tp.template_id')
+                            ->join('tunjangan t', 'dt.tunjangan_id = t.id')
+                            ->where([
+                                'tp.pegawai_id' => $summary->pegawai_id
+                            ])->order_by('t.urut', "ASC")->get();
+
+        $filename = "Slip Pegawai -";
+        $var = [
+            'cutoff' => $cutofff,
+            'summary' => $summary,
+            'tunjangan' => $tunjangan
+        ];
+        // $this->load->view('pages/slip/pegawai_pdf', $var);
+        $mpdf = new \Mpdf\Mpdf(['mode' => 'utf-8', 'format' => 'A4-P']);
+        $html = $this->load->view('pages/slip/pegawai_pdf', $var, true);
+        $mpdf->WriteHTML($html);
+        $mpdf->Output($filename.".pdf", "I");
+        ob_end_flush();
     }
 }
