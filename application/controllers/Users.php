@@ -97,17 +97,21 @@ class Users extends CI_Controller{
                                     <input type="password" class="form-control" placeholder="Password" aria-label="Password" name="password">
                                 </div>
                             </div>
+                            <?php if($this->session->userdata('roleid') == 1 || $this->session->userdata('roleid') == 3): ?>
                             <div class="col-lg-12">
-                                    <div class="form-group">
-                                        <label for="exampleFormControlSelect1">Role <small class="text-danger">*</small></label>
-                                        <select name="role_id" class="form-control" id="exampleFormControlSelect1" required="">
-                                            <option value="" selected="" disabled="">- Pilih Role</option>
-                                            <?php foreach($role->result() as $row){ ?>
-                                                <option value="<?= $row->id ?>" <?= ($row->id == $user->role_id) ? 'selected' : '' ?>><?= $row->role ?></option>
-                                            <?php } ?>
-                                        </select>
-                                    </div>
+                                <div class="form-group">
+                                    <label for="exampleFormControlSelect1">Role <small class="text-danger">*</small></label>
+                                    <select name="role_id" class="form-control" id="exampleFormControlSelect1" required="">
+                                        <option value="" selected="" disabled="">- Pilih Role</option>
+                                        <?php foreach($role->result() as $row){ ?>
+                                            <option value="<?= $row->id ?>" <?= ($row->id == $user->role_id) ? 'selected' : '' ?>><?= $row->role ?></option>
+                                        <?php } ?>
+                                    </select>
                                 </div>
+                            </div>
+                            <?php else: ?>
+                                <input type="hidden" name="role_id" value="<?= $user->role_id ?>">
+                            <?php endif; ?>
                             <div class="col-lg-12">
                                 <label>Status<small class="text-danger">*</small></label>
                                 <div class="input-group mb-3">
